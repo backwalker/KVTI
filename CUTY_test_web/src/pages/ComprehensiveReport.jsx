@@ -32,7 +32,7 @@ export default function ComprehensiveReport() {
     // Prioritize passedState data, fallback to localStorage
     const reportDataFull = passedState?.reportData || passedState;
     const rawAnswers = reportDataFull?.raw_answers || JSON.parse(localStorage.getItem('kvti_answers') || '{}');
-    const mdjmRawResults = passedState?.dashboard?.mdjm_raw_results || reportDataFull?.dashboard?.mdjm_raw_results || [];
+    // const mdjmRawResults = passedState?.dashboard?.mdjm_raw_results || reportDataFull?.dashboard?.mdjm_raw_results || [];
 
     // Scroll to top on load
     useEffect(() => {
@@ -246,7 +246,7 @@ export default function ComprehensiveReport() {
                                     const industryData = passedState?.dashboard?.scoreBreakdown?.industry;
                                     const styleData = passedState?.dashboard?.scoreBreakdown?.style;
                                     const cultureData = passedState?.dashboard?.scoreBreakdown?.culture;
-                                    const residencyData = passedState?.dashboard?.scoreBreakdown?.residency || { K: 50, G: 50 };
+                                    // const residencyData = passedState?.dashboard?.scoreBreakdown?.residency || { K: 50, G: 50 };
 
                                     const renderChart = (title, data, labels, colorMatched, colorDefault, matchKey, type) => {
                                         if (!data) return null;

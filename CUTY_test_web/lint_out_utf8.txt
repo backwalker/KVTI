@@ -1,0 +1,21 @@
+﻿
+> cuty-test-web@0.0.0 lint
+> eslint .
+
+
+C:\Users\qorgu\Desktop\CUTY\frontend\CUTY_test_web\src\components\DashboardTop.jsx
+  18:5  error  'overallCode' is defined but never used  no-unused-vars
+  19:5  error  'mdjmResults' is defined but never used  no-unused-vars
+
+C:\Users\qorgu\Desktop\CUTY\frontend\CUTY_test_web\src\data\e7_requirements_old.js
+  1:1  error  Parsing error: Unexpected character '占?
+
+C:\Users\qorgu\Desktop\CUTY\frontend\CUTY_test_web\src\data\e7_requirements_old_utf8.js
+  13:33  error  Parsing error: Unterminated string constant
+
+C:\Users\qorgu\Desktop\CUTY\frontend\CUTY_test_web\src\pages\ComprehensiveReport.jsx
+   35:11  error  'mdjmRawResults' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  249:43  error  'residencyData' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+
+??6 problems (6 errors, 0 warnings)
+

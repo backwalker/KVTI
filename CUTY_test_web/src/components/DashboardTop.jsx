@@ -15,8 +15,6 @@ import TypeDictionaryModal from './TypeDictionaryModal';
 
 
 export default function DashboardTop({
-    overallCode,
-    mdjmResults,
     dashboardData,
     userProfile
 }) {
