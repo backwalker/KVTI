@@ -1,0 +1,35 @@
+==================================================
+🎯 KVTI ENGINE PERSONA ALIGNMENT TEST
+==================================================
+
+🤖 [Bot: IT 개발자 (분석적, IT, 수평적)]
+- 🎯 Target Persona : IAF
+- ⚙️ Engine Output  : IAF ✅ (MATCH)
+  -> Industry Scores: {"IT":57,"BIZ":22,"DES":10,"MFG":12}
+  -> Culture Risk: F
+- 💼 Recommended E-7: 2742, 2733, 2731
+
+🤖 [Bot: 대기업 마케터 (창의적, 비즈니스, 수직적)]
+- 🎯 Target Persona : BCH
+- ⚙️ Engine Output  : BCH ✅ (MATCH)
+  -> Industry Scores: {"IT":9,"BIZ":73,"DES":8,"MFG":11}
+  -> Culture Risk: F
+- 💼 Recommended E-7: D84_STARTUP, 2733, 2855
+
+🤖 [Bot: 벤처 엔지니어 (실용적, 제조, 수평적)]
+- 🎯 Target Persona : MPF
+- ⚙️ Engine Output  : MPF ✅ (MATCH)
+  -> Industry Scores: {"IT":14,"BIZ":22,"DES":10,"MFG":55}
+  -> Culture Risk: F
+- 💼 Recommended E-7: 2351, 2352, 2211
+
+🤖 [Bot: 미디어 디렉터 (리더형, 디자인, 수평적)]
+- 🎯 Target Persona : DEF
+- ⚙️ Engine Output  : DEF ✅ (MATCH)
+  -> Industry Scores: {"IT":13,"BIZ":24,"DES":46,"MFG":17}
+  -> Culture Risk: F
+- 💼 Recommended E-7: 2742, 2733, 2731
+
+==================================================
+🏆 ALIGNMENT SCORE: 4 / 4 Match
+==================================================

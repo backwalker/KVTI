@@ -45,7 +45,7 @@ function Result() {
         </div>
 
         {/* Phase 3: POSITIVE FRAMING DASHBOARD */}
-        <DashboardTop reportData={result} />
+        <DashboardTop dashboardData={result} />
 
         {/* Phase 4: GAMIFIED ACTION ROADMAP */}
         <RoadmapTimeline

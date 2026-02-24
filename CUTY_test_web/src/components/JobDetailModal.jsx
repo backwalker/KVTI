@@ -30,6 +30,7 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
         education: "관련 분야 석사 이상, 또는 관련 전공 학사 + 1년 이상 경력",
         salary: "전년도 국민총소득(GNI)의 80% 이상",
         employer: "해당 전문 직무와 연관된 산업 분야의 유망 기업 및 연구기관",
+        exampleJobs: "추천 직무 관련 파생 직종군",
         special: null
     };
 
@@ -42,6 +43,7 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
             eduExp: reqs.education,
             wage: reqs.salary,
             employer: reqs.employer,
+            exampleJobs: reqs.exampleJobs,
             special: reqs.special
         },
         fitAnalysis: {
@@ -122,9 +124,15 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
                                         <div className="text-slate-200 text-sm font-medium">{data.requirements.wage}</div>
                                     </div>
                                     <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner md:col-span-2">
-                                        <div className="text-xs text-orange-400 font-bold mb-1 uppercase tracking-wider">예시 기업 분야</div>
+                                        <div className="text-xs text-orange-400 font-bold mb-1 uppercase tracking-wider">법적 내국인 고용보호 심사 기준</div>
                                         <div className="text-slate-200 text-sm font-medium">{data.requirements.employer}</div>
                                     </div>
+                                    {data.requirements.exampleJobs && (
+                                        <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner md:col-span-2">
+                                            <div className="text-xs text-sky-400 font-bold mb-1 uppercase tracking-wider">예시 직종 (파생 직무군)</div>
+                                            <div className="text-slate-200 text-sm font-medium">{data.requirements.exampleJobs}</div>
+                                        </div>
+                                    )}
                                     {data.requirements.special && (
                                         <div className="bg-slate-900 border border-slate-700/80 bg-rose-900/10 rounded-xl p-4 shadow-inner md:col-span-2">
                                             <div className="text-xs text-rose-400 font-bold mb-1 uppercase tracking-wider">특기사항 및 추천서 요건</div>

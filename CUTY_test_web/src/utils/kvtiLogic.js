@@ -1,7 +1,7 @@
-import kvtiQuestions from '../data/kvti_questions.json';
-import { E7_DB, detectIndustry } from '../data/persona_data'; // Import Data
-import { KVTI_DICTIONARY } from '../data/kvti_dictionary';
-import { E7_REQUIREMENTS } from '../data/e7_requirements';
+import kvtiQuestions from '../data/kvti_questions.json' with { type: 'json' };
+import { E7_DB, detectIndustry } from '../data/persona_data.js'; // Import Data
+import { KVTI_DICTIONARY } from '../data/kvti_dictionary.js';
+import { E7_REQUIREMENTS } from '../data/e7_requirements.js';
 
 // --- Helper Functions ---
 // (Unused calculatePartScore removed)
@@ -92,14 +92,26 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
     const topCode = getTopTraits(riasecScores); // e.g., "ES"
     // (Removed primaryType as it is unused)
 
-    // Radar Data
+    // Radar Data - Normalize scores accurately by exact question count per trait
+    // Each question is worth 5 points max. Let's count them dynamically to perfectly scale [0, 100].
+    const riasecCounts = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+    kvtiQuestions.part1_riasec.forEach(q => {
+        const t = q.type.charAt(0).toUpperCase();
+        if (riasecCounts[t] !== undefined) riasecCounts[t]++;
+    });
+
+    const normalize = (val, trait) => {
+        const maxExpectedScore = riasecCounts[trait] * 5;
+        return Math.min(Math.round((val / maxExpectedScore) * 100), 100);
+    };
+
     const radarData = [
-        { subject: 'Realistic', A: riasecScores.R, fullMark: 100 },
-        { subject: 'Investigative', A: riasecScores.I, fullMark: 100 },
-        { subject: 'Artistic', A: riasecScores.A, fullMark: 100 },
-        { subject: 'Social', A: riasecScores.S, fullMark: 100 },
-        { subject: 'Enterprising', A: riasecScores.E, fullMark: 100 },
-        { subject: 'Conventional', A: riasecScores.C, fullMark: 100 },
+        { subject: 'Realistic', A: normalize(riasecScores.R, 'R'), fullMark: 100 },
+        { subject: 'Investigative', A: normalize(riasecScores.I, 'I'), fullMark: 100 },
+        { subject: 'Artistic', A: normalize(riasecScores.A, 'A'), fullMark: 100 },
+        { subject: 'Social', A: normalize(riasecScores.S, 'S'), fullMark: 100 },
+        { subject: 'Enterprising', A: normalize(riasecScores.E, 'E'), fullMark: 100 },
+        { subject: 'Conventional', A: normalize(riasecScores.C, 'C'), fullMark: 100 },
     ];
 
     // 2. Job & Industry Fit (Part 3 & 4)
@@ -796,6 +808,13 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                 portfolio: []
             };
 
+            // Extract job title from db logic
+            // The jobTitle parameter is already passed to buildRoadmapForJob, so we don't need to re-extract it here.
+            // const jobTitle = E7_DB[jobCode]?.name_ko || E7_DB[jobCode]?.title || jobCode; // This line is not needed here.
+
+            // Define userName directly
+            const userName = baseProfile?.name || '지원자';
+
             // E7_DB 연동 (기본 자격 요건)
             const dbInfo = E7_DB[jobCode] || E7_DB[String(jobCode)];
             if (dbInfo && dbInfo.req) {
@@ -875,7 +894,7 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             // --- 4. Unified E-7 Roadmap (Includes Vacations) ---
             const needsLanguage = uTopik < 4;
             const bilingualTip = hasHighSecLang ?
-                "[Tip] 귀하는 이중언어 능력자입니다. 고용사유서 작성 시 단순 한국어 실력이 아닌 '해외 현지 네트워킹 능력'과 '글로벌 시장 확장의 교두보 역할'을 강력히 어필하세요." :
+                `[Tip] ${userName}님은 이중언어 능력자입니다. 고용사유서 작성 시 단순 한국어 실력이 아닌 '해외 현지 네트워킹 능력'과 '글로벌 시장 확장의 교두보 역할'을 강력히 어필하세요.` :
                 "면접관에게 뚜렷한 직무 역량과 '나를 꼭 뽑아야 하는 고용 사유서'의 핵심 명분을 설득하세요.";
 
             steps = [
@@ -929,7 +948,8 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                     stage: "Phase 6. K-STAR 우수대학 업그레이드 (F-2-7S)",
                     icon: "👑",
                     action_items: [
-                        { task: "귀하의 출신 대학은 유학 특례(F-2-7S) 대상입니다. E-7 취업 준비와 별개로, 높은 학력 가점을 활용해 회사에 종속되지 않는 거주 비자로의 조기 업그레이드를 염두에 두세요.", priority: "High", tag: "특례활용" },
+                        { task: "자격 요건 충족 시 조기 영주권(F-5) 트랙까지 설계 가능한 최상위 포지션입니다.", priority: "High", tag: "초석다지기" },
+                        { task: `${userName}님의 출신 대학은 유학 특례(F-2-7S) 대상입니다. E-7 취업 준비와 별개로, 높은 학력 가점을 활용해 회사에 종속되지 않는 거주 비자로의 조기 업그레이드를 염두에 두세요.`, priority: "High", tag: "특례활용" },
                         { task: "점수제 80점 달성을 위해 TOPIK 5급 이상과 KIIP 5단계를 졸업 전까지 반드시 미리 완성해 두는 것이 유리합니다.", priority: "High", tag: "점수확보" }
                     ]
                 });
@@ -976,8 +996,11 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
 
 
     // ** Growth Potential Strategy (ex-Risk Analysis) **
-    // Positive Framing logic
-    let growthHeading = "균형 잡힌 성장 (Balanced Growth)";
+    // Get username for personal touch
+    const userName = baseProfile?.name || '지원자';
+
+    // ** Feedback Generation **
+    let growthHeading = "";
     let growthItems = [];
 
     if (parseFloat(finalKorean) < 4) {
@@ -999,7 +1022,7 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
     }
 
     // ** Strategy Text (Korean) **
-    const strategyText = `귀하는 ** ${typeCode} ** 유형의 인재로, ** ${industryTypeMapped} ** 산업군에서 ${parseFloat(finalCulture) >= 3.0 ? '조직 융화력' : '창의적 자율성'}을 발휘할 수 있습니다.${parseFloat(finalKorean) < 4 ? '우선적으로 TOPIK 4급을 확보하여 비자점수 가점을 챙기고,' : '한국어 강점을 바탕으로'} ** ${jobData.name_ko.split('(')[0]}** 직무의 전문성을 어필한다면 E - 7 비자 취득이 유력합니다.`;
+    const strategyText = `${userName}님은 ** ${typeCode} ** 유형의 인재로, ** ${industryTypeMapped} ** 산업군에서 ${parseFloat(finalCulture) >= 3.0 ? '조직 융화력' : '창의적 자율성'}을 발휘할 수 있습니다.${parseFloat(finalKorean) < 4 ? '우선적으로 TOPIK 4급을 확보하여 비자점수 가점을 챙기고,' : '한국어 강점을 바탕으로'} ** ${jobData.name_ko.split('(')[0]}** 직무의 전문성을 어필한다면 E - 7 비자 취득이 유력합니다.`;
 
     // ** Use established 4-letter KVTI Code **
     const kvtiCode = typeCode;
@@ -1018,11 +1041,10 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             persona_title: koTitle,
             kvti_code: kvtiCode,
             kvti_breakdown: kvtiBreakdown,
-            scoreBreakdown: scoreBreakdown, // Injected MBTI-style raw percentages
+            scoreBreakdown: scoreBreakdown,
             type_code: typeCode,
             target_visa: "E-7-1 전문인력",
             job_code: consultingJobData,
-            recommended_jobs: recommendedJobsArray,
             tags: tags,
             characteristics: personaQuote,
             strategy: strategyText,
@@ -1033,9 +1055,10 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             growth_focus: growthHeading,
             growth_actions: growthItems,
             is_junior: isJunior,
+            recommended_jobs: recommendedJobsArray,
             isMajorCompensated: isMajorCompensated,
-            career_vitality_index: careerVitalityIndex,
-            mdjm_raw_results: mdjmResults
+            careerVitalityIndex: careerVitalityIndex,
+            mdjm_raw_results: mdjmResults.slice(0, 10) // Included for debug logs
         },
         diagnosis: {
             riasec: {

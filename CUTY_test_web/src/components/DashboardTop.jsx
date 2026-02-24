@@ -14,29 +14,35 @@ import TypeDictionaryModal from './TypeDictionaryModal';
  */
 
 
-export default function DashboardTop({ reportData }) {
+export default function DashboardTop({
+    overallCode,
+    mdjmResults,
+    dashboardData,
+    userProfile
+}) {
     const navigate = useNavigate();
     const [selectedJobCode, setSelectedJobCode] = useState(null);
     const [isExplanationModalOpen, setIsExplanationModalOpen] = useState(false);
+    const userName = userProfile?.name || "지원자";
 
-    if (!reportData) return <div>분석 데이터를 불러오는 중입니다...</div>;
+    // Destructure MDJM results if available
 
-    const { dashboard } = reportData;
+    if (!dashboardData || !dashboardData.dashboard || !dashboardData.dashboard.kvti_code) {
+        return (
+            <div className="flex flex-col items-center justify-center p-20 text-center bg-slate-900/50 rounded-3xl border border-rose-500/30">
+                <div className="text-4xl mb-4">⚠️</div>
+                <h3 className="text-xl text-rose-300 font-bold mb-2">진단 결과를 불러올 수 없습니다.</h3>
+                <p className="text-slate-400">알고리즘 계산 결과 혹은 데이터 전달 과정에서 누락이 발생했습니다. (Hardcoded Fallback 방지)</p>
+            </div>
+        );
+    }
 
-    // 백엔드 다중 추천 코드가 없을 경우를 대비한 Fallback (이전 단일 코드를 배열로 매핑)
-    const recommendedJobs = dashboard.recommended_jobs || [
-        { code: dashboard.job_code || "2742", title: E7_DB[dashboard.job_code]?.name_ko || "추천 직무 1순위", readiness: 85 },
-        { code: "2733", title: E7_DB["2733"]?.name_ko || "광고 및 홍보 전문가", readiness: 70 },
-        { code: "2731", title: E7_DB["2731"]?.name_ko || "상품 기획 전문가", readiness: 55 }
-    ];
+    const { dashboard } = dashboardData;
 
-    const kvtiCode = dashboard.kvti_code || "MPHK";
-    const kvtiBreakdown = dashboard.kvti_breakdown || [
-        { char: "M", name: "제조업" },
-        { char: "P", name: "실용/현장" },
-        { char: "H", name: "대기업형" },
-        { char: "K", name: "한국정주" },
-    ];
+    // Strict Data Binding (NO HARDCODED FALLBACKS)
+    const recommendedJobs = dashboard.recommended_jobs || [];
+    const kvtiCode = dashboard.kvti_code;
+    const kvtiBreakdown = dashboard.kvti_breakdown || [];
 
     const e7Jobs = recommendedJobs.filter(job => !job.isExtraTrack);
     const extraTracks = recommendedJobs.filter(job => job.isExtraTrack);
@@ -51,7 +57,7 @@ export default function DashboardTop({ reportData }) {
                     <div className="flex items-center justify-center gap-3 mb-6 relative">
                         <p className="inline-block bg-white/10 px-6 py-2 rounded-full border border-white/20 text-cyan-400 tracking-widest text-sm font-bold uppercase shadow-lg backdrop-blur-sm m-0 flex space-x-2">
                             <span>✨</span>
-                            <span className="text-white">{reportData.baseProfile?.name || 'Guest'}</span>
+                            <span className="text-white">{dashboardData.baseProfile?.name || 'Guest'}</span>
                             <span>님의 KVTI 유형</span>
                         </p>
                         <button
@@ -140,8 +146,10 @@ export default function DashboardTop({ reportData }) {
 
                                 {/* Axis 1: Industry */}
                                 <div className="bg-slate-900/60 border border-white/10 p-6 rounded-3xl shadow-lg backdrop-blur-md">
-                                    <div className="text-base font-bold text-slate-300 mb-6 flex items-center gap-2">
-                                        <span className="text-xl">🏢</span> 타겟 산업군 (Industry)
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div className="text-base font-bold text-slate-300 flex items-center gap-2">
+                                            <span className="text-xl">🏢</span> 타겟 산업군 (Industry)
+                                        </div>
                                     </div>
                                     <div className="space-y-4">
                                         {Object.entries(dashboard.scoreBreakdown.industry)
@@ -242,43 +250,43 @@ export default function DashboardTop({ reportData }) {
             </div>
 
             {/* --- NEW: Phase 0. Base Profile (My Spec) Display --- */}
-            {reportData.baseProfile && (
-                <div className="card bg-slate-900/80 border border-white/10 p-6 md:p-8 rounded-3xl mt-8 shadow-xl backdrop-blur-md">
-                    <h3 className="text-lg font-bold text-slate-300 mb-6 flex items-center gap-2">
-                        <span className="text-xl">📊</span> 적용된 나의 기본 스펙 (Phase 0)
+            {dashboardData.baseProfile && (
+                <div className="bg-slate-800/80 rounded-2xl p-6 border border-white/10 shadow-lg mt-8 relative z-20">
+                    <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                        <span className="text-xl">🎓</span> 지원자 기초 프로파일
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors">
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-widest block mb-1">전공 분야</span>
-                            <span className="text-lg font-bold text-white">{reportData.baseProfile.major}</span>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">주전공</span>
+                            <span className="text-lg font-bold text-white">{dashboardData.baseProfile.major}</span>
                         </div>
-                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors">
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-widest block mb-1">출신 대학 / 학년</span>
-                            <span className="text-lg font-bold text-white max-w-full truncate block" title={reportData.baseProfile.university}>{reportData.baseProfile.university}</span>
-                            <span className="text-sm font-medium text-slate-400 block mt-0.5">{reportData.baseProfile.grade}</span>
+                        <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">출신 대학</span>
+                            <span className="text-lg font-bold text-white max-w-full truncate block" title={dashboardData.baseProfile.university}>{dashboardData.baseProfile.university}</span>
+                            <span className="text-sm font-medium text-slate-400 block mt-0.5">{dashboardData.baseProfile.grade}</span>
                         </div>
-                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors">
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-widest block mb-1">한국어 능력(TOPIK)</span>
-                            <span className="text-lg font-bold text-emerald-400">{reportData.baseProfile.topik ? `${reportData.baseProfile.topik}급` : "선택 안 함"}</span>
+                        <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">한국어 (TOPIK)</span>
+                            <span className="text-lg font-bold text-emerald-400">{dashboardData.baseProfile.topik ? `${dashboardData.baseProfile.topik}급` : "선택 안 함"}</span>
                         </div>
-                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors">
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-widest block mb-1">외국어 능력</span>
-                            <span className="text-lg font-bold text-blue-400">
-                                {reportData.baseProfile.secondaryLanguages && reportData.baseProfile.secondaryLanguages.length > 0
-                                    ? reportData.baseProfile.secondaryLanguages.map(l => l.language).join(', ')
+                        <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">제2/3외국어</span>
+                            <span className="text-lg font-bold text-blue-400 truncate">
+                                {dashboardData.baseProfile.secondaryLanguages && dashboardData.baseProfile.secondaryLanguages.length > 0 && dashboardData.baseProfile.secondaryLanguages[0].lang !== ''
+                                    ? dashboardData.baseProfile.secondaryLanguages.filter(l => l.lang).map(l => l.lang).join(', ')
                                     : "해당 없음"}
                             </span>
                         </div>
-                        <div className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-colors">
-                            <span className="text-xs text-slate-500 font-bold uppercase tracking-widest block mb-1">사회통합프로그램</span>
-                            <span className="text-lg font-bold text-teal-400">{reportData.baseProfile.kiip ? `${reportData.baseProfile.kiip}단계` : "해당 없음"}</span>
+                        <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">사회통합기본소양 (KIIP)</span>
+                            <span className="text-lg font-bold text-teal-400">{dashboardData.baseProfile.kiip ? `${dashboardData.baseProfile.kiip}단계` : "해당 없음"}</span>
                         </div>
                     </div>
                 </div>
             )}
 
             {/* --- 4. KVTI 종합 분석 리포트 요약본 (Moved up for UX flow) --- */}
-            <AnalysisSummary reportData={reportData} />
+            <AnalysisSummary dashboardData={dashboardData} />
 
             {/* --- 2. Multiple E-7 Code 추천 및 달성도 --- */}
             <div className="card bg-slate-800/60 border border-white/10 p-8 md:p-10 rounded-3xl backdrop-blur-md shadow-xl mt-12">
@@ -345,7 +353,7 @@ export default function DashboardTop({ reportData }) {
                             숨겨진 재능: <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-400">프리미엄 트랙 발견!</span>
                         </h2>
                         <p className="text-indigo-200 text-sm mb-8">
-                            일반적인 E-7 취업 경로 외에도, 귀하의 설문 응답(진취성 및 주도성)을 정밀 분석한 결과 다음과 같은 특별한 체류형 비자 트랙에 매우 높은 적성(80% 이상)을 보였습니다.
+                            일반적인 E-7 취업 경로 외에도, {userName}님의 설문 응답(진취성 및 주도성)을 정밀 분석한 결과 다음과 같은 특별한 체류형 비자 트랙에 매우 높은 적성(80% 이상)을 보였습니다.
                         </p>
 
                         <div className="grid gap-6">
@@ -392,7 +400,7 @@ export default function DashboardTop({ reportData }) {
             )}
             {/* Floating button to navigate to the full PDF-optimized Comprehensive Report */}
             <button
-                onClick={() => navigate('/report', { state: { result: { dashboard: dashboard, reportData: reportData } } })}
+                onClick={() => navigate('/report', { state: { result: dashboardData } })}
                 className="fixed bottom-8 right-8 z-50 flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-6 py-4 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 hover:-translate-y-1"
             >
                 <div className="bg-white/20 p-2 rounded-full">

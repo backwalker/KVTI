@@ -19,13 +19,18 @@ function LandingPage() {
       'part4_industry_pref', 'part5_org_culture', 'part6_residency'
     ];
 
-    // To avoid the "Law of Large Numbers" averaging out the scores and always resulting in the same persona,
-    // we need to force a distinct peak in one RIASEC trait and one Industry trait.
-    const riasecKeys = ['R', 'I', 'A', 'S', 'E', 'C'];
-    const chosenRiasec = riasecKeys[Math.floor(Math.random() * riasecKeys.length)];
-
     const industryKeys = ['IT', 'BIZ', 'DES', 'MFG'];
     const chosenIndustry = industryKeys[Math.floor(Math.random() * industryKeys.length)];
+
+    // Couple RIASEC choices to the selected Industry for more realistic generated Personas
+    const industryToRiasecMap = {
+      'IT': ['I', 'R', 'C'], // Investigative, Realistic, Conventional
+      'BIZ': ['E', 'S', 'C'],// Enterprising, Social, Conventional
+      'DES': ['A', 'I', 'E'],// Artistic, Investigative, Enterprising
+      'MFG': ['R', 'I', 'C'] // Realistic, Investigative, Conventional
+    };
+    const possibleRiasec = industryToRiasecMap[chosenIndustry];
+    const chosenRiasec = possibleRiasec[Math.floor(Math.random() * possibleRiasec.length)];
 
     const randomAnswers = {};
 
@@ -42,36 +47,24 @@ function LandingPage() {
             randomAnswers[q.id] = q.options[randomOptionIndex].value;
           }
         } else {
-          // Default random 1-3
-          let val = Math.floor(Math.random() * 3) + 1;
+          // Default random 1-2 for non-matches to ensure distinct peaks
+          let val = Math.floor(Math.random() * 2) + 1;
 
           // Force peaks for distinct personas
-          if (sectionKey === 'part1_riasec' && q.type?.startsWith(chosenRiasec)) {
-            val = 5;
+          if (sectionKey === 'part1_riasec') {
+            if (q.type?.startsWith(chosenRiasec)) val = 5;
           } else if (sectionKey === 'part4_industry_pref') {
-            // IDs: IND_I (IT), IND_M (MFG), IND_C (DES), IND_T/IND_B (BIZ)
             const isMatch = (chosenIndustry === 'IT' && q.id.includes('IND_I')) ||
               (chosenIndustry === 'MFG' && q.id.includes('IND_M')) ||
               (chosenIndustry === 'DES' && q.id.includes('IND_C')) ||
               (chosenIndustry === 'BIZ' && (q.id.includes('IND_T') || q.id.includes('IND_B')));
-            if (isMatch) {
-              val = 5;
-            } else {
-              // Ensure non-matches don't tie with 5
-              val = Math.floor(Math.random() * 3) + 1; // 1 to 3 max
-            }
+            if (isMatch) val = 5;
           } else if (sectionKey === 'part3_job_pref') {
-            // IDs: JP_I (IT), JP_R (MFG), JP_A (DES), JP_E/JP_C/JP_S (BIZ)
             const isMatch = (chosenIndustry === 'IT' && q.id.includes('JP_I')) ||
               (chosenIndustry === 'MFG' && q.id.includes('JP_R')) ||
               (chosenIndustry === 'BIZ' && (q.id.includes('JP_E') || q.id.includes('JP_S') || q.id.includes('JP_C'))) ||
               (chosenIndustry === 'DES' && q.id.includes('JP_A'));
-
-            if (isMatch) {
-              val = 5;
-            } else {
-              val = Math.floor(Math.random() * 3) + 1;
-            }
+            if (isMatch) val = 5;
           } else if (sectionKey === 'part2_competency' || sectionKey === 'part6_residency') {
             // High competency and residency for better visa odds
             val = Math.floor(Math.random() * 2) + 4; // 4 or 5
