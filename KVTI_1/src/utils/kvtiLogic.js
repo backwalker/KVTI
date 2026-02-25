@@ -1,7 +1,10 @@
 import kvtiQuestions from '../data/kvti_questions.json' with { type: 'json' };
-import { E7_DB, detectIndustry } from '../data/persona_data.js'; // Import Data
-import { KVTI_DICTIONARY } from '../data/kvti_dictionary.js';
-import { E7_REQUIREMENTS } from '../data/e7_requirements.js';
+import { E7_DB as E7_DB_KO, KVTI_32_PERSONAS as KVTI_32_PERSONAS_KO, detectIndustry } from '../data/persona_data.js';
+import { E7_DB as E7_DB_EN, KVTI_32_PERSONAS as KVTI_32_PERSONAS_EN } from '../data/persona_data_en.js';
+import { KVTI_DICTIONARY as KVTI_DICTIONARY_KO } from '../data/kvti_dictionary.js';
+import { KVTI_DICTIONARY as KVTI_DICTIONARY_EN } from '../data/kvti_dictionary_en.js';
+import { E7_REQUIREMENTS as E7_REQUIREMENTS_KO } from '../data/e7_requirements.js';
+import { E7_REQUIREMENTS as E7_REQUIREMENTS_EN } from '../data/e7_requirements_en.js';
 
 // --- Helper Functions ---
 // (Unused calculatePartScore removed)
@@ -52,7 +55,12 @@ const MAJOR_TO_INDUSTRY_MAP = {
 
 // --- Main Logic ---
 
-export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0Data = null) => {
+export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0Data = null, locale = 'ko') => {
+    const E7_DB = locale === 'en' ? E7_DB_EN : E7_DB_KO;
+    const KVTI_32_PERSONAS = locale === 'en' ? KVTI_32_PERSONAS_EN : KVTI_32_PERSONAS_KO;
+    const KVTI_DICTIONARY = locale === 'en' ? KVTI_DICTIONARY_EN : KVTI_DICTIONARY_KO;
+    const E7_REQUIREMENTS = locale === 'en' ? E7_REQUIREMENTS_EN : E7_REQUIREMENTS_KO;
+
     // -- Phase 0: User Base Profile --
     const baseProfile = phase0Data || {
         name: 'Guest',
@@ -249,8 +257,9 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
     const coreCode = `${char_1}${char_2}${char_3}`; // Base 3 letters for Persona lookup
     const typeCode = `${char_1}${char_2}${char_3}${char_4}`; // Full 4 letters
 
-    const personaInfo = KVTI_DICTIONARY[coreCode] || KVTI_DICTIONARY['BEH'];
-    const koTitle = personaInfo.nickname; // e.g., "글로벌 비즈니스 리더"
+    const TARGET_DICT = locale === 'en' ? KVTI_DICTIONARY_EN : KVTI_DICTIONARY_KO;
+    const personaInfo = TARGET_DICT[coreCode] || TARGET_DICT['BEH'];
+    const koTitle = personaInfo.nickname; // Dynamic based on dict
     const personaQuote = personaInfo.description;
 
     // --- Score Breakdown Calculation (MBTI-style percentages) ---
@@ -297,18 +306,18 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
     };
     // -------------------------------------------------------------
 
-    // Tag Generation (Korean)
-    const tags = [`#${industryType}_인재`, `#${typeCode}`];
-    if (finalKorean >= 4) tags.push("#한국어_마스터");
-    else if (finalKorean < 3) tags.push("#한국어_집중필요");
+    // Tag Generation (Korean & English)
+    const tags = [locale === 'en' ? `#${industryType}_Talent` : `#${industryType}_인재`, `#${typeCode}`];
+    if (finalKorean >= 4) tags.push(locale === 'en' ? "#Korean_Master" : "#한국어_마스터");
+    else if (finalKorean < 3) tags.push(locale === 'en' ? "#Focus_Korean" : "#한국어_집중필요");
 
     // Phase 2 GNI Decoupling: Calculate expected salary based on wage expectation answers
     // Map score 1-5 to estimated starting salary (e.g., 2800, 3200, 3600, 4000, 4400)
     const predictedIncome = 2400 + (scoreWage * 400);
     const passesGniThreshold = predictedIncome >= CURRENT_GNI_80;
 
-    if (passesGniThreshold) tags.push("#고소득_잠재력");
-    if (finalOA >= 4.0) tags.push("#실무_준비완료");
+    if (passesGniThreshold) tags.push(locale === 'en' ? "#HighIncome_Potential" : "#고소득_잠재력");
+    if (finalOA >= 4.0) tags.push(locale === 'en' ? "#Ready_for_Work" : "#실무_준비완료");
 
     // ** 1. Major Deficit Compensation Math **
     // IF major is 0 but practical proof (OA) is high, compensate with 1.2x weight, capped at 5.0
@@ -633,11 +642,11 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
     }
 
     const f27Breakdown = [
-        { label: "연령 (20대)", score: scoreAge },
-        { label: "학력 (대졸)", score: scoreEdu },
-        { label: "예상 소득 (잠재력)", score: scoreIncomePromised },
-        { label: "K-Point (어학)", score: scoreKPoint },
-        { label: "가산점 (KIIP/외국어)", score: scoreKIIP + scoreLangBonus }
+        { label: locale === 'en' ? "Age (20s)" : "연령 (20대)", score: scoreAge },
+        { label: locale === 'en' ? "Education (Bachelor+)" : "학력 (대졸)", score: scoreEdu },
+        { label: locale === 'en' ? "Est. Income (Potential)" : "예상 소득 (잠재력)", score: scoreIncomePromised },
+        { label: locale === 'en' ? "K-Point (Language)" : "K-Point (어학)", score: scoreKPoint },
+        { label: locale === 'en' ? "Bonus (KIIP/Language)" : "가산점 (KIIP/외국어)", score: scoreKIIP + scoreLangBonus }
     ];
 
     // ** Survival Score Calculation (0-100) **
@@ -674,7 +683,9 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
     if (hasDomesticBachelor) {
         d10Score = 0; // Not applicable
         d10Passed = true;
-        d10Message = "축하합니다! 국내 학사 졸업(예정)자는 D-10 구직 비자 점수제 적용이 최초 1회 면제되어, 요건 없이 구직 비자 전환이 가능합니다.";
+        d10Message = locale === 'en' ?
+            "Congratulations! Domestic bachelor's degree graduates (or expected) are exempt from the D-10 job seeking visa points system once, allowing conversion without strict requirements." :
+            "축하합니다! 국내 학사 졸업(예정)자는 D-10 구직 비자 점수제 적용이 최초 1회 면제되어, 요건 없이 구직 비자 전환이 가능합니다.";
     } else {
         d10Score = 15 + // Bachelor (General)
             15 + // Age 25
@@ -682,8 +693,8 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             30; // Study in KR 3+ yrs
         d10Passed = d10Score >= 60;
         d10Message = d10Passed ?
-            "학위 취득과 유학 경력만으로도 이미 60점 이상을 확보하여 D-10 구직 비자 전환이 매우 유력합니다." :
-            "졸업 전까지 한국어 점수를 보완하면 충분히 60점을 달성할 수 있습니다.";
+            (locale === 'en' ? "You have already secured 60+ points with your degree and studying experience, making D-10 conversion highly likely." : "학위 취득과 유학 경력만으로도 이미 60점 이상을 확보하여 D-10 구직 비자 전환이 매우 유력합니다.") :
+            (locale === 'en' ? "Supplementing your Korean score before graduation will help you safely reach 60 points." : "졸업 전까지 한국어 점수를 보완하면 충분히 60점을 달성할 수 있습니다.");
     }
 
 
@@ -698,48 +709,48 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                     stage: "Phase 1. 아이디어 발굴 (1~2학년)",
                     icon: "💡",
                     action_items: [
-                        { task: "내향/외향 성향을 살려 교내 창업 동아리 및 해커톤에 적극 참여하세요.", priority: "High", tag: "네트워킹" },
-                        { task: "글로벌 창업 이민센터(OASIS) 교육 1단계 진입을 강력히 추천합니다.", priority: "Medium", tag: "OASIS" }
+                        { task: locale === 'en' ? 'Utilize your intro/extrovert traits and actively participate in campus startup clubs and hackathons.' : '내향/외향 성향을 살려 교내 창업 동아리 및 해커톤에 적극 참여하세요.', priority: "High", tag: locale === 'en' ? 'Networking' : '네트워킹' },
+                        { task: locale === 'en' ? 'Highly recommended to enter Step 1 of the OASIS (Overall Assistance for Startup Immigration System) program.' : '글로벌 창업 이민센터(OASIS) 교육 1단계 진입을 강력히 추천합니다.', priority: "Medium", tag: locale === 'en' ? 'OASIS' : 'OASIS' }
                     ]
                 },
                 {
                     stage: "Phase 2. 시드 및 지적재산권 (3학년)",
                     icon: "🛡️",
                     action_items: [
-                        { task: "예비창업자 핵심 팀 빌딩을 완료하고 비즈니스 모델(BM)을 구체화하세요.", priority: "High", tag: "팀빌딩" },
-                        { task: "특허/실용신안/디자인권 출원 등 지식재산권을 확보하여 OASIS 점수(50점)를 미리 세팅하세요.", priority: "High", tag: "지식재산권" }
+                        { task: locale === 'en' ? 'Complete core team building for prospective founders and materialize your Business Model (BM).' : '예비창업자 핵심 팀 빌딩을 완료하고 비즈니스 모델(BM)을 구체화하세요.', priority: "High", tag: locale === 'en' ? 'Team Building' : '팀빌딩' },
+                        { task: locale === 'en' ? 'Secure intellectual property such as patents/utility models/designs to pre-set 50 OASIS points.' : '특허/실용신안/디자인권 출원 등 지식재산권을 확보하여 OASIS 점수(50점)를 미리 세팅하세요.', priority: "High", tag: locale === 'en' ? 'Intellectual Property' : '지식재산권' }
                     ]
                 },
                 {
                     stage: "Phase 3. 정부 지원금 확보 (4학년)",
                     icon: "💰",
                     action_items: [
-                        { task: "K-Startup 등 정부 창업 지원 사업에 선정되어 초기 자본금을 확보하세요.", priority: "High", tag: "정부지원" },
-                        { task: "확보된 자금으로 최소기능제품(MVP)을 개발하고 시장의 반응을 테스트하세요.", priority: "Medium", tag: "MVP검증" }
+                        { task: locale === 'en' ? 'Secure initial capital by being selected for government startup support programs like K-Startup.' : 'K-Startup 등 정부 창업 지원 사업에 선정되어 초기 자본금을 확보하세요.', priority: "High", tag: locale === 'en' ? 'Gov Funding' : '정부지원' },
+                        { task: locale === 'en' ? 'Develop an MVP (Minimum Viable Product) with the secured funds and test market reactions.' : '확보된 자금으로 최소기능제품(MVP)을 개발하고 시장의 반응을 테스트하세요.', priority: "Medium", tag: locale === 'en' ? 'MVP Validation' : 'MVP검증' }
                     ]
                 },
                 {
                     stage: "Phase 4. 법인 설립 (D-8-4 준비)",
                     icon: "🏢",
                     action_items: [
-                        { task: "엔젤 투자자나 엑셀러레이터(AC)로부터 투자를 유치하고 법인 설립을 준비하세요.", priority: "Medium", tag: "투자유치" },
-                        { task: "1억 이상의 자본 등기를 완료하고, 최종 OASIS 80점을 채우세요.", priority: "High", tag: "법인설립" }
+                        { task: locale === 'en' ? 'Attract investment from Angel Investors or Accelerators (AC) and prepare for corporate setup.' : '엔젤 투자자나 엑셀러레이터(AC)로부터 투자를 유치하고 법인 설립을 준비하세요.', priority: "Medium", tag: locale === 'en' ? 'Investment Attraction' : '투자유치' },
+                        { task: locale === 'en' ? 'Complete capital registration of 100M+ KRW and fulfill the final 80 OASIS points.' : '1억 이상의 자본 등기를 완료하고, 최종 OASIS 80점을 채우세요.', priority: "High", tag: locale === 'en' ? 'Corporate Setup' : '법인설립' }
                     ]
                 },
                 {
                     stage: "Phase 5. 매출 발생 & 고용 (D-8-4 취득)",
                     icon: "📈",
                     action_items: [
-                        { task: "D-8-4 특례 비자로 전환하고 본격적인 초기 매출 J커브 달성에 집중하세요.", priority: "High", tag: "비자전환" },
-                        { task: "한국인 직원 직고용 창출 등 비즈니스 스케일업과 경제 기여도를 입증하세요.", priority: "Medium", tag: "채용확대" }
+                        { task: locale === 'en' ? 'Convert to the D-8-4 special visa and focus on achieving the initial revenue J-curve.' : 'D-8-4 특례 비자로 전환하고 본격적인 초기 매출 J커브 달성에 집중하세요.', priority: "High", tag: locale === 'en' ? 'Visa Conversion' : '비자전환' },
+                        { task: locale === 'en' ? 'Prove business scale-up and economic contribution, such as creating direct employment for Korean staff.' : '한국인 직원 직고용 창출 등 비즈니스 스케일업과 경제 기여도를 입증하세요.', priority: "Medium", tag: locale === 'en' ? 'Hiring Expansion' : '채용확대' }
                     ]
                 },
                 {
                     stage: "Phase 6. 벤처 인증 & 영주권 (F-5-11)",
                     icon: "🚀",
                     action_items: [
-                        { task: "기술보증기금 등으로부터 우수 벤처기업 인증을 획득하세요.", priority: "High", tag: "벤처인증" },
-                        { task: "외부 대규모 투자 유치(3억 이상 타겟)를 통해 최종적으로 F-5-11 투자 영주권에 도전해 보세요.", priority: "High", tag: "영주권" }
+                        { task: locale === 'en' ? 'Acquire outstanding venture enterprise certification from KIBO or others.' : '기술보증기금 등으로부터 우수 벤처기업 인증을 획득하세요.', priority: "High", tag: locale === 'en' ? 'Venture Cert' : '벤처인증' },
+                        { task: locale === 'en' ? 'Challenge the F-5-11 Investor PR via large-scale external investment (Targeting 300M+ KRW).' : '외부 대규모 투자 유치(3억 이상 타겟)를 통해 최종적으로 F-5-11 투자 영주권에 도전해 보세요.', priority: "High", tag: locale === 'en' ? 'Permanent Residency' : '영주권' }
                     ]
                 }
             ];
@@ -749,48 +760,48 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                     stage: "Phase 1. 기술 자격 및 로컬라이징 (1~2학년)",
                     icon: "⚙️",
                     action_items: [
-                        { task: "한국 산업 현장 적응력을 극대화하세요. 이공계/전문 학사 유지는 기본, 현장 소통을 위한 한국어를 마스터하세요.", priority: "High", tag: "학위방어" },
-                        { task: "거주 비자 가산점 및 소통을 위해 KIIP(사회통합프로그램) 사전 이수를 철저히 대비하세요.", priority: "Medium", tag: "KIIP" }
+                        { task: locale === 'en' ? 'Maximize adaptation to Korean industrial sites. Maintain STEM/Associate degree and master Korean for field communication.' : '한국 산업 현장 적응력을 극대화하세요. 이공계/전문 학사 유지는 기본, 현장 소통을 위한 한국어를 마스터하세요.', priority: "High", tag: locale === 'en' ? 'Degree Defense' : '학위방어' },
+                        { task: locale === 'en' ? 'Thoroughly prepare for KIIP pre-completion for communication and residency visa bonus points.' : '거주 비자 가산점 및 소통을 위해 KIIP(사회통합프로그램) 사전 이수를 철저히 대비하세요.', priority: "Medium", tag: locale === 'en' ? 'KIIP' : 'KIIP' }
                     ]
                 },
                 {
                     stage: "Phase 2. 현장 맞춤형 자격증 (3학년)",
                     icon: "🛠️",
                     action_items: [
-                        { task: "산업 현장에서 요구하는 국가 기술 자격증(기능사/산업기사) 취득을 준비하세요.", priority: "High", tag: "자격증" },
-                        { task: "내국인 기능인력 대비 동등 이상의 현장 가치를 증명할 수 있는 실무 지식을 습득하세요.", priority: "Medium", tag: "실무지식" }
+                        { task: locale === 'en' ? 'Prepare to acquire national technical certificates (Craftsman/Industrial Engineer) demanded by industrial sites.' : '산업 현장에서 요구하는 국가 기술 자격증(기능사/산업기사) 취득을 준비하세요.', priority: "High", tag: locale === 'en' ? 'Certification' : '자격증' },
+                        { task: locale === 'en' ? 'Acquire practical knowledge proving field value equal to or greater than domestic skilled workers.' : '내국인 기능인력 대비 동등 이상의 현장 가치를 증명할 수 있는 실무 지식을 습득하세요.', priority: "Medium", tag: locale === 'en' ? 'Practical Knowledge' : '실무지식' }
                     ]
                 },
                 {
                     stage: "Phase 3. 산학 연계 실습 (4학년)",
                     icon: "🏭",
                     action_items: [
-                        { task: "뿌리산업, 조선업 등 '유학생 경력 면제 특례'가 적용되는 분야를 적극 탐색하세요.", priority: "High", tag: "특례타겟팅" },
-                        { task: "체계적인 산학 실습 네트워크에 진입하여 현장 네트워크와 탄탄한 실무 경험을 쌓으세요.", priority: "High", tag: "산학실습" }
+                        { task: locale === 'en' ? 'Actively explore fields like Root Industries or Shipbuilding where the \'International Student Experience Exemption\' applies.' : '뿌리산업, 조선업 등 \'유학생 경력 면제 특례\'가 적용되는 분야를 적극 탐색하세요.', priority: "High", tag: locale === 'en' ? 'Exemption Targeting' : '특례타겟팅' },
+                        { task: locale === 'en' ? 'Enter systematic industry-academy practice networks to build solid field networks and practical experience.' : '체계적인 산학 실습 네트워크에 진입하여 현장 네트워크와 탄탄한 실무 경험을 쌓으세요.', priority: "High", tag: locale === 'en' ? 'Industry-Academy Practice' : '산학실습' }
                     ]
                 },
                 {
                     stage: "Phase 4. K-Point E-74 전환 (구직)",
                     icon: "🏗️",
                     action_items: [
-                        { task: "졸업 시점, 유학생 한정 가점(10점) 및 지자체 추천서(30점)를 활용하는 비자 전략을 세우세요.", priority: "High", tag: "K-Point" },
-                        { task: "이러한 정부 가점 제도를 무기로 현장 취업처를 컨택하고 고용 계약을 유도하세요.", priority: "High", tag: "취업컨택" }
+                        { task: locale === 'en' ? 'At graduation, build a visa strategy utilizing the international student bonus (10pts) and local gov recommendation (30pts).' : '졸업 시점, 유학생 한정 가점(10점) 및 지자체 추천서(30점)를 활용하는 비자 전략을 세우세요.', priority: "High", tag: locale === 'en' ? 'K-Point' : 'K-Point' },
+                        { task: locale === 'en' ? 'Armed with this government bonus point system, contact field employers to induce employment contracts.' : '이러한 정부 가점 제도를 무기로 현장 취업처를 컨택하고 고용 계약을 유도하세요.', priority: "High", tag: locale === 'en' ? 'Job Contact' : '취업컨택' }
                     ]
                 },
                 {
                     stage: "Phase 5. 비자 직행 (E-7 취득)",
                     icon: "🤝",
                     action_items: [
-                        { task: "현장 연 2600만 원 이상(임금 요건) 고용계약으로 E-9 과정을 거치지 마세요.", priority: "High", tag: "임금요건" },
-                        { task: "초기부터 전문 취업(E-7) 비자에 직행하여 현장에 빠르게 안착하고 경력을 시작하세요.", priority: "High", tag: "E-7직행" }
+                        { task: locale === 'en' ? 'Avoid the E-9 process by securing an employment contract over 26M KRW annually (wage requirement).' : '현장 연 2600만 원 이상(임금 요건) 고용계약으로 E-9 과정을 거치지 마세요.', priority: "High", tag: locale === 'en' ? 'Wage Requirement' : '임금요건' },
+                        { task: locale === 'en' ? 'Go straight to a professional work visa (E-7) from the start to quickly settle in the field and start your career.' : '초기부터 전문 취업(E-7) 비자에 직행하여 현장에 빠르게 안착하고 경력을 시작하세요.', priority: "High", tag: locale === 'en' ? 'Direct E-7' : 'E-7직행' }
                     ]
                 },
                 {
                     stage: "Phase 6. 현장 마이스터 (F-2-9)",
                     icon: "🥇",
                     action_items: [
-                        { task: "장인 정신 발휘: 동일 직장에서 3년 이상 성실히 장기 근속하세요.", priority: "High", tag: "장기근속" },
-                        { task: "숙련기능 우수인재 거주 비자(F-2-9)로 전환하고 완벽한 영주권 기반을 닦으세요.", priority: "High", tag: "마이스터" }
+                        { task: locale === 'en' ? 'Demonstrate craftsmanship: Serve diligently in the same workplace for over 3 years.' : '장인 정신 발휘: 동일 직장에서 3년 이상 성실히 장기 근속하세요.', priority: "High", tag: locale === 'en' ? 'Long-term Service' : '장기근속' },
+                        { task: locale === 'en' ? 'Convert to the Skilled Talent Residency Visa (F-2-9) to lay a perfect foundation for permanent residency.' : '숙련기능 우수인재 거주 비자(F-2-9)로 전환하고 완벽한 영주권 기반을 닦으세요.', priority: "High", tag: locale === 'en' ? 'Meister' : '마이스터' }
                     ]
                 }
             ];
@@ -818,12 +829,12 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             // E7_DB 연동 (기본 자격 요건)
             const dbInfo = E7_DB[jobCode] || E7_DB[String(jobCode)];
             if (dbInfo && dbInfo.req) {
-                if (dbInfo.req.degree) targetSpecs.basicReq.push(`학위: ${dbInfo.req.degree}`);
-                if (dbInfo.req.korean) targetSpecs.basicReq.push(`한국어: TOPIK ${dbInfo.req.korean}급 이상`);
+                if (dbInfo.req.degree) targetSpecs.basicReq.push((locale === 'en' ? 'Degree: ' : '학위: ') + dbInfo.req.degree);
+                if (dbInfo.req.korean) targetSpecs.basicReq.push((locale === 'en' ? 'Korean: TOPIK Level ' : '한국어: TOPIK ') + dbInfo.req.korean + (locale === 'en' ? '+' : '급 이상'));
                 if (dbInfo.hot_skills) targetSpecs.tools = [...dbInfo.hot_skills];
             } else {
-                targetSpecs.basicReq.push("학위: 관련 전공 학사 이상");
-                targetSpecs.basicReq.push("한국어: TOPIK 4급 이상 권장");
+                targetSpecs.basicReq.push(locale === 'en' ? "Degree: Relevant Bachelor's or higher" : "학위: 관련 전공 학사 이상");
+                targetSpecs.basicReq.push(locale === 'en' ? "Korean: TOPIK Level 4+ Rec." : "한국어: TOPIK 4급 이상 권장");
             }
 
             // E7_REQUIREMENTS 연동 (자격증, 포트폴리오 등 세부 로드맵)
@@ -843,25 +854,25 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                 let defaultPorts = [];
 
                 if (indTypeKor === 'IT' || jobCode.includes('IT')) {
-                    defaultCerts = ["정보처리기사", "AWS Certified"];
+                    defaultCerts = locale === 'en' ? ["Information Processing Eng.", "AWS Certified"] : ["정보처리기사", "AWS Certified"];
                     defaultTools = ["React", "Spring", "Docker", "Git/GitHub"];
-                    defaultPorts = ["IT 벤처기업 실무 인턴십 경험", "배포 및 서비스 가능한 풀스택 토이 프로젝트"];
+                    defaultPorts = locale === 'en' ? ["IT Venture Internship Exp.", "Deployable Full-stack Toy Project"] : ["IT 벤처기업 실무 인턴십 경험", "배포 및 서비스 가능한 풀스택 토이 프로젝트"];
                 } else if (indTypeKor === '디자인' || jobCode === "2855") {
-                    defaultCerts = ["컴퓨터그래픽스운용기능사", "컬러리스트"];
+                    defaultCerts = locale === 'en' ? ["Computer Graphics Craftsman", "Colorist"] : ["컴퓨터그래픽스운용기능사", "컬러리스트"];
                     defaultTools = ["Figma", "Adobe CC (Ps, Ai, Ae)"];
-                    defaultPorts = ["디자인 에이전시 산학협력 인턴", "Behance/Notion 업로드된 실무형 UI/UX 산출물"];
+                    defaultPorts = locale === 'en' ? ["Design Agency Co-op Internship", "Behance/Notion Real-world UI/UX Output"] : ["디자인 에이전시 산학협력 인턴", "Behance/Notion 업로드된 실무형 UI/UX 산출물"];
                 } else if (jobCode === "S273" || jobCode === "2742" || jobCode === "2733" || jobCode === "2731") { // Sales/Marketing/PR/Planning
-                    defaultCerts = ["GA4(구글애널리틱스)", "검색광고마케터"];
-                    defaultTools = ["Excel 고급 데이터 분석", "퍼포먼스 마케팅 툴"];
-                    defaultPorts = ["글로벌 브랜드 서포터즈 활동", "실제 SNS 채널 운영 및 ROAS 분석 성과 보고서"];
+                    defaultCerts = locale === 'en' ? ["GA4 (Google Analytics)", "Search Ad Marketer"] : ["GA4(구글애널리틱스)", "검색광고마케터"];
+                    defaultTools = locale === 'en' ? ["Advanced Excel Analytics", "Performance Marketing Tools"] : ["Excel 고급 데이터 분석", "퍼포먼스 마케팅 툴"];
+                    defaultPorts = locale === 'en' ? ["Global Brand Supporter Activity", "Actual SNS Channel Ops & ROAS Report"] : ["글로벌 브랜드 서포터즈 활동", "실제 SNS 채널 운영 및 ROAS 분석 성과 보고서"];
                 } else if (jobCode === "272" || jobCode === "1212") { // Management
-                    defaultCerts = ["전산세무회계", "국제무역사"];
-                    defaultTools = ["ERP 시스템 마스터", "비즈니스 영어/현지어 소통"];
-                    defaultPorts = ["다국적 기업 경영지원 인턴십", "해외 시장 조사 시뮬레이션 보고서", "영문 비즈니스 이메일 작성 역량"];
+                    defaultCerts = locale === 'en' ? ["Computerized Tax Acct.", "Intl. Trade Specialist"] : ["전산세무회계", "국제무역사"];
+                    defaultTools = locale === 'en' ? ["ERP System Master", "Fluent English/Local Lang Biz Comms"] : ["ERP 시스템 마스터", "비즈니스 영어/현지어 소통"];
+                    defaultPorts = locale === 'en' ? ["MNC Mgmt Support Internship", "Overseas Market Research Sim Report", "English Biz Email Writing Skills"] : ["다국적 기업 경영지원 인턴십", "해외 시장 조사 시뮬레이션 보고서", "영문 비즈니스 이메일 작성 역량"];
                 } else {
-                    defaultCerts = ["직무 관련 산업기사 이상"];
-                    defaultTools = ["현업 필수 전문 소프트웨어 및 OA"];
-                    defaultPorts = ["현업 연계 아르바이트 및 인턴 경험", "실전 문제 해결 능력 증명 포트폴리오"];
+                    defaultCerts = locale === 'en' ? ["Job-related Industrial Eng. or higher"] : ["직무 관련 산업기사 이상"];
+                    defaultTools = locale === 'en' ? ["Essential Industry SW & OA"] : ["현업 필수 전문 소프트웨어 및 OA"];
+                    defaultPorts = locale === 'en' ? ["Industry-linked Part-time & Internship Exp.", "Practical Problem-Solving Portfolio"] : ["현업 연계 아르바이트 및 인턴 경험", "실전 문제 해결 능력 증명 포트폴리오"];
                 }
 
                 if (targetSpecs.certifications.length === 0) targetSpecs.certifications = defaultCerts;
@@ -877,7 +888,7 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                 return {
                     text: cert,
                     priority: isHigh ? 'High' : 'Normal',
-                    label: isHigh ? '핵심/필수' : '권장/우대'
+                    label: isHigh ? (locale === 'en' ? 'Core/Required' : '핵심/필수') : (locale === 'en' ? 'Recommended/Preferred' : '권장/우대')
                 };
             });
 
@@ -887,55 +898,59 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
                 return {
                     text: port,
                     type: isActivity ? 'Activity' : 'Portfolio',
-                    label: isActivity ? '경험/대외활동' : '실무/포트폴리오'
+                    label: isActivity ? (locale === 'en' ? 'Experience/Extracurricular' : '경험/대외활동') : (locale === 'en' ? 'Practical/Portfolio' : '실무/포트폴리오')
                 };
             });
 
             // --- 4. Unified E-7 Roadmap (Includes Vacations) ---
             const needsLanguage = uTopik < 4;
             const bilingualTip = hasHighSecLang ?
-                `[Tip] ${userName}님은 이중언어 능력자입니다. 고용사유서 작성 시 단순 한국어 실력이 아닌 '해외 현지 네트워킹 능력'과 '글로벌 시장 확장의 교두보 역할'을 강력히 어필하세요.` :
-                "면접관에게 뚜렷한 직무 역량과 '나를 꼭 뽑아야 하는 고용 사유서'의 핵심 명분을 설득하세요.";
+                (locale === 'en' ?
+                    `[Tip] ${userName} is bilingual. When writing your recommendation letter, strongly appeal your 'overseas networking skills' and 'role as a bridgehead for global market expansion' rather than just your Korean proficiency.` :
+                    `[Tip] ${userName}님은 이중언어 능력자입니다. 고용사유서 작성 시 단순 한국어 실력이 아닌 '해외 현지 네트워킹 능력'과 '글로벌 시장 확장의 교두보 역할'을 강력히 어필하세요.`) :
+                (locale === 'en' ?
+                    "Persuade the interviewer with distinct job competencies and a clear justification for 'why they must hire you' in the recommendation letter." :
+                    "면접관에게 뚜렷한 직무 역량과 '나를 꼭 뽑아야 하는 고용 사유서'의 핵심 명분을 설득하세요.");
 
             steps = [
                 {
-                    stage: "Phase 1. 기초 역량 및 탐색 (1~2학년 정규학기)",
+                    stage: locale === 'en' ? "Phase 1. Fundamental Skills & Exploration (Freshman/Sophomore)" : "Phase 1. 기초 역량 및 탐색 (1~2학년 정규학기)",
                     icon: "📖",
                     action_items: [
-                        { task: `**${jobTitle}** 관련 전공/교양을 수강하며 **GPA 3.0 이상**을 방어하세요. 평점은 성실성의 척도이자 취업 서류 통과의 기본 요건입니다.`, priority: "High", tag: "전공평점" },
-                        { task: `교내 유학생 지원팀(OIA) 프로그램이나 전공 학회에 가입하여, 선배들의 **실제 E-7 취업 성공/실패 사례**를 직접 수집하세요.`, priority: "Medium", tag: "네트워킹" }
+                        { task: (locale === 'en' ? `Maintain a **GPA of 3.0+** while taking major/elective courses related to **${jobTitle}**. GPA is a measure of diligence and a basic requirement for resume screening.` : `**${jobTitle}** 관련 전공/교양을 수강하며 **GPA 3.0 이상**을 방어하세요. 평점은 성실성의 척도이자 취업 서류 통과의 기본 요건입니다.`), priority: "High", tag: locale === 'en' ? 'Major GPA' : '전공평점' },
+                        { task: (locale === 'en' ? `Join the Office of International Affairs (OIA) programs or major societies to directly collect **real E-7 employment success/failure cases** from senior students.` : `교내 유학생 지원팀(OIA) 프로그램이나 전공 학회에 가입하여, 선배들의 **실제 E-7 취업 성공/실패 사례**를 직접 수집하세요.`), priority: "Medium", tag: locale === 'en' ? 'Networking' : '네트워킹' }
                     ]
                 },
                 {
-                    stage: "Phase 2. 어학 및 자격 몰입 (1~2학년 방학)",
+                    stage: locale === 'en' ? "Phase 2. Language & Certification Immersion (Freshman/Sophomore Break)" : "Phase 2. 어학 및 자격 몰입 (1~2학년 방학)",
                     icon: "🔥",
                     action_items: [
-                        { task: `비자 필수 요건인 **TOPIK 4급**을 목표로 방학 중 집중 공부하세요. 수료증이 나오는 **사회통합프로그램(KIIP) 3~4단계** 사전평가도 꼭 응시해야 합니다.`, priority: "High", tag: "어학몰입" },
-                        { task: `**한국산업인력공단(Q-Net)**에 접속해 목표 직무와 연관된 *국가기술자격(기사/산업기사)* 시험 일정을 확인하고 필기 과목을 선행 학습하세요.`, priority: "Medium", tag: "자격증대비" }
+                        { task: (locale === 'en' ? `Focus on studying during the break aiming for **TOPIK Level 4**, a mandatory visa requirement. You must also take the pre-evaluation for **KIIP Level 3~4** which provides a certificate.` : `비자 필수 요건인 **TOPIK 4급**을 목표로 방학 중 집중 공부하세요. 수료증이 나오는 **사회통합프로그램(KIIP) 3~4단계** 사전평가도 꼭 응시해야 합니다.`), priority: "High", tag: locale === 'en' ? 'Lang Immersion' : '어학몰입' },
+                        { task: (locale === 'en' ? `Access **Q-Net (HRDK)** to check the exam schedule for *National Technical Qualifications (Engineer/Industrial Engineer)* related to your target job, and pre-study the written subjects.` : `**한국산업인력공단(Q-Net)**에 접속해 목표 직무와 연관된 *국가기술자격(기사/산업기사)* 시험 일정을 확인하고 필기 과목을 선행 학습하세요.`), priority: "Medium", tag: locale === 'en' ? 'Cert Prep' : '자격증대비' }
                     ]
                 },
                 {
-                    stage: "Phase 3. 핵심 스펙 구축 (3~4학년 정규학기)",
+                    stage: locale === 'en' ? "Phase 3. Building Core Specs (Junior/Senior Semester)" : "Phase 3. 핵심 스펙 구축 (3~4학년 정규학기)",
                     icon: "💻",
                     action_items: [
-                        { task: `목표 직무에 맞춰 상단에 명시된 필수 소프트웨어 및 핵심 전공 자격증(기사/산업기사)을 확보하세요.`, priority: "High", tag: "하드스킬" },
-                        { task: `교내 캡스톤 디자인, 산학 협력 프로젝트 등에 적극적으로 참여해 **지원자가 한국 기업 현장에서 어떤 기여를 할 수 있는지** 보여줄 실무 포트폴리오를 구성하세요.`, priority: "High", tag: "포트폴리오" }
+                        { task: (locale === 'en' ? `Secure the essential software skills and core major certifications (Engineer/Industrial Engineer) specified at the top according to your target job.` : `목표 직무에 맞춰 상단에 명시된 필수 소프트웨어 및 핵심 전공 자격증(기사/산업기사)을 확보하세요.`), priority: "High", tag: locale === 'en' ? 'Hard Skills' : '하드스킬' },
+                        { task: (locale === 'en' ? `Actively participate in on-campus capstone design and industry-university cooperation projects to build a practical portfolio demonstrating **what contributions you can make in the Korean corporate field**.` : `교내 캡스톤 디자인, 산학 협력 프로젝트 등에 적극적으로 참여해 **지원자가 한국 기업 현장에서 어떤 기여를 할 수 있는지** 보여줄 실무 포트폴리오를 구성하세요.`), priority: "High", tag: locale === 'en' ? 'Portfolio' : '포트폴리오' }
                     ]
                 },
                 {
-                    stage: "Phase 4. 실전 경험 및 인턴십 (3~4학년 방학)",
+                    stage: locale === 'en' ? "Phase 4. Practical Experience & Internship (Junior/Senior Break)" : "Phase 4. 실전 경험 및 인턴십 (3~4학년 방학)",
                     icon: "💼",
                     action_items: [
-                        { task: `국내 주요 채용 포털이나 교내 취업지원센터를 주기적으로 확인하여, 외국인 지원이 가능한 직무 연관 인턴십이나 직무 체험을 1회 이상 완수하세요.`, priority: "High", tag: "실전경험" },
-                        { task: `그동안의 교내외 활동과 실무 경험들을 하나의 스토리로 엮어, 면접관에게 즉각 제시할 수 있는 **마스터 이력서 및 직무 포트폴리오**를 확정하세요.`, priority: "Medium", tag: "이력서완성" }
+                        { task: (locale === 'en' ? `Regularly check major domestic recruitment portals and the campus career center to complete at least one job-related internship or job experience available for foreigners.` : `국내 주요 채용 포털이나 교내 취업지원센터를 주기적으로 확인하여, 외국인 지원이 가능한 직무 연관 인턴십이나 직무 체험을 1회 이상 완수하세요.`), priority: "High", tag: locale === 'en' ? 'Practical Exp' : '실전경험' },
+                        { task: (locale === 'en' ? `Weave your on/off-campus activities and practical experiences into a single story, finalizing a **Master Resume & Job Portfolio** that you can present to interviewers immediately.` : `그동안의 교내외 활동과 실무 경험들을 하나의 스토리로 엮어, 면접관에게 즉각 제시할 수 있는 **마스터 이력서 및 직무 포트폴리오**를 확정하세요.`), priority: "Medium", tag: locale === 'en' ? 'Resume Prep' : '이력서완성' }
                     ]
                 },
                 {
-                    stage: "Phase 5. D-10 구직 및 E-7 직행 (졸업전후)",
+                    stage: locale === 'en' ? "Phase 5. D-10 Job Search & Direct E-7 Transition (Graduation)" : "Phase 5. D-10 구직 및 E-7 직행 (졸업전후)",
                     icon: "🚀",
                     action_items: [
-                        { task: `D-10(구직) 비자 소지 유학생 특례를 활용해, **내국인 고용보험 가입자 5인 이상**이며 **기본급 기준 최저임금 이상 보장** 조건이 명시된 튼튼한 중견/중소기업에 집중 지원하세요. (*E-7 일반 임금 요건: 전년도 GNI 80% 이상*)`, priority: "High", tag: "타겟지원" },
-                        { task: bilingualTip, priority: "High", tag: "고용사유서" }
+                        { task: (locale === 'en' ? `Utilize the D-10 (Job Seeker) visa exception for international students to focus on applying to robust mid-sized/SME companies with **5+ domestic employment insurance subscribers** and a condition guaranteeing **minimum wage or higher based on base salary**. (*E-7 general wage requirement: 80%+ of the previous year's GNI*)` : `D-10(구직) 비자 소지 유학생 특례를 활용해, **내국인 고용보험 가입자 5인 이상**이며 **기본급 기준 최저임금 이상 보장** 조건이 명시된 튼튼한 중견/중소기업에 집중 지원하세요. (*E-7 일반 임금 요건: 전년도 GNI 80% 이상*)`), priority: "High", tag: locale === 'en' ? 'Targeted Apply' : '타겟지원' },
+                        { task: bilingualTip, priority: "High", tag: locale === 'en' ? 'Recommendation' : '고용사유서' }
                     ]
                 }
             ];
@@ -945,21 +960,21 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
 
             if (isKStar) {
                 steps.push({
-                    stage: "Phase 6. K-STAR 우수대학 업그레이드 (F-2-7S)",
+                    stage: locale === 'en' ? "Phase 6. K-STAR Top Tier Upgrade (F-2-7S)" : "Phase 6. K-STAR 우수대학 업그레이드 (F-2-7S)",
                     icon: "👑",
                     action_items: [
-                        { task: "자격 요건 충족 시 조기 영주권(F-5) 트랙까지 설계 가능한 최상위 포지션입니다.", priority: "High", tag: "초석다지기" },
-                        { task: `${userName}님의 출신 대학은 유학 특례(F-2-7S) 대상입니다. E-7 취업 준비와 별개로, 높은 학력 가점을 활용해 회사에 종속되지 않는 거주 비자로의 조기 업그레이드를 염두에 두세요.`, priority: "High", tag: "특례활용" },
-                        { task: "점수제 80점 달성을 위해 TOPIK 5급 이상과 KIIP 5단계를 졸업 전까지 반드시 미리 완성해 두는 것이 유리합니다.", priority: "High", tag: "점수확보" }
+                        { task: locale === 'en' ? 'This is a top-tier position where an early permanent residency (F-5) track can be designed if requirements are met.' : '자격 요건 충족 시 조기 영주권(F-5) 트랙까지 설계 가능한 최상위 포지션입니다.', priority: "High", tag: locale === 'en' ? 'Foundation' : '초석다지기' },
+                        { task: locale === 'en' ? `${userName}'s alma mater qualifies for the International Student Exemption (F-2-7S). Independent of E-7 preparation, keep in mind an early upgrade to a residency visa not bound to a specific company by utilizing high education bonus points.` : `${userName}님의 출신 대학은 유학 특례(F-2-7S) 대상입니다. E-7 취업 준비와 별개로, 높은 학력 가점을 활용해 회사에 종속되지 않는 거주 비자로의 조기 업그레이드를 염두에 두세요.`, priority: "High", tag: locale === 'en' ? 'Use Exemption' : '특례활용' },
+                        { task: locale === 'en' ? 'It is highly advantageous to complete TOPIK Level 5+ and KIIP Level 5 before graduation to achieve 80 points.' : '점수제 80점 달성을 위해 TOPIK 5급 이상과 KIIP 5단계를 졸업 전까지 반드시 미리 완성해 두는 것이 유리합니다.', priority: "High", tag: locale === 'en' ? 'Secure Points' : '점수확보' }
                     ]
                 });
             } else if (isMasterOrAbove || intentMaster >= 4) {
                 steps.push({
-                    stage: "Phase 6. 정주 비자(F-2-7) 업그레이드 (석박사)",
+                    stage: locale === 'en' ? "Phase 6. Residency Visa (F-2-7) Upgrade (Master/PhD)" : "Phase 6. 정주 비자(F-2-7) 업그레이드 (석박사)",
                     icon: "🎓",
                     action_items: [
-                        { task: "일반 전문직(E-7-1) 취업자는 추후 자격 요건을 충족하면 점수제 우수인재(F-2-7) 비자로 업그레이드할 수 있습니다.", priority: "High", tag: "F-2-7준비" },
-                        { task: "특히 국내 학위(석박사)를 유지하거나 추가 취득할 경우, 비자 점수 확보에 매우 유리합니다.", priority: "High", tag: "점수가점" }
+                        { task: (locale === 'en' ? `General professionals (E-7-1) can upgrade to the Points-Based Excellent Talent (F-2-7) visa upon meeting requirements later.` : `일반 전문직(E-7-1) 취업자는 추후 자격 요건을 충족하면 점수제 우수인재(F-2-7) 비자로 업그레이드할 수 있습니다.`), priority: "High", tag: locale === 'en' ? 'F-2-7 Prep' : 'F-2-7준비' },
+                        { task: (locale === 'en' ? `In particular, maintaining or additionally acquiring domestic degrees (Master/PhD) is extremely advantageous for securing visa points.` : `특히 국내 학위(석박사)를 유지하거나 추가 취득할 경우, 비자 점수 확보에 매우 유리합니다.`), priority: "High", tag: locale === 'en' ? 'Bonus Points' : '점수가점' }
                     ]
                 });
             }
@@ -967,11 +982,11 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             // 어학 동적 타임라인 (TOPIK < 4) - 법무부 E-7 요구치에 못 미칠 경우 강제 배치
             if (needsLanguage) {
                 steps.unshift({
-                    stage: "Phase 0. 긴급 어학 점수 획득 [MUST]",
+                    stage: locale === 'en' ? "Phase 0. Urgent Language Score Acquisition [MUST]" : "Phase 0. 긴급 어학 점수 획득 [MUST]",
                     icon: "🚨",
                     action_items: [
-                        { task: `현재 한국어 능력이 E-7 비자 요구치(TOPIK 4급)에 도달하지 못했습니다. 로드맵 최우선 과제로 TOPIK 3~4급 이상 취득을 강력히 권고합니다!`, priority: "High", tag: "TOPIK필수" },
-                        { task: `TOPIK과 동시에 법무부 인정 평가인 KIIP(사회통합프로그램) 사전평가를 즉시 응시하여 어학 스펙을 입체적으로 보완하세요.`, priority: "High", tag: "KIIP강제" }
+                        { task: (locale === 'en' ? `Your current Korean proficiency has not reached the E-7 visa requirement (TOPIK Level 4). We strongly recommend acquiring TOPIK Level 3~4+ as the highest priority of your roadmap!` : `현재 한국어 능력이 E-7 비자 요구치(TOPIK 4급)에 도달하지 못했습니다. 로드맵 최우선 과제로 TOPIK 3~4급 이상 취득을 강력히 권고합니다!`), priority: "High", tag: locale === 'en' ? 'TOPIK Required' : 'TOPIK필수' },
+                        { task: (locale === 'en' ? `Concurrently with TOPIK, immediately take the pre-evaluation for KIIP (Korea Immigration & Integration Program) recognized by the Ministry of Justice to dimensionally supplement your language specs.` : `TOPIK과 동시에 법무부 인정 평가인 KIIP(사회통합프로그램) 사전평가를 즉시 응시하여 어학 스펙을 입체적으로 보완하세요.`), priority: "High", tag: locale === 'en' ? 'KIIP Mandatory' : 'KIIP강제' }
                     ]
                 });
             }
@@ -1008,7 +1023,7 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
         growthItems.push("TOPIK 4급 확보 시 D-10 구직비자 혜택 및 E-7 가점을 기대할 수 있습니다.");
         growthItems.push("기술/전공 지식이 높아도, 한국어 능력이 부족하면 채용 매력도가 급감합니다.");
     } else if (scoreWage < 3) {
-        growthHeading = "초봉 협상력 및 직무 전문성 확보";
+        growthHeading = locale === 'en' ? 'Starting Salary Negotiation & Job Expertise' : '초봉 협상력 및 직무 전문성 확보';
         growthItems.push(`E - 7 비자는 전년도 GNI 80 % 이상의 소득 요건이 기본입니다.`);
         growthItems.push("단순 노무가 아닌 '전문 인력'임을 어필할 수 있는 실무 포트폴리오를 준비하세요.");
     } else if (totalF27 < 80) {
@@ -1021,17 +1036,21 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
         growthItems.push("현재 학업/언어/실무 역량이 본 궤도에 올랐습니다. 네트워크를 넓히고 면접을 준비하세요.");
     }
 
-    // ** Strategy Text (Korean) **
-    const strategyText = `${userName}님은 ** ${typeCode} ** 유형의 인재로, ** ${industryTypeMapped} ** 산업군에서 ${parseFloat(finalCulture) >= 3.0 ? '조직 융화력' : '창의적 자율성'}을 발휘할 수 있습니다.${parseFloat(finalKorean) < 4 ? '우선적으로 TOPIK 4급을 확보하여 비자점수 가점을 챙기고,' : '한국어 강점을 바탕으로'} ** ${jobData.name_ko.split('(')[0]}** 직무의 전문성을 어필한다면 E - 7 비자 취득이 유력합니다.`;
+    // ** Strategy Text (Korean & English) **
+    const strategyTextEn = `${userName} is a **${typeCode}** type talent who can exhibit ${parseFloat(finalCulture) >= 3.0 ? 'organizational integration' : 'creative autonomy'} in the **${industryTypeMapped}** industry. ${parseFloat(finalKorean) < 4 ? 'If you prioritize securing TOPIK Level 4 to gain visa points and then' : 'Based on your strong Korean skills, if you'} appeal your expertise in the **${jobData.name_en?.split('(')[0] || jobData.name_ko.split('(')[0]}** role, acquiring the E-7 visa is highly plausible.`;
+
+    const strategyTextKo = `${userName}님은 ** ${typeCode} ** 유형의 인재로, ** ${industryTypeMapped} ** 산업군에서 ${parseFloat(finalCulture) >= 3.0 ? '조직 융화력' : '창의적 자율성'}을 발휘할 수 있습니다.${parseFloat(finalKorean) < 4 ? '우선적으로 TOPIK 4급을 확보하여 비자점수 가점을 챙기고,' : '한국어 강점을 바탕으로'} ** ${jobData.name_ko.split('(')[0]}** 직무의 전문성을 어필한다면 E - 7 비자 취득이 유력합니다.`;
+
+    const strategyText = locale === 'en' ? strategyTextEn : strategyTextKo;
 
     // ** Use established 4-letter KVTI Code **
     const kvtiCode = typeCode;
 
     const kvtiBreakdown = [
-        { char: char_1, name: char_1 === 'I' ? "IT 기술" : char_1 === 'D' ? "크리에이티브" : char_1 === 'M' ? "엔지니어링" : char_1 === 'S' ? "서비스" : char_1 === 'L' ? "지역특화" : "비즈니스" },
-        { char: char_2, name: char_2 === 'A' ? "분석·관리" : char_2 === 'C' ? "기획·창조" : char_2 === 'E' ? "리더·개척" : "실용·현장" },
-        { char: char_3, name: char_3 === 'H' ? "안정·대기업형" : "자율·스타트업형" },
-        { char: char_4, name: char_4 === 'K' ? "한국정주" : "글로벌이주" }
+        { char: char_1, name: char_1 === 'I' ? (locale === 'en' ? "IT / Tech" : "IT 기술") : char_1 === 'D' ? (locale === 'en' ? "Creative" : "크리에이티브") : char_1 === 'M' ? (locale === 'en' ? "Engineering" : "엔지니어링") : char_1 === 'S' ? (locale === 'en' ? "Service" : "서비스") : char_1 === 'L' ? (locale === 'en' ? "Local Specialty" : "지역특화") : (locale === 'en' ? "Business" : "비즈니스") },
+        { char: char_2, name: char_2 === 'A' ? (locale === 'en' ? "Analysis/Mgmt" : "분석·관리") : char_2 === 'C' ? (locale === 'en' ? "Plan/Creative" : "기획·창조") : char_2 === 'E' ? (locale === 'en' ? "Leader/Pioneer" : "리더·개척") : (locale === 'en' ? "Practical/Field" : "실용·현장") },
+        { char: char_3, name: char_3 === 'H' ? (locale === 'en' ? "Stable/Corp" : "안정·대기업형") : (locale === 'en' ? "Autonomous/Startup" : "자율·스타트업형") },
+        { char: char_4, name: char_4 === 'K' ? (locale === 'en' ? "Korea Settlement" : "한국정주") : (locale === 'en' ? "Global Migration" : "글로벌이주") }
     ];
 
     // Return Report Data
@@ -1043,7 +1062,7 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
             kvti_breakdown: kvtiBreakdown,
             scoreBreakdown: scoreBreakdown,
             type_code: typeCode,
-            target_visa: "E-7-1 전문인력",
+            target_visa: locale === 'en' ? 'E-7-1 Professional' : 'E-7-1 전문인력',
             job_code: consultingJobData,
             tags: tags,
             characteristics: personaQuote,

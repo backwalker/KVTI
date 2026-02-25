@@ -1,0 +1,602 @@
+[
+  {
+    "line": 41,
+    "text": "\"소프트웨어\": \"IT\", \"게임공학\": \"IT\", \"데이터사이언스\": \"IT\", \"수학통계\": \"IT\","
+  },
+  {
+    "line": 44,
+    "text": "\"국내문학\": \"BIZ\", \"외국어학\": \"BIZ\", \"문헌정보학\": \"BIZ\", \"교육학\": \"BIZ\", \"국제학부\": \"BIZ\", \"심리학\": \"BIZ\", \"사회과학\": \"BIZ\", \"신문방송\": \"BIZ\", \"경영경제\": \"BIZ\", \"법학행정\": \"BIZ\", \"호텔관광\": \"BIZ\", \"항공서비스\": \"BIZ\", \"유아보육\": \"BIZ\", \"기타 인문사회\": \"BIZ\", \"동물반려동물\": \"BIZ\", \"조리가정\": \"BIZ\", \"체육학\": \"BIZ\", \"경호무도학\": \"BIZ\", \"보건행정학\": \"BIZ\", \"간호학\": \"BIZ\", \"물리치료학\": \"BIZ\", \"재활작업치료\": \"BIZ\", \"치위생학\": \"BIZ\", \"의약학\": \"BIZ\", \"기타 예체능보건\": \"BIZ\","
+  },
+  {
+    "line": 47,
+    "text": "\"디자인\": \"DES\", \"사진만화애니\": \"DES\", \"순수예술\": \"DES\", \"실용음악\": \"DES\", \"무용연극영화\": \"DES\", \"방송엔터테인먼트\": \"DES\", \"미용뷰티\": \"DES\", \"헤어메이크업\": \"DES\","
+  },
+  {
+    "line": 50,
+    "text": "\"전기전자\": \"MFG\", \"기계공학\": \"MFG\", \"건축토목\": \"MFG\", \"산업공학\": \"MFG\", \"화학공학\": \"MFG\", \"신소재공학\": \"MFG\", \"해양조선공학\": \"MFG\", \"스마트팜\": \"MFG\", \"기타 공학\": \"MFG\", \"물리화학\": \"MFG\", \"생명과학\": \"MFG\", \"지구과학\": \"MFG\", \"농림수산\": \"MFG\", \"향장화장품\": \"MFG\", \"기타 자연과학\": \"MFG\""
+  },
+  {
+    "line": 61,
+    "text": "region: '서울',"
+  },
+  {
+    "line": 64,
+    "text": "grade: '3학년',"
+  },
+  {
+    "line": 74,
+    "text": "// const uRegion = baseProfile.region || '서울';"
+  },
+  {
+    "line": 77,
+    "text": "const uGrade = baseProfile.grade || '3학년';"
+  },
+  {
+    "line": 253,
+    "text": "const koTitle = personaInfo.nickname; // e.g., \"글로벌 비즈니스 리더\""
+  },
+  {
+    "line": 301,
+    "text": "const tags = [`#${industryType}_인재`, `#${typeCode}`];"
+  },
+  {
+    "line": 302,
+    "text": "if (finalKorean >= 4) tags.push(\"#한국어_마스터\");"
+  },
+  {
+    "line": 303,
+    "text": "else if (finalKorean < 3) tags.push(\"#한국어_집중필요\");"
+  },
+  {
+    "line": 310,
+    "text": "if (passesGniThreshold) tags.push(\"#고소득_잠재력\");"
+  },
+  {
+    "line": 311,
+    "text": "if (finalOA >= 4.0) tags.push(\"#실무_준비완료\");"
+  },
+  {
+    "line": 450,
+    "text": "const isVocationalCollege = uSchool === 'Unknown' || uSchool.includes('전문대학');"
+  },
+  {
+    "line": 483,
+    "text": "title: jData ? jData.name_ko.split('(')[0].trim() : \"추천 직무\","
+  },
+  {
+    "line": 504,
+    "text": "// F-1-D is extremely strict (2x GNI, approx 8,600만원), so we default to D-8-4 Startup"
+  },
+  {
+    "line": 509,
+    "text": "title: E7_DB[\"D84_STARTUP\"]?.name_ko.split('(')[0].trim() || \"기술 창업(D-8-4)\","
+  },
+  {
+    "line": 513,
+    "text": "tags.push(\"#창업_가속기\");"
+  },
+  {
+    "line": 518,
+    "text": "const isMasterOrAbove = uGrade === '석박사';"
+  },
+  {
+    "line": 536,
+    "text": "title: fbData ? fbData.name_ko.split('(')[0].trim() : \"추천 직무\","
+  },
+  {
+    "line": 557,
+    "text": "if (uGrade === '석박사') {"
+  },
+  {
+    "line": 620,
+    "text": "let visaGradeLabel = 'Preparation (장기적 준비 필요)'; // Positive framing"
+  },
+  {
+    "line": 627,
+    "text": "visaGradeLabel = 'Stable (안정권)';"
+  },
+  {
+    "line": 632,
+    "text": "visaGradeLabel = 'Potential (성장 잠재력)';"
+  },
+  {
+    "line": 636,
+    "text": "{ label: \"연령 (20대)\", score: scoreAge },"
+  },
+  {
+    "line": 637,
+    "text": "{ label: \"학력 (대졸)\", score: scoreEdu },"
+  },
+  {
+    "line": 638,
+    "text": "{ label: \"예상 소득 (잠재력)\", score: scoreIncomePromised },"
+  },
+  {
+    "line": 639,
+    "text": "{ label: \"K-Point (어학)\", score: scoreKPoint },"
+  },
+  {
+    "line": 640,
+    "text": "{ label: \"가산점 (KIIP/외국어)\", score: scoreKIIP + scoreLangBonus }"
+  },
+  {
+    "line": 657,
+    "text": "ui_framing: \"수평적 소통과 자율성을 강하게 선호하는 성향으로, 글로벌 벤처 스타트업이나 외국계 기업 문화와 높은 시너지를 낼 수 있습니다.\""
+  },
+  {
+    "line": 664,
+    "text": "ui_framing: \"유학생 대상 점수제 거주비자(F-2-7) 특례는 '국내 정규 석사 이상' 학위 또는 '우수대학 학사'를 필수로 요구합니다. 당장 특례대상이 아니라면 최초 취업은 E-7으로 시작하여 경력을 쌓거나 일반 대학원 진학을 고려하는 것이 좋습니다.\""
+  },
+  {
+    "line": 673,
+    "text": "// 국내 정규 학사 이상 졸업자는 D-10 점수제(60점) 적용 최초 1회 면제 (성적/한국어 무관)"
+  },
+  {
+    "line": 677,
+    "text": "d10Message = \"축하합니다! 국내 학사 졸업(예정)자는 D-10 구직 비자 점수제 적용이 최초 1회 면제되어, 요건 없이 구직 비자 전환이 가능합니다.\";"
+  },
+  {
+    "line": 685,
+    "text": "\"학위 취득과 유학 경력만으로도 이미 60점 이상을 확보하여 D-10 구직 비자 전환이 매우 유력합니다.\" :"
+  },
+  {
+    "line": 686,
+    "text": "\"졸업 전까지 한국어 점수를 보완하면 충분히 60점을 달성할 수 있습니다.\";"
+  },
+  {
+    "line": 693,
+    "text": "const indTypeKor = industryTypeMapped === 'IT' ? 'IT' : industryTypeMapped === 'DES' ? '디자인' : industryTypeMapped === 'MFG' ? '제조업' : '비즈니스';"
+  },
+  {
+    "line": 698,
+    "text": "stage: \"Phase 1. 아이디어 발굴 (1~2학년)\","
+  },
+  {
+    "line": 701,
+    "text": "{ task: \"내향/외향 성향을 살려 교내 창업 동아리 및 해커톤에 적극 참여하세요.\", priority: \"High\", tag: \"네트워킹\" },"
+  },
+  {
+    "line": 702,
+    "text": "{ task: \"글로벌 창업 이민센터(OASIS) 교육 1단계 진입을 강력히 추천합니다.\", priority: \"Medium\", tag: \"OASIS\" }"
+  },
+  {
+    "line": 706,
+    "text": "stage: \"Phase 2. 시드 및 지적재산권 (3학년)\","
+  },
+  {
+    "line": 709,
+    "text": "{ task: \"예비창업자 핵심 팀 빌딩을 완료하고 비즈니스 모델(BM)을 구체화하세요.\", priority: \"High\", tag: \"팀빌딩\" },"
+  },
+  {
+    "line": 710,
+    "text": "{ task: \"특허/실용신안/디자인권 출원 등 지식재산권을 확보하여 OASIS 점수(50점)를 미리 세팅하세요.\", priority: \"High\", tag: \"지식재산권\" }"
+  },
+  {
+    "line": 714,
+    "text": "stage: \"Phase 3. 정부 지원금 확보 (4학년)\","
+  },
+  {
+    "line": 717,
+    "text": "{ task: \"K-Startup 등 정부 창업 지원 사업에 선정되어 초기 자본금을 확보하세요.\", priority: \"High\", tag: \"정부지원\" },"
+  },
+  {
+    "line": 718,
+    "text": "{ task: \"확보된 자금으로 최소기능제품(MVP)을 개발하고 시장의 반응을 테스트하세요.\", priority: \"Medium\", tag: \"MVP검증\" }"
+  },
+  {
+    "line": 722,
+    "text": "stage: \"Phase 4. 법인 설립 (D-8-4 준비)\","
+  },
+  {
+    "line": 725,
+    "text": "{ task: \"엔젤 투자자나 엑셀러레이터(AC)로부터 투자를 유치하고 법인 설립을 준비하세요.\", priority: \"Medium\", tag: \"투자유치\" },"
+  },
+  {
+    "line": 726,
+    "text": "{ task: \"1억 이상의 자본 등기를 완료하고, 최종 OASIS 80점을 채우세요.\", priority: \"High\", tag: \"법인설립\" }"
+  },
+  {
+    "line": 730,
+    "text": "stage: \"Phase 5. 매출 발생 & 고용 (D-8-4 취득)\","
+  },
+  {
+    "line": 733,
+    "text": "{ task: \"D-8-4 특례 비자로 전환하고 본격적인 초기 매출 J커브 달성에 집중하세요.\", priority: \"High\", tag: \"비자전환\" },"
+  },
+  {
+    "line": 734,
+    "text": "{ task: \"한국인 직원 직고용 창출 등 비즈니스 스케일업과 경제 기여도를 입증하세요.\", priority: \"Medium\", tag: \"채용확대\" }"
+  },
+  {
+    "line": 738,
+    "text": "stage: \"Phase 6. 벤처 인증 & 영주권 (F-5-11)\","
+  },
+  {
+    "line": 741,
+    "text": "{ task: \"기술보증기금 등으로부터 우수 벤처기업 인증을 획득하세요.\", priority: \"High\", tag: \"벤처인증\" },"
+  },
+  {
+    "line": 742,
+    "text": "{ task: \"외부 대규모 투자 유치(3억 이상 타겟)를 통해 최종적으로 F-5-11 투자 영주권에 도전해 보세요.\", priority: \"High\", tag: \"영주권\" }"
+  },
+  {
+    "line": 749,
+    "text": "stage: \"Phase 1. 기술 자격 및 로컬라이징 (1~2학년)\","
+  },
+  {
+    "line": 752,
+    "text": "{ task: \"한국 산업 현장 적응력을 극대화하세요. 이공계/전문 학사 유지는 기본, 현장 소통을 위한 한국어를 마스터하세요.\", priority: \"High\", tag: \"학위방어\" },"
+  },
+  {
+    "line": 753,
+    "text": "{ task: \"거주 비자 가산점 및 소통을 위해 KIIP(사회통합프로그램) 사전 이수를 철저히 대비하세요.\", priority: \"Medium\", tag: \"KIIP\" }"
+  },
+  {
+    "line": 757,
+    "text": "stage: \"Phase 2. 현장 맞춤형 자격증 (3학년)\","
+  },
+  {
+    "line": 760,
+    "text": "{ task: \"산업 현장에서 요구하는 국가 기술 자격증(기능사/산업기사) 취득을 준비하세요.\", priority: \"High\", tag: \"자격증\" },"
+  },
+  {
+    "line": 761,
+    "text": "{ task: \"내국인 기능인력 대비 동등 이상의 현장 가치를 증명할 수 있는 실무 지식을 습득하세요.\", priority: \"Medium\", tag: \"실무지식\" }"
+  },
+  {
+    "line": 765,
+    "text": "stage: \"Phase 3. 산학 연계 실습 (4학년)\","
+  },
+  {
+    "line": 768,
+    "text": "{ task: \"뿌리산업, 조선업 등 '유학생 경력 면제 특례'가 적용되는 분야를 적극 탐색하세요.\", priority: \"High\", tag: \"특례타겟팅\" },"
+  },
+  {
+    "line": 769,
+    "text": "{ task: \"체계적인 산학 실습 네트워크에 진입하여 현장 네트워크와 탄탄한 실무 경험을 쌓으세요.\", priority: \"High\", tag: \"산학실습\" }"
+  },
+  {
+    "line": 773,
+    "text": "stage: \"Phase 4. K-Point E-74 전환 (구직)\","
+  },
+  {
+    "line": 776,
+    "text": "{ task: \"졸업 시점, 유학생 한정 가점(10점) 및 지자체 추천서(30점)를 활용하는 비자 전략을 세우세요.\", priority: \"High\", tag: \"K-Point\" },"
+  },
+  {
+    "line": 777,
+    "text": "{ task: \"이러한 정부 가점 제도를 무기로 현장 취업처를 컨택하고 고용 계약을 유도하세요.\", priority: \"High\", tag: \"취업컨택\" }"
+  },
+  {
+    "line": 781,
+    "text": "stage: \"Phase 5. 비자 직행 (E-7 취득)\","
+  },
+  {
+    "line": 784,
+    "text": "{ task: \"현장 연 2600만 원 이상(임금 요건) 고용계약으로 E-9 과정을 거치지 마세요.\", priority: \"High\", tag: \"임금요건\" },"
+  },
+  {
+    "line": 785,
+    "text": "{ task: \"초기부터 전문 취업(E-7) 비자에 직행하여 현장에 빠르게 안착하고 경력을 시작하세요.\", priority: \"High\", tag: \"E-7직행\" }"
+  },
+  {
+    "line": 789,
+    "text": "stage: \"Phase 6. 현장 마이스터 (F-2-9)\","
+  },
+  {
+    "line": 792,
+    "text": "{ task: \"장인 정신 발휘: 동일 직장에서 3년 이상 성실히 장기 근속하세요.\", priority: \"High\", tag: \"장기근속\" },"
+  },
+  {
+    "line": 793,
+    "text": "{ task: \"숙련기능 우수인재 거주 비자(F-2-9)로 전환하고 완벽한 영주권 기반을 닦으세요.\", priority: \"High\", tag: \"마이스터\" }"
+  },
+  {
+    "line": 801,
+    "text": "// 1. [데이터 연동 환경 셋업] E7_REQUIREMENTS DB에 해당 직무의 구체적인 roadmap 데이터가 있다면 우선 사용!"
+  },
+  {
+    "line": 816,
+    "text": "const userName = baseProfile?.name || '지원자';"
+  },
+  {
+    "line": 818,
+    "text": "// E7_DB 연동 (기본 자격 요건)"
+  },
+  {
+    "line": 821,
+    "text": "if (dbInfo.req.degree) targetSpecs.basicReq.push(`학위: ${dbInfo.req.degree}`);"
+  },
+  {
+    "line": 822,
+    "text": "if (dbInfo.req.korean) targetSpecs.basicReq.push(`한국어: TOPIK ${dbInfo.req.korean}급 이상`);"
+  },
+  {
+    "line": 825,
+    "text": "targetSpecs.basicReq.push(\"학위: 관련 전공 학사 이상\");"
+  },
+  {
+    "line": 826,
+    "text": "targetSpecs.basicReq.push(\"한국어: TOPIK 4급 이상 권장\");"
+  },
+  {
+    "line": 829,
+    "text": "// E7_REQUIREMENTS 연동 (자격증, 포트폴리오 등 세부 로드맵)"
+  },
+  {
+    "line": 832,
+    "text": "// E7_DB의 hot_skills와 제미나이 데이터 합치기 (중복 제거)"
+  },
+  {
+    "line": 839,
+    "text": "// 2. Fallback: DB에 구체적인 데이터가 비어있다면 산업군별 디폴트 키워드로 채우기"
+  },
+  {
+    "line": 846,
+    "text": "defaultCerts = [\"정보처리기사\", \"AWS Certified\"];"
+  },
+  {
+    "line": 848,
+    "text": "defaultPorts = [\"IT 벤처기업 실무 인턴십 경험\", \"배포 및 서비스 가능한 풀스택 토이 프로젝트\"];"
+  },
+  {
+    "line": 849,
+    "text": "} else if (indTypeKor === '디자인' || jobCode === \"2855\") {"
+  },
+  {
+    "line": 850,
+    "text": "defaultCerts = [\"컴퓨터그래픽스운용기능사\", \"컬러리스트\"];"
+  },
+  {
+    "line": 852,
+    "text": "defaultPorts = [\"디자인 에이전시 산학협력 인턴\", \"Behance/Notion 업로드된 실무형 UI/UX 산출물\"];"
+  },
+  {
+    "line": 854,
+    "text": "defaultCerts = [\"GA4(구글애널리틱스)\", \"검색광고마케터\"];"
+  },
+  {
+    "line": 855,
+    "text": "defaultTools = [\"Excel 고급 데이터 분석\", \"퍼포먼스 마케팅 툴\"];"
+  },
+  {
+    "line": 856,
+    "text": "defaultPorts = [\"글로벌 브랜드 서포터즈 활동\", \"실제 SNS 채널 운영 및 ROAS 분석 성과 보고서\"];"
+  },
+  {
+    "line": 858,
+    "text": "defaultCerts = [\"전산세무회계\", \"국제무역사\"];"
+  },
+  {
+    "line": 859,
+    "text": "defaultTools = [\"ERP 시스템 마스터\", \"비즈니스 영어/현지어 소통\"];"
+  },
+  {
+    "line": 860,
+    "text": "defaultPorts = [\"다국적 기업 경영지원 인턴십\", \"해외 시장 조사 시뮬레이션 보고서\", \"영문 비즈니스 이메일 작성 역량\"];"
+  },
+  {
+    "line": 862,
+    "text": "defaultCerts = [\"직무 관련 산업기사 이상\"];"
+  },
+  {
+    "line": 863,
+    "text": "defaultTools = [\"현업 필수 전문 소프트웨어 및 OA\"];"
+  },
+  {
+    "line": 864,
+    "text": "defaultPorts = [\"현업 연계 아르바이트 및 인턴 경험\", \"실전 문제 해결 능력 증명 포트폴리오\"];"
+  },
+  {
+    "line": 868,
+    "text": "// tools는 hot_skills가 이미 있을 수도 있으므로 없거나 너무 적으면 병합"
+  },
+  {
+    "line": 874,
+    "text": "// A. 자격증 난이도/중요도 분류 (High vs Normal)"
+  },
+  {
+    "line": 876,
+    "text": "const isHigh = /(기사|산업기사|필수|마스터|고급|마스터)/i.test(cert);"
+  },
+  {
+    "line": 880,
+    "text": "label: isHigh ? '핵심/필수' : '권장/우대'"
+  },
+  {
+    "line": 884,
+    "text": "// B. 포트폴리오 성격 분류 (Activity vs Portfolio)"
+  },
+  {
+    "line": 886,
+    "text": "const isActivity = /(인턴|아르바이트|알바|동아리|서포터즈|공모전|활동|참여|대외|봉사)/i.test(port);"
+  },
+  {
+    "line": 890,
+    "text": "label: isActivity ? '경험/대외활동' : '실무/포트폴리오'"
+  },
+  {
+    "line": 897,
+    "text": "`[Tip] ${userName}님은 이중언어 능력자입니다. 고용사유서 작성 시 단순 한국어 실력이 아닌 '해외 현지 네트워킹 능력'과 '글로벌 시장 확장의 교두보 역할'을 강력히 어필하세요.` :"
+  },
+  {
+    "line": 898,
+    "text": "\"면접관에게 뚜렷한 직무 역량과 '나를 꼭 뽑아야 하는 고용 사유서'의 핵심 명분을 설득하세요.\";"
+  },
+  {
+    "line": 902,
+    "text": "stage: \"Phase 1. 기초 역량 및 탐색 (1~2학년 정규학기)\","
+  },
+  {
+    "line": 905,
+    "text": "{ task: `**${jobTitle}** 관련 전공/교양을 수강하며 **GPA 3.0 이상**을 방어하세요. 평점은 성실성의 척도이자 취업 서류 통과의 기본 요건입니다.`, priority: \"High\", tag: \"전공평점\" },"
+  },
+  {
+    "line": 906,
+    "text": "{ task: `교내 유학생 지원팀(OIA) 프로그램이나 전공 학회에 가입하여, 선배들의 **실제 E-7 취업 성공/실패 사례**를 직접 수집하세요.`, priority: \"Medium\", tag: \"네트워킹\" }"
+  },
+  {
+    "line": 910,
+    "text": "stage: \"Phase 2. 어학 및 자격 몰입 (1~2학년 방학)\","
+  },
+  {
+    "line": 913,
+    "text": "{ task: `비자 필수 요건인 **TOPIK 4급**을 목표로 방학 중 집중 공부하세요. 수료증이 나오는 **사회통합프로그램(KIIP) 3~4단계** 사전평가도 꼭 응시해야 합니다.`, priority: \"High\", tag: \"어학몰입\" },"
+  },
+  {
+    "line": 914,
+    "text": "{ task: `**한국산업인력공단(Q-Net)**에 접속해 목표 직무와 연관된 *국가기술자격(기사/산업기사)* 시험 일정을 확인하고 필기 과목을 선행 학습하세요.`, priority: \"Medium\", tag: \"자격증대비\" }"
+  },
+  {
+    "line": 918,
+    "text": "stage: \"Phase 3. 핵심 스펙 구축 (3~4학년 정규학기)\","
+  },
+  {
+    "line": 921,
+    "text": "{ task: `목표 직무에 맞춰 상단에 명시된 필수 소프트웨어 및 핵심 전공 자격증(기사/산업기사)을 확보하세요.`, priority: \"High\", tag: \"하드스킬\" },"
+  },
+  {
+    "line": 922,
+    "text": "{ task: `교내 캡스톤 디자인, 산학 협력 프로젝트 등에 적극적으로 참여해 **지원자가 한국 기업 현장에서 어떤 기여를 할 수 있는지** 보여줄 실무 포트폴리오를 구성하세요.`, priority: \"High\", tag: \"포트폴리오\" }"
+  },
+  {
+    "line": 926,
+    "text": "stage: \"Phase 4. 실전 경험 및 인턴십 (3~4학년 방학)\","
+  },
+  {
+    "line": 929,
+    "text": "{ task: `국내 주요 채용 포털이나 교내 취업지원센터를 주기적으로 확인하여, 외국인 지원이 가능한 직무 연관 인턴십이나 직무 체험을 1회 이상 완수하세요.`, priority: \"High\", tag: \"실전경험\" },"
+  },
+  {
+    "line": 930,
+    "text": "{ task: `그동안의 교내외 활동과 실무 경험들을 하나의 스토리로 엮어, 면접관에게 즉각 제시할 수 있는 **마스터 이력서 및 직무 포트폴리오**를 확정하세요.`, priority: \"Medium\", tag: \"이력서완성\" }"
+  },
+  {
+    "line": 934,
+    "text": "stage: \"Phase 5. D-10 구직 및 E-7 직행 (졸업전후)\","
+  },
+  {
+    "line": 937,
+    "text": "{ task: `D-10(구직) 비자 소지 유학생 특례를 활용해, **내국인 고용보험 가입자 5인 이상**이며 **기본급 기준 최저임금 이상 보장** 조건이 명시된 튼튼한 중견/중소기업에 집중 지원하세요. (*E-7 일반 임금 요건: 전년도 GNI 80% 이상*)`, priority: \"High\", tag: \"타겟지원\" },"
+  },
+  {
+    "line": 938,
+    "text": "{ task: bilingualTip, priority: \"High\", tag: \"고용사유서\" }"
+  },
+  {
+    "line": 944,
+    "text": "const isKStar = userUnivLower.includes('서울') || userUnivLower.includes('고려') || userUnivLower.includes('연세') || userUnivLower.includes('카이스트') || userUnivLower.includes('포항공') || userUnivLower.includes('한양') || userUnivLower.includes('성균관');"
+  },
+  {
+    "line": 948,
+    "text": "stage: \"Phase 6. K-STAR 우수대학 업그레이드 (F-2-7S)\","
+  },
+  {
+    "line": 951,
+    "text": "{ task: \"자격 요건 충족 시 조기 영주권(F-5) 트랙까지 설계 가능한 최상위 포지션입니다.\", priority: \"High\", tag: \"초석다지기\" },"
+  },
+  {
+    "line": 952,
+    "text": "{ task: `${userName}님의 출신 대학은 유학 특례(F-2-7S) 대상입니다. E-7 취업 준비와 별개로, 높은 학력 가점을 활용해 회사에 종속되지 않는 거주 비자로의 조기 업그레이드를 염두에 두세요.`, priority: \"High\", tag: \"특례활용\" },"
+  },
+  {
+    "line": 953,
+    "text": "{ task: \"점수제 80점 달성을 위해 TOPIK 5급 이상과 KIIP 5단계를 졸업 전까지 반드시 미리 완성해 두는 것이 유리합니다.\", priority: \"High\", tag: \"점수확보\" }"
+  },
+  {
+    "line": 958,
+    "text": "stage: \"Phase 6. 정주 비자(F-2-7) 업그레이드 (석박사)\","
+  },
+  {
+    "line": 961,
+    "text": "{ task: \"일반 전문직(E-7-1) 취업자는 추후 자격 요건을 충족하면 점수제 우수인재(F-2-7) 비자로 업그레이드할 수 있습니다.\", priority: \"High\", tag: \"F-2-7준비\" },"
+  },
+  {
+    "line": 962,
+    "text": "{ task: \"특히 국내 학위(석박사)를 유지하거나 추가 취득할 경우, 비자 점수 확보에 매우 유리합니다.\", priority: \"High\", tag: \"점수가점\" }"
+  },
+  {
+    "line": 967,
+    "text": "// 어학 동적 타임라인 (TOPIK < 4) - 법무부 E-7 요구치에 못 미칠 경우 강제 배치"
+  },
+  {
+    "line": 970,
+    "text": "stage: \"Phase 0. 긴급 어학 점수 획득 [MUST]\","
+  },
+  {
+    "line": 973,
+    "text": "{ task: `현재 한국어 능력이 E-7 비자 요구치(TOPIK 4급)에 도달하지 못했습니다. 로드맵 최우선 과제로 TOPIK 3~4급 이상 취득을 강력히 권고합니다!`, priority: \"High\", tag: \"TOPIK필수\" },"
+  },
+  {
+    "line": 974,
+    "text": "{ task: `TOPIK과 동시에 법무부 인정 평가인 KIIP(사회통합프로그램) 사전평가를 즉시 응시하여 어학 스펙을 입체적으로 보완하세요.`, priority: \"High\", tag: \"KIIP강제\" }"
+  },
+  {
+    "line": 1000,
+    "text": "const userName = baseProfile?.name || '지원자';"
+  },
+  {
+    "line": 1007,
+    "text": "growthHeading = \"한국어 역량 강화 필요 (Premium Strategy)\";"
+  },
+  {
+    "line": 1008,
+    "text": "growthItems.push(\"TOPIK 4급 확보 시 D-10 구직비자 혜택 및 E-7 가점을 기대할 수 있습니다.\");"
+  },
+  {
+    "line": 1009,
+    "text": "growthItems.push(\"기술/전공 지식이 높아도, 한국어 능력이 부족하면 채용 매력도가 급감합니다.\");"
+  },
+  {
+    "line": 1011,
+    "text": "growthHeading = \"초봉 협상력 및 직무 전문성 확보\";"
+  },
+  {
+    "line": 1012,
+    "text": "growthItems.push(`E - 7 비자는 전년도 GNI 80 % 이상의 소득 요건이 기본입니다.`);"
+  },
+  {
+    "line": 1013,
+    "text": "growthItems.push(\"단순 노무가 아닌 '전문 인력'임을 어필할 수 있는 실무 포트폴리오를 준비하세요.\");"
+  },
+  {
+    "line": 1015,
+    "text": "growthHeading = \"F-2-7 점수 관리 플랜 (Long-term Strategy)\";"
+  },
+  {
+    "line": 1016,
+    "text": "growthItems.push(`현재 시뮬레이션 점수는 ${totalF27}점입니다. 80점 안정권 달성이 필요합니다.`);"
+  },
+  {
+    "line": 1017,
+    "text": "if (scoreKIIP === 0) growthItems.push(\"가장 빠르고 확실한 점수 확보 방법은 사회통합프로그램(KIIP) 이수입니다.\");"
+  },
+  {
+    "line": 1021,
+    "text": "growthItems.push(\"현재 학업/언어/실무 역량이 본 궤도에 올랐습니다. 네트워크를 넓히고 면접을 준비하세요.\");"
+  },
+  {
+    "line": 1025,
+    "text": "const strategyText = `${userName}님은 ** ${typeCode} ** 유형의 인재로, ** ${industryTypeMapped} ** 산업군에서 ${parseFloat(finalCulture) >= 3.0 ? '조직 융화력' : '창의적 자율성'}을 발휘할 수 있습니다.${parseFloat(finalKorean) < 4 ? '우선적으로 TOPIK 4급을 확보하여 비자점수 가점을 챙기고,' : '한국어 강점을 바탕으로'} ** ${jobData.name_ko.split('(')[0]}** 직무의 전문성을 어필한다면 E - 7 비자 취득이 유력합니다.`;"
+  },
+  {
+    "line": 1031,
+    "text": "{ char: char_1, name: char_1 === 'I' ? \"IT 기술\" : char_1 === 'D' ? \"크리에이티브\" : char_1 === 'M' ? \"엔지니어링\" : char_1 === 'S' ? \"서비스\" : char_1 === 'L' ? \"지역특화\" : \"비즈니스\" },"
+  },
+  {
+    "line": 1032,
+    "text": "{ char: char_2, name: char_2 === 'A' ? \"분석·관리\" : char_2 === 'C' ? \"기획·창조\" : char_2 === 'E' ? \"리더·개척\" : \"실용·현장\" },"
+  },
+  {
+    "line": 1033,
+    "text": "{ char: char_3, name: char_3 === 'H' ? \"안정·대기업형\" : \"자율·스타트업형\" },"
+  },
+  {
+    "line": 1034,
+    "text": "{ char: char_4, name: char_4 === 'K' ? \"한국정주\" : \"글로벌이주\" }"
+  },
+  {
+    "line": 1046,
+    "text": "target_visa: \"E-7-1 전문인력\","
+  }
+]

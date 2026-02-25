@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import kvtiQuestions from '../data/kvti_questions.json';
-import { calculateKvtiResult } from '../utils/kvtiLogic';
+
 import LikertScale from '../components/LikertScale';
 import SectionIntro from '../components/SectionIntro';
 import SectionGuideScreen from '../components/SectionGuideScreen';
@@ -23,8 +24,9 @@ const SECTION_KEYS = [
 const QUESTIONS_PER_PAGE = 5;
 
 function Diagnosis() {
+    const { t: t_i18n, i18n } = useTranslation();
     const navigate = useNavigate();
-    const [lang] = useState('ko'); // Default Language
+    const lang = i18n.language?.startsWith('en') ? 'en' : 'ko';
     const t = TEXTS[lang].diagnosis;
 
     const [diagnosticGrade, setDiagnosticGrade] = useState(null); // 'junior' or 'senior'
@@ -106,12 +108,11 @@ function Diagnosis() {
                 window.scrollTo(0, 0);
             } else {
                 try {
-                    const result = calculateKvtiResult(answers, diagnosticGrade, phase0Data);
                     localStorage.removeItem('kvti_answers');
-                    navigate('/result', { state: { result } });
+                    navigate('/result', { state: { answers, diagnosticGrade, phase0Data } });
                 } catch (error) {
                     console.error("Error:", error);
-                    alert("Error calculating result.");
+                    alert("Error navigating to result.");
                 }
             }
         }
@@ -133,12 +134,11 @@ function Diagnosis() {
             window.scrollTo(0, 0);
         } else {
             try {
-                const result = calculateKvtiResult(newAnswers, diagnosticGrade, phase0Data);
                 localStorage.removeItem('kvti_answers');
-                navigate('/result', { state: { result } });
+                navigate('/result', { state: { answers: newAnswers, diagnosticGrade, phase0Data } });
             } catch (error) {
-                console.error("Error during calculation:", error);
-                alert("Error calculating result.");
+                console.error("Error during navigation:", error);
+                alert("Error navigating to result.");
             }
         }
     };
@@ -171,10 +171,10 @@ function Diagnosis() {
 
                 <div className="max-w-4xl w-full z-10">
                     <div className="text-center mb-16">
-                        <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-bold tracking-widest uppercase mb-4 border border-white/10 backdrop-blur-sm">Phase 2 Enabled</span>
-                        <h1 className="text-4xl md:text-5xl font-black mb-6">KVTI 진단 모듈 선택</h1>
+                        <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-bold tracking-widest uppercase mb-4 border border-white/10 backdrop-blur-sm">{t.gateway.phase2_badge}</span>
+                        <h1 className="text-4xl md:text-5xl font-black mb-6">{t.gateway.title}</h1>
                         <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
-                            KVTI 엔진이 완벽한 컨설팅을 제공하기 위해 귀하의 <span className="text-white font-bold">현재 단계</span>를 확인합니다. 정확한 렌즈를 선택해 주세요.
+                            {t.gateway.subtitle_1}<span className="text-white font-bold">{t.gateway.subtitle_highlight}</span>{t.gateway.subtitle_2}
                         </p>
                     </div>
 
@@ -188,13 +188,13 @@ function Diagnosis() {
                             <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8 border border-blue-500/20 group-hover:scale-110 transition-transform">
                                 <span className="text-3xl">🌱</span>
                             </div>
-                            <h2 className="text-2xl font-black text-white mb-2">탐색형 모의고사</h2>
-                            <p className="text-blue-400 font-bold mb-6">1~2학년 / 진로 탐색 중</p>
+                            <h2 className="text-2xl font-black text-white mb-2">{t.gateway.junior_title}</h2>
+                            <p className="text-blue-400 font-bold mb-6">{t.gateway.junior_badge}</p>
                             <p className="text-slate-400 leading-relaxed mb-8">
-                                개인의 타고난 <strong className="text-slate-200">내재적 성향(Soft-spec)</strong>을 중심으로 잠재력을 발굴합니다. 어떤 산업군과 조직 문화가 어울리는지 큰 그림을 그려줍니다.
+                                {t.gateway.junior_desc_1}<strong className="text-slate-200">{t.gateway.junior_desc_highlight}</strong>{t.gateway.junior_desc_2}
                             </p>
                             <div className="flex items-center text-sm font-bold text-blue-300 group-hover:text-blue-200">
-                                진단 시작하기 <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                {t.gateway.junior_start} <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                             </div>
                         </button>
 
@@ -203,21 +203,21 @@ function Diagnosis() {
                             disabled
                             className="group relative bg-[#1a1c29]/50 border border-slate-700 p-10 rounded-3xl text-left cursor-not-allowed opacity-80 overflow-hidden"
                         >
-                            <div className="absolute top-6 right-6 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg z-20 animate-pulse">Coming Phase 4</div>
+                            <div className="absolute top-6 right-6 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg z-20 animate-pulse">{t.gateway.senior_coming_badge}</div>
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-600 to-slate-500 rounded-t-3xl opacity-30"></div>
                             <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mb-8 border border-slate-700">
                                 <span className="text-3xl grayscale opacity-50">⚔️</span>
                             </div>
                             <h2 className="text-2xl font-black text-slate-300 mb-2 flex items-center gap-3">
-                                실전형 모의고사
-                                <span className="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400 border border-slate-600">개발 중</span>
+                                {t.gateway.senior_title}
+                                <span className="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400 border border-slate-600">{t.gateway.senior_dev_badge}</span>
                             </h2>
-                            <p className="text-slate-500 font-bold mb-6">3~4학년 / 취업 준비생 (하드스펙 전용)</p>
+                            <p className="text-slate-500 font-bold mb-6">{t.gateway.senior_badge}</p>
                             <p className="text-slate-500 leading-relaxed mb-8">
-                                GNI 80% 이상의 목표 연봉 달성률, 실무 포트폴리오 유무 등 증빙 가능한 스펙(Hard-spec)을 법무부 E-7 기준에 직대입하여 냉혹하게 판별합니다.
+                                {t.gateway.senior_desc}
                             </p>
                             <div className="flex items-center text-sm font-bold text-slate-500">
-                                하드스펙 전용 모듈 준비 중입니다 🔒
+                                {t.gateway.senior_lock}
                             </div>
                         </button>
                     </div>
@@ -342,7 +342,7 @@ function Diagnosis() {
                                     >
                                         <div className="mb-6 flex flex-col md:flex-row md:items-center gap-4">
                                             <h3 className="text-lg md:text-xl font-medium text-gray-100 leading-snug flex-1">
-                                                {q.question || q.id}
+                                                {i18n.exists(`questions.${q.id}`) ? t_i18n(`questions.${q.id}`) : (q.question || q.id)}
                                             </h3>
                                             {answers[q.id] && (
                                                 <div className="text-kvti-primary text-sm font-bold flex items-center gap-1">

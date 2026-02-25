@@ -1,14 +1,18 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import Diagnosis from './pages/Diagnosis';
 import Result from './pages/Result';
 import ComprehensiveReport from './pages/ComprehensiveReport';
+import Survey from './pages/Survey';
 import kvtiQuestions from './data/kvti_questions.json';
 import { calculateKvtiResult } from './utils/kvtiLogic';
 
 function LandingPage() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const handleDevTest = () => {
     // Hidden Dev Feature for Demo: Truly Random Test
@@ -102,7 +106,8 @@ function LandingPage() {
       localStorage.setItem('kvti_answers', JSON.stringify(randomAnswers));
       localStorage.setItem('kvti_base_profile', JSON.stringify(randomPhase0));
 
-      const result = calculateKvtiResult(randomAnswers, 'senior', randomPhase0);
+      const lang = i18n.language?.startsWith('en') ? 'en' : 'ko';
+      const result = calculateKvtiResult(randomAnswers, 'senior', randomPhase0, lang);
       navigate('/result', { state: { result } });
     } catch (e) {
       console.error(e);
@@ -118,6 +123,10 @@ function LandingPage() {
         <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-kvti-primary/5 rounded-full blur-[120px]"></div>
       </div>
 
+      <div className="fixed top-6 right-6 md:top-8 md:right-8 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <div className="z-10 text-center px-6 max-w-5xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -126,7 +135,7 @@ function LandingPage() {
         >
           <div className="mb-4">
             <span className="text-white text-lg md:text-xl font-light tracking-[0.3em] uppercase opacity-80 block mb-2">
-              Design Your Future in Korea
+              {t('landing.subtitle')}
             </span>
             <div className="relative inline-block">
               <h1 className="text-8xl md:text-9xl font-black mb-2 leading-none tracking-tighter gold-gradient-text">
@@ -135,12 +144,12 @@ function LandingPage() {
               <div className="h-1 w-full bg-kvti-primary rounded-full mt-2 opacity-50"></div>
             </div>
             <p className="text-kvti-primary text-sm md:text-base font-bold tracking-[0.2em] mt-4 uppercase">
-              Korea Visa Type Indicator
+              {t('landing.title_sub')}
             </p>
           </div>
 
           <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-light mt-8">
-            KVTI provides a comprehensive AI-driven analysis of your visa suitability and career potential tailored for global talents.
+            {t('landing.description')}
           </p>
         </motion.div>
 
@@ -160,7 +169,7 @@ function LandingPage() {
             style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
           >
             <span className="relative flex items-center gap-3">
-              START ASSESSMENT
+              {t('landing.start_assessment')}
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transition-transform group-hover:translate-x-1">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
               </svg>
@@ -172,7 +181,7 @@ function LandingPage() {
             onClick={handleDevTest}
             className="px-6 py-4 text-xs font-bold text-white/40 hover:text-white hover:bg-white/10 border border-white/10 transition-all uppercase tracking-widest rounded"
           >
-            [DEV: Random Test]
+            {t('landing.dev_test')}
           </button>
         </motion.div>
 
@@ -183,9 +192,9 @@ function LandingPage() {
           className="mt-20 grid grid-cols-3 gap-8 text-center border-t border-white/5 pt-10"
         >
           {[
-            { label: "Diagnosis Time", value: "20-25 min" },
-            { label: "Analysis Areas", value: "6 Sectors" },
-            { label: "Visa Strategy", value: "AI Report" }
+            { label: t('landing.stat_time_label'), value: t('landing.stat_time_val') },
+            { label: t('landing.stat_area_label'), value: t('landing.stat_area_val') },
+            { label: t('landing.stat_visa_label'), value: t('landing.stat_visa_val') }
           ].map((item, idx) => (
             <div key={idx}>
               <div className="text-kvti-primary text-2xl md:text-3xl font-bold mb-1 font-display">{item.value}</div>
@@ -197,7 +206,7 @@ function LandingPage() {
 
       <footer className="absolute bottom-6 w-full text-center z-50">
         <p className="text-slate-600 text-xs tracking-widest uppercase">
-          © 2026 Global Career Center. All rights reserved.
+          {t('landing.footer')}
         </p>
       </footer>
     </div>
@@ -212,6 +221,7 @@ function App() {
         <Route path="/diagnosis" element={<Diagnosis />} />
         <Route path="/result" element={<Result />} />
         <Route path="/report" element={<ComprehensiveReport />} />
+        <Route path="/survey" element={<Survey />} />
       </Routes>
     </Router>
   );

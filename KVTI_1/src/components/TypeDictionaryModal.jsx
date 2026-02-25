@@ -1,37 +1,43 @@
 import React, { useState } from 'react';
-import { KVTI_DICTIONARY } from '../data/kvti_dictionary';
+import { KVTI_DICTIONARY as KVTI_DICTIONARY_KO } from '../data/kvti_dictionary';
+import { KVTI_DICTIONARY as KVTI_DICTIONARY_EN } from '../data/kvti_dictionary_en';
+import { useTranslation } from 'react-i18next';
 
 // ----------------------------------------
 // KVTI Explanation Modal Component 
 // ----------------------------------------
 export default function TypeDictionaryModal({ onClose }) {
+    const { i18n } = useTranslation();
+    const isEn = i18n.language === 'en';
+    const KVTI_DICTIONARY = isEn ? KVTI_DICTIONARY_EN : KVTI_DICTIONARY_KO;
+
     const tableData = [
         {
-            title: "1번째 자리: 관심 산업 (Industry)",
+            title: isEn ? "Pos 1: Interest Industry" : "1번째 자리: 관심 산업 (Industry)",
             theme: "text-pink-400",
             items: [
-                { code: "I", label: "IT & Tech (정보기술)" },
-                { code: "B", label: "Business (비즈니스/무역)" },
-                { code: "D", label: "Design (디자인/콘텐츠)" },
-                { code: "M", label: "Manufacturing (제조/엔지니어링)" }
+                { code: "I", label: isEn ? "IT & Tech" : "IT & Tech (정보기술)" },
+                { code: "B", label: isEn ? "Business & Trade" : "Business (비즈니스/무역)" },
+                { code: "D", label: isEn ? "Design & Content" : "Design (디자인/콘텐츠)" },
+                { code: "M", label: isEn ? "Manufacturing & Engineering" : "Manufacturing (제조/엔지니어링)" }
             ]
         },
         {
-            title: "2번째 자리: 핵심 성향 (Trait)",
+            title: isEn ? "Pos 2: Core Trait" : "2번째 자리: 핵심 성향 (Trait)",
             theme: "text-cyan-400",
             items: [
-                { code: "A", label: "Analytical (분석/탐구형)" },
-                { code: "C", label: "Creative (창조/예술형)" },
-                { code: "E", label: "Enterprising (진취/리더형)" },
-                { code: "P", label: "Practical (실용/현장형)" }
+                { code: "A", label: isEn ? "Analytical/Explorative" : "Analytical (분석/탐구형)" },
+                { code: "C", label: isEn ? "Creative/Artistic" : "Creative (창조/예술형)" },
+                { code: "E", label: isEn ? "Enterprising/Leadership" : "Enterprising (진취/리더형)" },
+                { code: "P", label: isEn ? "Practical/Field-oriented" : "Practical (실용/현장형)" }
             ]
         },
         {
-            title: "3번째 자리: 조직 문화 (Culture Fit)",
+            title: isEn ? "Pos 3: Culture Fit" : "3번째 자리: 조직 문화 (Culture Fit)",
             theme: "text-yellow-400",
             items: [
-                { code: "H", label: "Hierarchy (체계·안정형)" },
-                { code: "F", label: "Flat (자율·수평형)" }
+                { code: "H", label: isEn ? "Hierarchy/Stable" : "Hierarchy (체계·안정형)" },
+                { code: "F", label: isEn ? "Flat/Autonomous" : "Flat (자율·수평형)" }
             ]
         }
     ];
@@ -63,10 +69,10 @@ export default function TypeDictionaryModal({ onClose }) {
                         </svg>
                     </button>
                     <h2 className="text-2xl md:text-3xl font-extrabold text-white">
-                        KVTI 코어 성향 안내 <span className="text-kvti-info text-xl">(총 32개 유형)</span>
+                        {isEn ? "KVTI Core Trait Guide" : "KVTI 코어 성향 안내"} <span className="text-kvti-info text-xl">{isEn ? "(32 Types Total)" : "(총 32개 유형)"}</span>
                     </h2>
                     <p className="text-slate-400 text-sm md:text-base mt-2">
-                        KVTI 알파벳 코드는 사용자님의 진단 데이터를 바탕으로 3가지 핵심 성향 축과 1가지 트랙을 분석하여 최적의 커리어 길을 제시합니다.
+                        {isEn ? "The KVTI alphabet code suggests the optimal career path by analyzing 3 core trait axes and 1 residency track based on your diagnostic data." : "KVTI 알파벳 코드는 사용자님의 진단 데이터를 바탕으로 3가지 핵심 성향 축과 1가지 트랙을 분석하여 최적의 커리어 길을 제시합니다."}
                     </p>
                 </div>
 
@@ -100,20 +106,20 @@ export default function TypeDictionaryModal({ onClose }) {
                             <div className="w-full rounded-2xl bg-gradient-to-r from-indigo-500/20 to-emerald-500/20 border border-white/10 p-5 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                                 <div className="flex flex-col">
                                     <h4 className="text-white font-bold text-lg flex items-center gap-2">
-                                        🚀 거주 계획 트랙 (Residency Track)
+                                        🚀 {isEn ? "Residency Track" : "거주 계획 트랙 (Residency Track)"}
                                     </h4>
                                     <p className="text-slate-300 text-sm mt-1">
-                                        ※ 뒤에 붙는 K(한국 정주) / G(글로벌 진출) 뱃지는 회원님의 향후 거주 계획 트랙을 의미합니다.
+                                        {isEn ? "※ The K (Korea Settlement) / G (Global Expansion) badge at the end indicates your future residency plan track." : "※ 뒤에 붙는 K(한국 정주) / G(글로벌 진출) 뱃지는 회원님의 향후 거주 계획 트랙을 의미합니다."}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
-                                    <span className="bg-indigo-500/30 text-white font-medium px-3 py-1.5 rounded-lg text-sm border border-indigo-400/30">🇰🇷 K-Track (정주)</span>
-                                    <span className="bg-emerald-500/30 text-white font-medium px-3 py-1.5 rounded-lg text-sm border border-emerald-400/30">🌎 G-Track (출국)</span>
+                                    <span className="bg-indigo-500/30 text-white font-medium px-3 py-1.5 rounded-lg text-sm border border-indigo-400/30">🇰🇷 K-Track {isEn ? "(Settle)" : "(정주)"}</span>
+                                    <span className="bg-emerald-500/30 text-white font-medium px-3 py-1.5 rounded-lg text-sm border border-emerald-400/30">🌎 G-Track {isEn ? "(Global)" : "(출국)"}</span>
                                 </div>
                             </div>
 
                             <h3 className="text-xl md:text-2xl font-extrabold text-white text-center mb-6">
-                                📚 전체 32개 코어 KVTI 유형 도감
+                                📚 {isEn ? "All 32 Core KVTI Types Encyclopedia" : "전체 32개 코어 KVTI 유형 도감"}
                             </h3>
 
                             {/* Matrix Style Dictionary Table */}
@@ -121,23 +127,23 @@ export default function TypeDictionaryModal({ onClose }) {
                                 <table className="w-full min-w-[900px] text-left border-collapse">
                                     <thead>
                                         <tr className="border-b border-white/10 text-slate-300 text-sm">
-                                            <th className="p-3 font-semibold w-1/5 whitespace-nowrap">성향(Trait) + 문화(Culture)</th>
-                                            <th className="p-3 font-semibold text-pink-400 w-1/5">💻 I (IT / 기술)</th>
-                                            <th className="p-3 font-semibold text-cyan-400 w-1/5">📈 B (비즈니스 / 무역)</th>
-                                            <th className="p-3 font-semibold text-yellow-400 w-1/5">🎨 D (디자인 / 기획)</th>
-                                            <th className="p-3 font-semibold text-purple-400 w-1/5">⚙️ M (제조 / 현장)</th>
+                                            <th className="p-3 font-semibold w-1/5 whitespace-nowrap">{isEn ? "Trait + Culture" : "성향(Trait) + 문화(Culture)"}</th>
+                                            <th className="p-3 font-semibold text-pink-400 w-1/5">💻 I {isEn ? "(IT / Tech)" : "(IT / 기술)"}</th>
+                                            <th className="p-3 font-semibold text-cyan-400 w-1/5">📈 B {isEn ? "(Business / Trade)" : "(비즈니스 / 무역)"}</th>
+                                            <th className="p-3 font-semibold text-yellow-400 w-1/5">🎨 D {isEn ? "(Design / Planning)" : "(디자인 / 기획)"}</th>
+                                            <th className="p-3 font-semibold text-purple-400 w-1/5">⚙️ M {isEn ? "(Manufacturing / Field)" : "(제조 / 현장)"}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5 text-sm">
                                         {[
-                                            { rowKey: "A", rowLabel: "A (분석/탐구)", cultKey: "H", cultLabel: "H (체계·안정형)" },
-                                            { rowKey: "A", rowLabel: "A (분석/탐구)", cultKey: "F", cultLabel: "F (자율·수평형)" },
-                                            { rowKey: "C", rowLabel: "C (창조/예술)", cultKey: "H", cultLabel: "H (체계·안정형)" },
-                                            { rowKey: "C", rowLabel: "C (창조/예술)", cultKey: "F", cultLabel: "F (자율·수평형)" },
-                                            { rowKey: "E", rowLabel: "E (진취/리더)", cultKey: "H", cultLabel: "H (체계·안정형)" },
-                                            { rowKey: "E", rowLabel: "E (진취/리더)", cultKey: "F", cultLabel: "F (자율·수평형)" },
-                                            { rowKey: "P", rowLabel: "P (실용/현장)", cultKey: "H", cultLabel: "H (체계·안정형)" },
-                                            { rowKey: "P", rowLabel: "P (실용/현장)", cultKey: "F", cultLabel: "F (자율·수평형)" }
+                                            { rowKey: "A", rowLabel: isEn ? "A (Analytical)" : "A (분석/탐구)", cultKey: "H", cultLabel: isEn ? "H (Hierarchy)" : "H (체계·안정형)" },
+                                            { rowKey: "A", rowLabel: isEn ? "A (Analytical)" : "A (분석/탐구)", cultKey: "F", cultLabel: isEn ? "F (Flat)" : "F (자율·수평형)" },
+                                            { rowKey: "C", rowLabel: isEn ? "C (Creative)" : "C (창조/예술)", cultKey: "H", cultLabel: isEn ? "H (Hierarchy)" : "H (체계·안정형)" },
+                                            { rowKey: "C", rowLabel: isEn ? "C (Creative)" : "C (창조/예술)", cultKey: "F", cultLabel: isEn ? "F (Flat)" : "F (자율·수평형)" },
+                                            { rowKey: "E", rowLabel: isEn ? "E (Enterprising)" : "E (진취/리더)", cultKey: "H", cultLabel: isEn ? "H (Hierarchy)" : "H (체계·안정형)" },
+                                            { rowKey: "E", rowLabel: isEn ? "E (Enterprising)" : "E (진취/리더)", cultKey: "F", cultLabel: isEn ? "F (Flat)" : "F (자율·수평형)" },
+                                            { rowKey: "P", rowLabel: isEn ? "P (Practical)" : "P (실용/현장)", cultKey: "H", cultLabel: isEn ? "H (Hierarchy)" : "H (체계·안정형)" },
+                                            { rowKey: "P", rowLabel: isEn ? "P (Practical)" : "P (실용/현장)", cultKey: "F", cultLabel: isEn ? "F (Flat)" : "F (자율·수평형)" }
                                         ].map((row, rIdx) => (
                                             <tr key={rIdx} className="hover:bg-white/5 transition-colors">
                                                 <td className="p-3 font-medium text-slate-200 whitespace-nowrap">
@@ -184,7 +190,7 @@ export default function TypeDictionaryModal({ onClose }) {
                             onClick={onClose}
                             className="bg-kvti-primary/20 hover:bg-kvti-primary border border-kvti-primary text-white px-10 py-3 rounded-full font-bold transition-all shadow-lg hover:shadow-kvti-primary/50"
                         >
-                            확인 완료
+                            {isEn ? "Close" : "확인 완료"}
                         </button>
                     </div>
                 </div>
@@ -225,7 +231,7 @@ export default function TypeDictionaryModal({ onClose }) {
                         <div className="p-8">
                             <div className="mb-8">
                                 <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-                                    <span className="text-xl">📖</span> 페르소나 상세 분석
+                                    <span className="text-xl">📖</span> {isEn ? "Persona Detailed Analysis" : "페르소나 상세 분석"}
                                 </h3>
                                 <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-slate-300 leading-relaxed min-h-[100px] text-sm md:text-base">
                                     {selectedType.description}
@@ -234,7 +240,7 @@ export default function TypeDictionaryModal({ onClose }) {
 
                             <div>
                                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                    <span className="text-xl">🎯</span> 추천 체류 자격 및 커리어 패스
+                                    <span className="text-xl">🎯</span> {isEn ? "Recommended Residency & Career Path" : "추천 체류 자격 및 커리어 패스"}
                                 </h3>
                                 <div className="flex flex-col gap-3">
                                     {selectedType.career_paths?.map((path, pIdx) => (

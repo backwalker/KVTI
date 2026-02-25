@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import JobDetailModal from './JobDetailModal';
 import AnalysisSummary from './AnalysisSummary';
-import { E7_DB } from '../data/persona_data';
-import { KVTI_DICTIONARY } from '../data/kvti_dictionary';
+import { E7_DB as E7_DB_KO } from '../data/persona_data';
+import { E7_DB as E7_DB_EN } from '../data/persona_data_en';
+
 import TypeDictionaryModal from './TypeDictionaryModal';
+import { useTranslation, Trans } from 'react-i18next';
 
 /**
  * [기획 반영: Deficit Model 지양 & 긍정적 프레이밍]
@@ -19,9 +21,12 @@ export default function DashboardTop({
     userProfile
 }) {
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+    const isEn = i18n.language === 'en';
+    const E7_DB = isEn ? E7_DB_EN : E7_DB_KO;
     const [selectedJobCode, setSelectedJobCode] = useState(null);
     const [isExplanationModalOpen, setIsExplanationModalOpen] = useState(false);
-    const userName = userProfile?.name || "지원자";
+    const userName = userProfile?.name || "Guest";
 
     // Destructure MDJM results if available
 
@@ -29,8 +34,8 @@ export default function DashboardTop({
         return (
             <div className="flex flex-col items-center justify-center p-20 text-center bg-slate-900/50 rounded-3xl border border-rose-500/30">
                 <div className="text-4xl mb-4">⚠️</div>
-                <h3 className="text-xl text-rose-300 font-bold mb-2">진단 결과를 불러올 수 없습니다.</h3>
-                <p className="text-slate-400">알고리즘 계산 결과 혹은 데이터 전달 과정에서 누락이 발생했습니다. (Hardcoded Fallback 방지)</p>
+                <h3 className="text-xl text-rose-300 font-bold mb-2">{t('result.error_title')}</h3>
+                <p className="text-slate-400">{t('result.error_desc')}</p>
             </div>
         );
     }
@@ -56,19 +61,19 @@ export default function DashboardTop({
                         <p className="inline-block bg-white/10 px-6 py-2 rounded-full border border-white/20 text-cyan-400 tracking-widest text-sm font-bold uppercase shadow-lg backdrop-blur-sm m-0 flex space-x-2">
                             <span>✨</span>
                             <span className="text-white">{dashboardData.baseProfile?.name || 'Guest'}</span>
-                            <span>님의 KVTI 유형</span>
+                            <span>{t('result.kvti_type_of')}</span>
                         </p>
                         <button
                             className="text-white/50 hover:text-white transition-colors group relative"
                             onClick={() => setIsExplanationModalOpen(true)}
-                            title="KVTI에는 뭐가 있나요?"
+                            title={t('result.what_is_kvti')}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                             </svg>
                             {/* CSS Tooltip */}
                             <span className="absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-slate-800 text-xs text-white px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg border border-white/10 whitespace-nowrap z-50">
-                                KVTI에는 뭐가 있나요?
+                                {t('result.what_is_kvti')}
                             </span>
                         </button>
                     </div>
@@ -106,8 +111,7 @@ export default function DashboardTop({
 
                     {/* Subtitle (Nickname & Role) */}
                     {(() => {
-                        const coreCode = kvtiCode.substring(0, 3);
-                        const personaData = KVTI_DICTIONARY[coreCode] || KVTI_DICTIONARY[kvtiCode] || { nickname: "글로벌 혁신 인재", role: dashboard.persona_title };
+                        const personaData = { nickname: dashboard.persona_title || "글로벌 혁신 인재" };
                         const tags = dashboard.tags || [];
 
                         return (
@@ -118,7 +122,7 @@ export default function DashboardTop({
                                     </span>
                                 </div>
                                 <p className="text-lg md:text-xl text-slate-400 italic font-light max-w-2xl mb-6">
-                                    "{dashboard.characteristics || "한국 시장에서 성공을 이끌어갈 글로벌 인재"}"
+                                    "{dashboard.characteristics || t('result.default_char')}"
                                 </p>
                                 {/* Dynamic Tags Rendering */}
                                 {tags.length > 0 && (
@@ -138,7 +142,7 @@ export default function DashboardTop({
                     {dashboard.scoreBreakdown && (
                         <div className="mt-12 w-full max-w-4xl mx-auto px-4">
                             <h3 className="text-2xl font-black text-white mb-8 flex items-center justify-center gap-3">
-                                <span className="text-3xl">📊</span> KVTI 세부 성향 스탯
+                                <span className="text-3xl">📊</span> {t('result.stats_title')}
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
 
@@ -146,7 +150,7 @@ export default function DashboardTop({
                                 <div className="bg-slate-900/60 border border-white/10 p-6 rounded-3xl shadow-lg backdrop-blur-md">
                                     <div className="flex justify-between items-center mb-6">
                                         <div className="text-base font-bold text-slate-300 flex items-center gap-2">
-                                            <span className="text-xl">🏢</span> 타겟 산업군 (Industry)
+                                            <span className="text-xl">🏢</span> {t('result.industry_title')}
                                         </div>
                                     </div>
                                     <div className="space-y-4">
@@ -170,13 +174,13 @@ export default function DashboardTop({
                                 {/* Axis 2: Work Style */}
                                 <div className="bg-slate-900/60 border border-white/10 p-6 rounded-3xl shadow-lg backdrop-blur-md">
                                     <div className="text-base font-bold text-slate-300 mb-6 flex items-center gap-2">
-                                        <span className="text-xl">💼</span> 업무 스타일 (Work Style)
+                                        <span className="text-xl">💼</span> {t('result.style_title')}
                                     </div>
                                     <div className="space-y-4">
                                         {Object.entries(dashboard.scoreBreakdown.style)
                                             .sort(([, a], [, b]) => b - a)
                                             .map(([key, val]) => {
-                                                const labels = { 'A': '분석(A)', 'C': '창의(C)', 'P': '현장(P)', 'E': '리더(E)' };
+                                                const labels = t('result.style_labels', { returnObjects: true });
                                                 return (
                                                     <div key={key} className="flex items-center gap-4 text-sm font-medium">
                                                         <span className="w-14 text-slate-400 text-right font-bold">{labels[key]}</span>
@@ -196,11 +200,11 @@ export default function DashboardTop({
                                 {/* Axis 3: Culture Fit */}
                                 <div className="bg-slate-900/60 border border-white/10 p-6 rounded-3xl shadow-lg backdrop-blur-md">
                                     <div className="text-base font-bold text-slate-300 mb-6 flex items-center gap-2">
-                                        <span className="text-xl">🤝</span> 조직 문화 (Culture Fit)
+                                        <span className="text-xl">🤝</span> {t('result.culture_title')}
                                     </div>
                                     <div className="space-y-4">
                                         {Object.entries(dashboard.scoreBreakdown.culture).map(([key, val]) => {
-                                            const labels = { 'H': '수직/대기업(H)', 'F': '수평/스타트업(F)' };
+                                            const labels = t('result.culture_labels', { returnObjects: true });
                                             return (
                                                 <div key={key} className="flex items-center gap-4 text-sm font-medium">
                                                     <span className="w-28 text-slate-400 text-right font-bold">{labels[key]}</span>
@@ -220,11 +224,11 @@ export default function DashboardTop({
                                 {/* Axis 4: Residency Intent (NEW) */}
                                 <div className="bg-slate-900/60 border border-white/10 p-6 rounded-3xl shadow-lg backdrop-blur-md">
                                     <div className="text-base font-bold text-slate-300 mb-6 flex items-center gap-2">
-                                        <span className="text-xl">🌏</span> 정주 의지 (Residency)
+                                        <span className="text-xl">🌏</span> {t('result.residency_title')}
                                     </div>
                                     <div className="space-y-4">
                                         {Object.entries(dashboard.scoreBreakdown.residency || { K: 50, G: 50 }).map(([key, val]) => {
-                                            const labels = { 'K': '한국 정착(K)', 'G': '글로벌/귀국(G)' };
+                                            const labels = t('result.residency_labels', { returnObjects: true });
                                             return (
                                                 <div key={key} className="flex items-center gap-4 text-sm font-medium">
                                                     <span className="w-28 text-slate-400 text-right font-bold">{labels[key]}</span>
@@ -251,33 +255,33 @@ export default function DashboardTop({
             {dashboardData.baseProfile && (
                 <div className="bg-slate-800/80 rounded-2xl p-6 border border-white/10 shadow-lg mt-8 relative z-20">
                     <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                        <span className="text-xl">🎓</span> 지원자 기초 프로파일
+                        <span className="text-xl">🎓</span> {t('result.profile_title')}
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
-                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">주전공</span>
-                            <span className="text-lg font-bold text-white">{dashboardData.baseProfile.major}</span>
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">{t('result.prof_major')}</span>
+                            <span className="text-lg font-bold text-white">{t(`profile_data.${dashboardData.baseProfile.major}`, { defaultValue: dashboardData.baseProfile.major })}</span>
                         </div>
                         <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
-                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">출신 대학</span>
-                            <span className="text-lg font-bold text-white max-w-full truncate block" title={dashboardData.baseProfile.university}>{dashboardData.baseProfile.university}</span>
-                            <span className="text-sm font-medium text-slate-400 block mt-0.5">{dashboardData.baseProfile.grade}</span>
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">{t('result.prof_univ')}</span>
+                            <span className="text-lg font-bold text-white max-w-full truncate block" title={dashboardData.baseProfile.university}>{t(`profile_data.${dashboardData.baseProfile.university}`, { defaultValue: dashboardData.baseProfile.university })}</span>
+                            <span className="text-sm font-medium text-slate-400 block mt-0.5">{t(`profile_data.${dashboardData.baseProfile.grade}`, { defaultValue: dashboardData.baseProfile.grade })}</span>
                         </div>
                         <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
-                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">한국어 (TOPIK)</span>
-                            <span className="text-lg font-bold text-emerald-400">{dashboardData.baseProfile.topik ? `${dashboardData.baseProfile.topik}급` : "선택 안 함"}</span>
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">{t('result.prof_lang')}</span>
+                            <span className="text-lg font-bold text-emerald-400">{dashboardData.baseProfile.topik ? `${dashboardData.baseProfile.topik}${t('result.level_suffix')}` : t('result.not_selected')}</span>
                         </div>
                         <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
-                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">제2/3외국어</span>
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">{t('result.prof_second')}</span>
                             <span className="text-lg font-bold text-blue-400 truncate">
                                 {dashboardData.baseProfile.secondaryLanguages && dashboardData.baseProfile.secondaryLanguages.length > 0 && dashboardData.baseProfile.secondaryLanguages[0].lang !== ''
                                     ? dashboardData.baseProfile.secondaryLanguages.filter(l => l.lang).map(l => l.lang).join(', ')
-                                    : "해당 없음"}
+                                    : t('result.not_applicable')}
                             </span>
                         </div>
                         <div className="bg-white/5 rounded-xl p-4 flex flex-col justify-center">
-                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">사회통합기본소양 (KIIP)</span>
-                            <span className="text-lg font-bold text-teal-400">{dashboardData.baseProfile.kiip ? `${dashboardData.baseProfile.kiip}단계` : "해당 없음"}</span>
+                            <span className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-bold">{t('result.prof_kiip')}</span>
+                            <span className="text-lg font-bold text-teal-400">{dashboardData.baseProfile.kiip ? `${dashboardData.baseProfile.kiip}${t('result.step_suffix')}` : t('result.not_applicable')}</span>
                         </div>
                     </div>
                 </div>
@@ -289,13 +293,13 @@ export default function DashboardTop({
             {/* --- 2. Multiple E-7 Code 추천 및 달성도 --- */}
             <div className="card bg-slate-800/60 border border-white/10 p-8 md:p-10 rounded-3xl backdrop-blur-md shadow-xl mt-12">
                 <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                    <span className="text-3xl">🏆</span> KVTI 추천 직종 TOP 3
+                    <span className="text-3xl">🏆</span> {t('result.top3_title')}
                 </h2>
                 <div className="space-y-6">
                     {e7Jobs.map((job, idx) => {
                         const jobData = E7_DB[job.code];
                         const jobName = jobData ? jobData.name_ko : job.title;
-                        const medal = idx === 0 ? "🥇 1순위 타겟" : idx === 1 ? "🥈 2순위 대안" : idx === 2 ? "🥉 3순위 대안" : `🎯 ${idx + 1}순위 대안`;
+                        const medal = idx === 0 ? `🥇 ${t('result.rank_1')}` : idx === 1 ? `🥈 ${t('result.rank_2')}` : idx === 2 ? `🥉 ${t('result.rank_3')}` : `🎯 ${idx + 1}${t('result.rank_n')}`;
 
                         return (
                             <div key={idx} className="bg-slate-900/50 border border-white/5 p-6 rounded-2xl hover:bg-white/10 transition-all flex flex-col items-start gap-4 group hover:border-kvti-primary/50 relative">
@@ -308,13 +312,13 @@ export default function DashboardTop({
                                         onClick={() => setSelectedJobCode(job.code)}
                                         className="shrink-0 px-4 py-2 bg-kvti-primary/20 hover:bg-kvti-primary border border-kvti-primary/50 hover:border-kvti-primary rounded-xl font-bold text-sm text-white transition-all shadow-md group-hover:shadow-kvti-primary/20"
                                     >
-                                        상세 ➔
+                                        {t('result.detail_btn')}
                                     </button>
                                 </div>
                                 <div className="flex-1 w-full bg-slate-800/50 p-4 rounded-xl border border-white/5 relative">
                                     <div className="flex justify-between items-center mb-2">
                                         <div className="flex items-center gap-2 relative group-tooltip">
-                                            <span className="text-sm font-medium text-slate-300">직무 성향 일치도 (Personality Fit)</span>
+                                            <span className="text-sm font-medium text-slate-300">{t('result.pers_fit')}</span>
                                             {idx === 0 && dashboard.isMajorCompensated && (
                                                 <span className="cursor-help bg-white/10 text-slate-300 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs ml-1 hover:bg-white/20 transition-colors">ℹ</span>
                                             )}
@@ -329,7 +333,7 @@ export default function DashboardTop({
                                     </div>
                                     {idx === 0 && dashboard.isMajorCompensated && (
                                         <p className="text-xs text-slate-400 mt-3 border-l-2 border-emerald-500 pl-2">
-                                            * 뛰어난 실무 포트폴리오(Tech/OA) 능력으로 전공 매칭의 약점이 상쇄 적용되었습니다.
+                                            {t('result.major_comp_note')}
                                         </p>
                                     )}
                                 </div>
@@ -345,13 +349,13 @@ export default function DashboardTop({
                     <div className="absolute top-0 right-0 p-6 opacity-20 text-8xl transform translate-x-4 -translate-y-4">✨</div>
                     <div className="relative z-10">
                         <div className="inline-block px-4 py-1 rounded-full bg-yellow-400/20 border border-yellow-400/50 text-yellow-300 text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_10px_rgba(250,204,21,0.3)]">
-                            Special Feature
+                            {t('result.special_tag')}
                         </div>
                         <h2 className="text-2xl font-black text-white mb-6">
-                            숨겨진 재능: <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-400">프리미엄 트랙 발견!</span>
+                            {t('result.hidden_talent')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-400">{t('result.premium_track')}</span>
                         </h2>
                         <p className="text-indigo-200 text-sm mb-8">
-                            일반적인 E-7 취업 경로 외에도, {userName}님의 설문 응답(진취성 및 주도성)을 정밀 분석한 결과 다음과 같은 특별한 체류형 비자 트랙에 매우 높은 적성(80% 이상)을 보였습니다.
+                            <Trans i18nKey="result.extra_desc" values={{ name: userName }} />
                         </p>
 
                         <div className="grid gap-6">
@@ -360,17 +364,17 @@ export default function DashboardTop({
                                     <div className="flex-1 w-full">
                                         <div className="flex justify-between items-center mb-4">
                                             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                                🚀 기술 창업 (D-8-4)
+                                                🚀 {t('result.tech_startup')}
                                             </h3>
                                             <button
                                                 onClick={() => setSelectedJobCode(job.code)}
                                                 className="px-4 py-2 border border-yellow-400/50 text-yellow-300 hover:bg-yellow-400/20 rounded-lg text-xs font-bold transition-all shadow-md backdrop-blur-sm"
                                             >
-                                                전략 보기 ➔
+                                                {t('result.view_strategy')}
                                             </button>
                                         </div>
                                         <div className="flex justify-between items-end">
-                                            <span className="text-sm text-indigo-300">내재된 성공 잠재력 산출치</span>
+                                            <span className="text-sm text-indigo-300">{t('result.inherent_pot')}</span>
                                             <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500 drop-shadow-md">{job.readiness}%</span>
                                         </div>
                                     </div>
@@ -405,8 +409,8 @@ export default function DashboardTop({
                     <FileText className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-emerald-100">Premium Feature</span>
-                    <span className="font-bold tracking-wide text-sm">종합 분석 리포트 보기</span>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-emerald-100">{t('result.premium_feature')}</span>
+                    <span className="font-bold tracking-wide text-sm">{t('result.view_report')}</span>
                 </div>
             </button>
         </section>

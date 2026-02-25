@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function BaseProfileForm({ onSubmit }) {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
         age: 23,
@@ -75,7 +77,7 @@ export default function BaseProfileForm({ onSubmit }) {
         e.preventDefault();
         // Validation
         if (!formData.name || !formData.nationality || !formData.university || !formData.major) {
-            alert('필수 정보를 모두 입력해주세요.');
+            alert(t('profile_form.alert_required'));
             return;
         }
         onSubmit(formData);
@@ -92,10 +94,10 @@ export default function BaseProfileForm({ onSubmit }) {
 
             <div className="max-w-2xl w-full z-10">
                 <div className="text-center mb-10">
-                    <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-bold tracking-widest uppercase mb-4 border border-white/10">Phase 0</span>
-                    <h1 className="text-3xl md:text-4xl font-black mb-4">프로필 기본 정보 입력</h1>
+                    <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-cyan-300 text-xs font-bold tracking-widest uppercase mb-4 border border-white/10">{t('profile_form.phase')}</span>
+                    <h1 className="text-3xl md:text-4xl font-black mb-4">{t('profile_form.title')}</h1>
                     <p className="text-slate-400">
-                        더욱 정밀한 비자 가시권 및 커리어 분석을 위해<br />기본적인 학적 및 신원 정보를 입력해 주세요.
+                        {t('profile_form.subtitle_1')}<br />{t('profile_form.subtitle_2')}
                     </p>
                 </div>
 
@@ -103,394 +105,401 @@ export default function BaseProfileForm({ onSubmit }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Name */}
                         <div>
-                            <label className={labelClasses}>이름 (Name) <span className="text-rose-400">*</span></label>
-                            <input type="text" name="name" value={formData.name} onChange={handleChange} className={inputClasses} placeholder="영문 또는 국문 이름" required />
+                            <label className={labelClasses}>{t('profile_form.name')} <span className="text-rose-400">*</span></label>
+                            <input type="text" name="name" value={formData.name} onChange={handleChange} className={inputClasses} placeholder={t('profile_form.name_placeholder')} required />
                         </div>
                         {/* Age */}
                         <div>
-                            <label className={labelClasses}>나이 (만 나이) <span className="text-rose-400">*</span></label>
+                            <label className={labelClasses}>{t('profile_form.age')} <span className="text-rose-400">*</span></label>
                             <input type="number" name="age" value={formData.age} onChange={handleChange} className={inputClasses} min="18" max="60" required />
                         </div>
                         {/* Nationality */}
                         <div>
-                            <label className={labelClasses}>국적 (Nationality) <span className="text-rose-400">*</span></label>
+                            <label className={labelClasses}>{t('profile_form.nationality')} <span className="text-rose-400">*</span></label>
                             <select name="nationality" value={formData.nationality} onChange={handleChange} className={inputClasses} required>
-                                <option value="" disabled>국적을 선택해 주세요 (Select Nationality)</option>
-                                <option value="Afghanistan">Afghanistan (아프가니스탄)</option>
-                                <option value="Albania">Albania (알바니아)</option>
-                                <option value="Algeria">Algeria (알제리)</option>
-                                <option value="Andorra">Andorra (안도라)</option>
-                                <option value="Angola">Angola (앙골라)</option>
-                                <option value="Antigua and Barbuda">Antigua and Barbuda (앤티가 바부다)</option>
-                                <option value="Argentina">Argentina (아르헨티나)</option>
-                                <option value="Armenia">Armenia (아르메니아)</option>
-                                <option value="Australia">Australia (호주)</option>
-                                <option value="Austria">Austria (오스트리아)</option>
-                                <option value="Azerbaijan">Azerbaijan (아제르바이잔)</option>
-                                <option value="Bahamas">Bahamas (바하마)</option>
-                                <option value="Bahrain">Bahrain (바레인)</option>
-                                <option value="Bangladesh">Bangladesh (방글라데시)</option>
-                                <option value="Barbados">Barbados (바베이도스)</option>
-                                <option value="Belarus">Belarus (벨라루스)</option>
-                                <option value="Belgium">Belgium (벨기에)</option>
-                                <option value="Belize">Belize (벨리즈)</option>
-                                <option value="Benin">Benin (베냉)</option>
-                                <option value="Bhutan">Bhutan (부탄)</option>
-                                <option value="Bolivia">Bolivia (볼리비아)</option>
-                                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina (보스니아 헤르체고비나)</option>
-                                <option value="Botswana">Botswana (보츠와나)</option>
-                                <option value="Brazil">Brazil (브라질)</option>
-                                <option value="Brunei">Brunei (브루나이)</option>
-                                <option value="Bulgaria">Bulgaria (불가리아)</option>
-                                <option value="Burkina Faso">Burkina Faso (부르키나파소)</option>
-                                <option value="Burundi">Burundi (부룬디)</option>
-                                <option value="Cabo Verde">Cabo Verde (카보베르데)</option>
-                                <option value="Cambodia">Cambodia (캄보디아)</option>
-                                <option value="Cameroon">Cameroon (카메룬)</option>
-                                <option value="Canada">Canada (캐나다)</option>
-                                <option value="Central African Republic">Central African Republic (중앙아프리카 공화국)</option>
-                                <option value="Chad">Chad (차드)</option>
-                                <option value="Chile">Chile (칠레)</option>
-                                <option value="China">China (중국)</option>
-                                <option value="Colombia">Colombia (콜롬비아)</option>
-                                <option value="Comoros">Comoros (코모로)</option>
-                                <option value="Congo, Democratic Republic of the">Congo, Democratic Republic of the (콩고 민주 공화국)</option>
-                                <option value="Congo, Republic of the">Congo, Republic of the (콩고 공화국)</option>
-                                <option value="Costa Rica">Costa Rica (코스타리카)</option>
-                                <option value="Croatia">Croatia (크로아티아)</option>
-                                <option value="Cuba">Cuba (쿠바)</option>
-                                <option value="Cyprus">Cyprus (키프로스)</option>
-                                <option value="Czechia">Czechia (체코)</option>
-                                <option value="Denmark">Denmark (덴마크)</option>
-                                <option value="Djibouti">Djibouti (지부티)</option>
-                                <option value="Dominica">Dominica (도미니카)</option>
-                                <option value="Dominican Republic">Dominican Republic (도미니카 공화국)</option>
-                                <option value="Ecuador">Ecuador (에콰도르)</option>
-                                <option value="Egypt">Egypt (이집트)</option>
-                                <option value="El Salvador">El Salvador (엘살바도르)</option>
-                                <option value="Equatorial Guinea">Equatorial Guinea (적도 기니)</option>
-                                <option value="Eritrea">Eritrea (에리트레아)</option>
-                                <option value="Estonia">Estonia (에스토니아)</option>
-                                <option value="Eswatini">Eswatini (에스와티니)</option>
-                                <option value="Ethiopia">Ethiopia (에티오피아)</option>
-                                <option value="Fiji">Fiji (피지)</option>
-                                <option value="Finland">Finland (핀란드)</option>
-                                <option value="France">France (프랑스)</option>
-                                <option value="Gabon">Gabon (가봉)</option>
-                                <option value="Gambia">Gambia (감비아)</option>
-                                <option value="Georgia">Georgia (조지아)</option>
-                                <option value="Germany">Germany (독일)</option>
-                                <option value="Ghana">Ghana (가나)</option>
-                                <option value="Greece">Greece (그리스)</option>
-                                <option value="Grenada">Grenada (그레나다)</option>
-                                <option value="Guatemala">Guatemala (과테말라)</option>
-                                <option value="Guinea">Guinea (기니)</option>
-                                <option value="Guinea-Bissau">Guinea-Bissau (기니비사우)</option>
-                                <option value="Guyana">Guyana (가이아나)</option>
-                                <option value="Haiti">Haiti (아이티)</option>
-                                <option value="Honduras">Honduras (온두라스)</option>
-                                <option value="Hungary">Hungary (헝가리)</option>
-                                <option value="Iceland">Iceland (아이슬란드)</option>
-                                <option value="India">India (인도)</option>
-                                <option value="Indonesia">Indonesia (인도네시아)</option>
-                                <option value="Iran">Iran (이란)</option>
-                                <option value="Iraq">Iraq (이라크)</option>
-                                <option value="Ireland">Ireland (아일랜드)</option>
-                                <option value="Israel">Israel (이스라엘)</option>
-                                <option value="Italy">Italy (이탈리아)</option>
-                                <option value="Jamaica">Jamaica (자메이카)</option>
-                                <option value="Japan">Japan (일본)</option>
-                                <option value="Jordan">Jordan (요르단)</option>
-                                <option value="Kazakhstan">Kazakhstan (카자흐스탄)</option>
-                                <option value="Kenya">Kenya (케냐)</option>
-                                <option value="Kiribati">Kiribati (키리바시)</option>
-                                <option value="Korea, North">Korea, North (북한)</option>
-                                <option value="Kuwait">Kuwait (쿠웨이트)</option>
-                                <option value="Kyrgyzstan">Kyrgyzstan (키르기스스탄)</option>
-                                <option value="Laos">Laos (라오스)</option>
-                                <option value="Latvia">Latvia (라트비아)</option>
-                                <option value="Lebanon">Lebanon (레바논)</option>
-                                <option value="Lesotho">Lesotho (레소토)</option>
-                                <option value="Liberia">Liberia (라이베리아)</option>
-                                <option value="Libya">Libya (리비아)</option>
-                                <option value="Liechtenstein">Liechtenstein (리히텐슈타인)</option>
-                                <option value="Lithuania">Lithuania (리투아니아)</option>
-                                <option value="Luxembourg">Luxembourg (룩셈부르크)</option>
-                                <option value="Madagascar">Madagascar (마다가스카르)</option>
-                                <option value="Malawi">Malawi (말라위)</option>
-                                <option value="Malaysia">Malaysia (말레이시아)</option>
-                                <option value="Maldives">Maldives (몰디브)</option>
-                                <option value="Mali">Mali (말리)</option>
-                                <option value="Malta">Malta (몰타)</option>
-                                <option value="Marshall Islands">Marshall Islands (마셜 제도)</option>
-                                <option value="Mauritania">Mauritania (모리타니)</option>
-                                <option value="Mauritius">Mauritius (모리셔스)</option>
-                                <option value="Mexico">Mexico (멕시코)</option>
-                                <option value="Micronesia">Micronesia (미크로네시아)</option>
-                                <option value="Moldova">Moldova (몰도바)</option>
-                                <option value="Monaco">Monaco (모나코)</option>
-                                <option value="Mongolia">Mongolia (몽골)</option>
-                                <option value="Montenegro">Montenegro (몬테네그로)</option>
-                                <option value="Morocco">Morocco (모로코)</option>
-                                <option value="Mozambique">Mozambique (모잠비크)</option>
-                                <option value="Myanmar">Myanmar (미얀마)</option>
-                                <option value="Namibia">Namibia (나미비아)</option>
-                                <option value="Nauru">Nauru (나우루)</option>
-                                <option value="Nepal">Nepal (네팔)</option>
-                                <option value="Netherlands">Netherlands (네덜란드)</option>
-                                <option value="New Zealand">New Zealand (뉴질랜드)</option>
-                                <option value="Nicaragua">Nicaragua (니카라과)</option>
-                                <option value="Niger">Niger (니제르)</option>
-                                <option value="Nigeria">Nigeria (나이지리아)</option>
-                                <option value="North Macedonia">North Macedonia (북마케도니아)</option>
-                                <option value="Norway">Norway (노르웨이)</option>
-                                <option value="Oman">Oman (오만)</option>
-                                <option value="Pakistan">Pakistan (파키스탄)</option>
-                                <option value="Palau">Palau (팔라우)</option>
-                                <option value="Palestine">Palestine (팔레스타인)</option>
-                                <option value="Panama">Panama (파나마)</option>
-                                <option value="Papua New Guinea">Papua New Guinea (파푸아뉴기니)</option>
-                                <option value="Paraguay">Paraguay (파라과이)</option>
-                                <option value="Peru">Peru (페루)</option>
-                                <option value="Philippines">Philippines (필리핀)</option>
-                                <option value="Poland">Poland (폴란드)</option>
-                                <option value="Portugal">Portugal (포르투갈)</option>
-                                <option value="Qatar">Qatar (카타르)</option>
-                                <option value="Romania">Romania (루마니아)</option>
-                                <option value="Russia">Russia (러시아)</option>
-                                <option value="Rwanda">Rwanda (르완다)</option>
-                                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis (세인트키츠 네비스)</option>
-                                <option value="Saint Lucia">Saint Lucia (세인트루시아)</option>
-                                <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines (세인트빈센트 그레나딘)</option>
-                                <option value="Samoa">Samoa (사모아)</option>
-                                <option value="San Marino">San Marino (산마리노)</option>
-                                <option value="Sao Tome and Principe">Sao Tome and Principe (상투메 프린시페)</option>
-                                <option value="Saudi Arabia">Saudi Arabia (사우디아라비아)</option>
-                                <option value="Senegal">Senegal (세네갈)</option>
-                                <option value="Serbia">Serbia (세르비아)</option>
-                                <option value="Seychelles">Seychelles (세이셸)</option>
-                                <option value="Sierra Leone">Sierra Leone (시에라리온)</option>
-                                <option value="Singapore">Singapore (싱가포르)</option>
-                                <option value="Slovakia">Slovakia (슬로바키아)</option>
-                                <option value="Slovenia">Slovenia (슬로베니아)</option>
-                                <option value="Solomon Islands">Solomon Islands (솔로몬 제도)</option>
-                                <option value="Somalia">Somalia (소말리아)</option>
-                                <option value="South Africa">South Africa (남아프리카 공화국)</option>
-                                <option value="South Sudan">South Sudan (남수단)</option>
-                                <option value="Spain">Spain (스페인)</option>
-                                <option value="Sri Lanka">Sri Lanka (스리랑카)</option>
-                                <option value="Sudan">Sudan (수단)</option>
-                                <option value="Suriname">Suriname (수리남)</option>
-                                <option value="Sweden">Sweden (스웨덴)</option>
-                                <option value="Switzerland">Switzerland (스위스)</option>
-                                <option value="Syria">Syria (시리아)</option>
-                                <option value="Taiwan">Taiwan (대만)</option>
-                                <option value="Tajikistan">Tajikistan (타지키스탄)</option>
-                                <option value="Tanzania">Tanzania (탄자니아)</option>
-                                <option value="Thailand">Thailand (태국)</option>
-                                <option value="Timor-Leste">Timor-Leste (동티모르)</option>
-                                <option value="Togo">Togo (토고)</option>
-                                <option value="Tonga">Tonga (통가)</option>
-                                <option value="Trinidad and Tobago">Trinidad and Tobago (트리니다드 토바고)</option>
-                                <option value="Tunisia">Tunisia (튀니지)</option>
-                                <option value="Turkey">Turkey (튀르키예)</option>
-                                <option value="Turkmenistan">Turkmenistan (투르크메니스탄)</option>
-                                <option value="Tuvalu">Tuvalu (투발루)</option>
-                                <option value="Uganda">Uganda (우간다)</option>
-                                <option value="Ukraine">Ukraine (우크라이나)</option>
-                                <option value="United Arab Emirates">United Arab Emirates (아랍에미리트)</option>
-                                <option value="United Kingdom">United Kingdom (영국)</option>
-                                <option value="United States">United States (미국)</option>
-                                <option value="Uruguay">Uruguay (우루과이)</option>
-                                <option value="Uzbekistan">Uzbekistan (우즈베키스탄)</option>
-                                <option value="Vanuatu">Vanuatu (바누아투)</option>
-                                <option value="Vatican City">Vatican City (바티칸 시국)</option>
-                                <option value="Venezuela">Venezuela (베네수엘라)</option>
-                                <option value="Vietnam">Vietnam (베트남)</option>
-                                <option value="Yemen">Yemen (예멘)</option>
-                                <option value="Zambia">Zambia (잠비아)</option>
-                                <option value="Zimbabwe">Zimbabwe (짐바브웨)</option>
-                                <option value="Other">Other (기타)</option>
+                                <option value="" disabled>{t('profile_form.nationality_placeholder')}</option>
+                                <option value="Afghanistan">{t(`profile_data.Afghanistan`)}</option>
+                                <option value="Albania">{t(`profile_data.Albania`)}</option>
+                                <option value="Algeria">{t(`profile_data.Algeria`)}</option>
+                                <option value="Andorra">{t(`profile_data.Andorra`)}</option>
+                                <option value="Angola">{t(`profile_data.Angola`)}</option>
+                                <option value="Antigua and Barbuda">{t(`profile_data.Antigua and Barbuda`)}</option>
+                                <option value="Argentina">{t(`profile_data.Argentina`)}</option>
+                                <option value="Armenia">{t(`profile_data.Armenia`)}</option>
+                                <option value="Australia">{t(`profile_data.Australia`)}</option>
+                                <option value="Austria">{t(`profile_data.Austria`)}</option>
+                                <option value="Azerbaijan">{t(`profile_data.Azerbaijan`)}</option>
+                                <option value="Bahamas">{t(`profile_data.Bahamas`)}</option>
+                                <option value="Bahrain">{t(`profile_data.Bahrain`)}</option>
+                                <option value="Bangladesh">{t(`profile_data.Bangladesh`)}</option>
+                                <option value="Barbados">{t(`profile_data.Barbados`)}</option>
+                                <option value="Belarus">{t(`profile_data.Belarus`)}</option>
+                                <option value="Belgium">{t(`profile_data.Belgium`)}</option>
+                                <option value="Belize">{t(`profile_data.Belize`)}</option>
+                                <option value="Benin">{t(`profile_data.Benin`)}</option>
+                                <option value="Bhutan">{t(`profile_data.Bhutan`)}</option>
+                                <option value="Bolivia">{t(`profile_data.Bolivia`)}</option>
+                                <option value="Bosnia and Herzegovina">{t(`profile_data.Bosnia and Herzegovina`)}</option>
+                                <option value="Botswana">{t(`profile_data.Botswana`)}</option>
+                                <option value="Brazil">{t(`profile_data.Brazil`)}</option>
+                                <option value="Brunei">{t(`profile_data.Brunei`)}</option>
+                                <option value="Bulgaria">{t(`profile_data.Bulgaria`)}</option>
+                                <option value="Burkina Faso">{t(`profile_data.Burkina Faso`)}</option>
+                                <option value="Burundi">{t(`profile_data.Burundi`)}</option>
+                                <option value="Cabo Verde">{t(`profile_data.Cabo Verde`)}</option>
+                                <option value="Cambodia">{t(`profile_data.Cambodia`)}</option>
+                                <option value="Cameroon">{t(`profile_data.Cameroon`)}</option>
+                                <option value="Canada">{t(`profile_data.Canada`)}</option>
+                                <option value="Central African Republic">{t(`profile_data.Central African Republic`)}</option>
+                                <option value="Chad">{t(`profile_data.Chad`)}</option>
+                                <option value="Chile">{t(`profile_data.Chile`)}</option>
+                                <option value="China">{t(`profile_data.China`)}</option>
+                                <option value="Colombia">{t(`profile_data.Colombia`)}</option>
+                                <option value="Comoros">{t(`profile_data.Comoros`)}</option>
+                                <option value="Congo, Democratic Republic of the">{t(`profile_data.Congo, Democratic Republic of the`)}</option>
+                                <option value="Congo, Republic of the">{t(`profile_data.Congo, Republic of the`)}</option>
+                                <option value="Costa Rica">{t(`profile_data.Costa Rica`)}</option>
+                                <option value="Croatia">{t(`profile_data.Croatia`)}</option>
+                                <option value="Cuba">{t(`profile_data.Cuba`)}</option>
+                                <option value="Cyprus">{t(`profile_data.Cyprus`)}</option>
+                                <option value="Czechia">{t(`profile_data.Czechia`)}</option>
+                                <option value="Denmark">{t(`profile_data.Denmark`)}</option>
+                                <option value="Djibouti">{t(`profile_data.Djibouti`)}</option>
+                                <option value="Dominica">{t(`profile_data.Dominica`)}</option>
+                                <option value="Dominican Republic">{t(`profile_data.Dominican Republic`)}</option>
+                                <option value="Ecuador">{t(`profile_data.Ecuador`)}</option>
+                                <option value="Egypt">{t(`profile_data.Egypt`)}</option>
+                                <option value="El Salvador">{t(`profile_data.El Salvador`)}</option>
+                                <option value="Equatorial Guinea">{t(`profile_data.Equatorial Guinea`)}</option>
+                                <option value="Eritrea">{t(`profile_data.Eritrea`)}</option>
+                                <option value="Estonia">{t(`profile_data.Estonia`)}</option>
+                                <option value="Eswatini">{t(`profile_data.Eswatini`)}</option>
+                                <option value="Ethiopia">{t(`profile_data.Ethiopia`)}</option>
+                                <option value="Fiji">{t(`profile_data.Fiji`)}</option>
+                                <option value="Finland">{t(`profile_data.Finland`)}</option>
+                                <option value="France">{t(`profile_data.France`)}</option>
+                                <option value="Gabon">{t(`profile_data.Gabon`)}</option>
+                                <option value="Gambia">{t(`profile_data.Gambia`)}</option>
+                                <option value="Georgia">{t(`profile_data.Georgia`)}</option>
+                                <option value="Germany">{t(`profile_data.Germany`)}</option>
+                                <option value="Ghana">{t(`profile_data.Ghana`)}</option>
+                                <option value="Greece">{t(`profile_data.Greece`)}</option>
+                                <option value="Grenada">{t(`profile_data.Grenada`)}</option>
+                                <option value="Guatemala">{t(`profile_data.Guatemala`)}</option>
+                                <option value="Guinea">{t(`profile_data.Guinea`)}</option>
+                                <option value="Guinea-Bissau">{t(`profile_data.Guinea-Bissau`)}</option>
+                                <option value="Guyana">{t(`profile_data.Guyana`)}</option>
+                                <option value="Haiti">{t(`profile_data.Haiti`)}</option>
+                                <option value="Honduras">{t(`profile_data.Honduras`)}</option>
+                                <option value="Hungary">{t(`profile_data.Hungary`)}</option>
+                                <option value="Iceland">{t(`profile_data.Iceland`)}</option>
+                                <option value="India">{t(`profile_data.India`)}</option>
+                                <option value="Indonesia">{t(`profile_data.Indonesia`)}</option>
+                                <option value="Iran">{t(`profile_data.Iran`)}</option>
+                                <option value="Iraq">{t(`profile_data.Iraq`)}</option>
+                                <option value="Ireland">{t(`profile_data.Ireland`)}</option>
+                                <option value="Israel">{t(`profile_data.Israel`)}</option>
+                                <option value="Italy">{t(`profile_data.Italy`)}</option>
+                                <option value="Jamaica">{t(`profile_data.Jamaica`)}</option>
+                                <option value="Japan">{t(`profile_data.Japan`)}</option>
+                                <option value="Jordan">{t(`profile_data.Jordan`)}</option>
+                                <option value="Kazakhstan">{t(`profile_data.Kazakhstan`)}</option>
+                                <option value="Kenya">{t(`profile_data.Kenya`)}</option>
+                                <option value="Kiribati">{t(`profile_data.Kiribati`)}</option>
+                                <option value="Korea, North">{t(`profile_data.Korea, North`)}</option>
+                                <option value="Kuwait">{t(`profile_data.Kuwait`)}</option>
+                                <option value="Kyrgyzstan">{t(`profile_data.Kyrgyzstan`)}</option>
+                                <option value="Laos">{t(`profile_data.Laos`)}</option>
+                                <option value="Latvia">{t(`profile_data.Latvia`)}</option>
+                                <option value="Lebanon">{t(`profile_data.Lebanon`)}</option>
+                                <option value="Lesotho">{t(`profile_data.Lesotho`)}</option>
+                                <option value="Liberia">{t(`profile_data.Liberia`)}</option>
+                                <option value="Libya">{t(`profile_data.Libya`)}</option>
+                                <option value="Liechtenstein">{t(`profile_data.Liechtenstein`)}</option>
+                                <option value="Lithuania">{t(`profile_data.Lithuania`)}</option>
+                                <option value="Luxembourg">{t(`profile_data.Luxembourg`)}</option>
+                                <option value="Madagascar">{t(`profile_data.Madagascar`)}</option>
+                                <option value="Malawi">{t(`profile_data.Malawi`)}</option>
+                                <option value="Malaysia">{t(`profile_data.Malaysia`)}</option>
+                                <option value="Maldives">{t(`profile_data.Maldives`)}</option>
+                                <option value="Mali">{t(`profile_data.Mali`)}</option>
+                                <option value="Malta">{t(`profile_data.Malta`)}</option>
+                                <option value="Marshall Islands">{t(`profile_data.Marshall Islands`)}</option>
+                                <option value="Mauritania">{t(`profile_data.Mauritania`)}</option>
+                                <option value="Mauritius">{t(`profile_data.Mauritius`)}</option>
+                                <option value="Mexico">{t(`profile_data.Mexico`)}</option>
+                                <option value="Micronesia">{t(`profile_data.Micronesia`)}</option>
+                                <option value="Moldova">{t(`profile_data.Moldova`)}</option>
+                                <option value="Monaco">{t(`profile_data.Monaco`)}</option>
+                                <option value="Mongolia">{t(`profile_data.Mongolia`)}</option>
+                                <option value="Montenegro">{t(`profile_data.Montenegro`)}</option>
+                                <option value="Morocco">{t(`profile_data.Morocco`)}</option>
+                                <option value="Mozambique">{t(`profile_data.Mozambique`)}</option>
+                                <option value="Myanmar">{t(`profile_data.Myanmar`)}</option>
+                                <option value="Namibia">{t(`profile_data.Namibia`)}</option>
+                                <option value="Nauru">{t(`profile_data.Nauru`)}</option>
+                                <option value="Nepal">{t(`profile_data.Nepal`)}</option>
+                                <option value="Netherlands">{t(`profile_data.Netherlands`)}</option>
+                                <option value="New Zealand">{t(`profile_data.New Zealand`)}</option>
+                                <option value="Nicaragua">{t(`profile_data.Nicaragua`)}</option>
+                                <option value="Niger">{t(`profile_data.Niger`)}</option>
+                                <option value="Nigeria">{t(`profile_data.Nigeria`)}</option>
+                                <option value="North Macedonia">{t(`profile_data.North Macedonia`)}</option>
+                                <option value="Norway">{t(`profile_data.Norway`)}</option>
+                                <option value="Oman">{t(`profile_data.Oman`)}</option>
+                                <option value="Pakistan">{t(`profile_data.Pakistan`)}</option>
+                                <option value="Palau">{t(`profile_data.Palau`)}</option>
+                                <option value="Palestine">{t(`profile_data.Palestine`)}</option>
+                                <option value="Panama">{t(`profile_data.Panama`)}</option>
+                                <option value="Papua New Guinea">{t(`profile_data.Papua New Guinea`)}</option>
+                                <option value="Paraguay">{t(`profile_data.Paraguay`)}</option>
+                                <option value="Peru">{t(`profile_data.Peru`)}</option>
+                                <option value="Philippines">{t(`profile_data.Philippines`)}</option>
+                                <option value="Poland">{t(`profile_data.Poland`)}</option>
+                                <option value="Portugal">{t(`profile_data.Portugal`)}</option>
+                                <option value="Qatar">{t(`profile_data.Qatar`)}</option>
+                                <option value="Romania">{t(`profile_data.Romania`)}</option>
+                                <option value="Russia">{t(`profile_data.Russia`)}</option>
+                                <option value="Rwanda">{t(`profile_data.Rwanda`)}</option>
+                                <option value="Saint Kitts and Nevis">{t(`profile_data.Saint Kitts and Nevis`)}</option>
+                                <option value="Saint Lucia">{t(`profile_data.Saint Lucia`)}</option>
+                                <option value="Saint Vincent and the Grenadines">{t(`profile_data.Saint Vincent and the Grenadines`)}</option>
+                                <option value="Samoa">{t(`profile_data.Samoa`)}</option>
+                                <option value="San Marino">{t(`profile_data.San Marino`)}</option>
+                                <option value="Sao Tome and Principe">{t(`profile_data.Sao Tome and Principe`)}</option>
+                                <option value="Saudi Arabia">{t(`profile_data.Saudi Arabia`)}</option>
+                                <option value="Senegal">{t(`profile_data.Senegal`)}</option>
+                                <option value="Serbia">{t(`profile_data.Serbia`)}</option>
+                                <option value="Seychelles">{t(`profile_data.Seychelles`)}</option>
+                                <option value="Sierra Leone">{t(`profile_data.Sierra Leone`)}</option>
+                                <option value="Singapore">{t(`profile_data.Singapore`)}</option>
+                                <option value="Slovakia">{t(`profile_data.Slovakia`)}</option>
+                                <option value="Slovenia">{t(`profile_data.Slovenia`)}</option>
+                                <option value="Solomon Islands">{t(`profile_data.Solomon Islands`)}</option>
+                                <option value="Somalia">{t(`profile_data.Somalia`)}</option>
+                                <option value="South Africa">{t(`profile_data.South Africa`)}</option>
+                                <option value="South Sudan">{t(`profile_data.South Sudan`)}</option>
+                                <option value="Spain">{t(`profile_data.Spain`)}</option>
+                                <option value="Sri Lanka">{t(`profile_data.Sri Lanka`)}</option>
+                                <option value="Sudan">{t(`profile_data.Sudan`)}</option>
+                                <option value="Suriname">{t(`profile_data.Suriname`)}</option>
+                                <option value="Sweden">{t(`profile_data.Sweden`)}</option>
+                                <option value="Switzerland">{t(`profile_data.Switzerland`)}</option>
+                                <option value="Syria">{t(`profile_data.Syria`)}</option>
+                                <option value="Taiwan">{t(`profile_data.Taiwan`)}</option>
+                                <option value="Tajikistan">{t(`profile_data.Tajikistan`)}</option>
+                                <option value="Tanzania">{t(`profile_data.Tanzania`)}</option>
+                                <option value="Thailand">{t(`profile_data.Thailand`)}</option>
+                                <option value="Timor-Leste">{t(`profile_data.Timor-Leste`)}</option>
+                                <option value="Togo">{t(`profile_data.Togo`)}</option>
+                                <option value="Tonga">{t(`profile_data.Tonga`)}</option>
+                                <option value="Trinidad and Tobago">{t(`profile_data.Trinidad and Tobago`)}</option>
+                                <option value="Tunisia">{t(`profile_data.Tunisia`)}</option>
+                                <option value="Turkey">{t(`profile_data.Turkey`)}</option>
+                                <option value="Turkmenistan">{t(`profile_data.Turkmenistan`)}</option>
+                                <option value="Tuvalu">{t(`profile_data.Tuvalu`)}</option>
+                                <option value="Uganda">{t(`profile_data.Uganda`)}</option>
+                                <option value="Ukraine">{t(`profile_data.Ukraine`)}</option>
+                                <option value="United Arab Emirates">{t(`profile_data.United Arab Emirates`)}</option>
+                                <option value="United Kingdom">{t(`profile_data.United Kingdom`)}</option>
+                                <option value="United States">{t(`profile_data.United States`)}</option>
+                                <option value="Uruguay">{t(`profile_data.Uruguay`)}</option>
+                                <option value="Uzbekistan">{t(`profile_data.Uzbekistan`)}</option>
+                                <option value="Vanuatu">{t(`profile_data.Vanuatu`)}</option>
+                                <option value="Vatican City">{t(`profile_data.Vatican City`)}</option>
+                                <option value="Venezuela">{t(`profile_data.Venezuela`)}</option>
+                                <option value="Vietnam">{t(`profile_data.Vietnam`)}</option>
+                                <option value="Yemen">{t(`profile_data.Yemen`)}</option>
+                                <option value="Zambia">{t(`profile_data.Zambia`)}</option>
+                                <option value="Zimbabwe">{t(`profile_data.Zimbabwe`)}</option>
+                                <option value="Other">{t(`profile_data.Other`)}</option>
                             </select>
                         </div>
                         {/* Region */}
                         {/* Region */}
                         <div>
-                            <label className={labelClasses}>거주 지역 (Region) <span className="text-rose-400">*</span></label>
+                            <label className={labelClasses}>{t('profile_form.region')} <span className="text-rose-400">*</span></label>
                             <select name="region" value={formData.region} onChange={handleChange} className={inputClasses}>
-                                <option value="서울">서울 (Seoul)</option>
-                                <option value="경기/인천">경기/인천 (Gyeonggi/Incheon)</option>
-                                <option value="부산/경남">부산/경남 (Busan/Gyeongnam)</option>
-                                <option value="대구/경북">대구/경북 (Daegu/Gyeongbuk)</option>
-                                <option value="광주/전라">광주/전라 (Gwangju/Jeolla)</option>
-                                <option value="대전/충청">대전/충청 (Daejeon/Chungcheong)</option>
-                                <option value="강원/제주">강원/제주 (Gangwon/Jeju)</option>
+                                <option value="서울">{t(`profile_data.서울`)}</option>
+                                <option value="경기/인천">{t(`profile_data.경기/인천`)}</option>
+                                <option value="부산/경남">{t(`profile_data.부산/경남`)}</option>
+                                <option value="대구/경북">{t(`profile_data.대구/경북`)}</option>
+                                <option value="광주/전라">{t(`profile_data.광주/전라`)}</option>
+                                <option value="대전/충청">{t(`profile_data.대전/충청`)}</option>
+                                <option value="강원/제주">{t(`profile_data.강원/제주`)}</option>
                             </select>
                         </div>
                         {/* University */}
                         <div>
-                            <label className={labelClasses}>현재 소속 학교 (University) <span className="text-rose-400">*</span></label>
+                            <label className={labelClasses}>{t('profile_form.university')} <span className="text-rose-400">*</span></label>
                             <select name="university" value={formData.university} onChange={handleChange} className={inputClasses} required>
-                                <option value="" disabled>소속 대학을 선택해 주세요</option>
+                                <option value="" disabled>{t('profile_form.university_placeholder')}</option>
                                 {universitiesByRegion[formData.region] && Object.entries(universitiesByRegion[formData.region]).map(([groupName, unvs]) => (
-                                    <optgroup key={groupName} label={groupName}>
+                                    <optgroup key={groupName} label={t(`profile_data.${groupName}`)}>
                                         {unvs.map(univ => (
-                                            <option key={univ} value={univ}>{univ}</option>
+                                            <option key={univ} value={univ}>{t(`profile_data.${univ}`)}</option>
                                         ))}
                                     </optgroup>
                                 ))}
                             </select>
-                            <p className="text-xs text-slate-500 mt-2 ml-1">리스트에 없을 경우 가장 비슷한 캠퍼스나 '기타 대학교'를 선택해 주세요.</p>
+                            <p className="text-xs text-slate-500 mt-2 ml-1">{t('profile_form.university_desc')}</p>
                         </div>
                         {/* Major */}
                         <div>
-                            <label className={labelClasses}>전공 (Major) <span className="text-rose-400">*</span></label>
+                            <label className={labelClasses}>{t('profile_form.major')} <span className="text-rose-400">*</span></label>
                             <select name="major" value={formData.major} onChange={handleChange} className={inputClasses} required>
-                                <option value="" disabled>전공을 선택해 주세요</option>
-                                <optgroup label="인문사회계열 (Humanities & Social Sciences)">
-                                    <option value="국어국문학">국어국문학 (Korean Language & Literature)</option>
-                                    <option value="한국어교육학">한국어교육학 (Korean Language Education)</option>
-                                    <option value="영어영문학">영어영문학 (English Language & Literature)</option>
-                                    <option value="중어중문학">중어중문학 (Chinese Language & Literature)</option>
-                                    <option value="일어일문학">일어일문학 (Japanese Language & Literature)</option>
-                                    <option value="경영학">경영학 (Business Administration)</option>
-                                    <option value="경제학">경제학 (Economics)</option>
-                                    <option value="국제통상학">국제통상학 / 무역학 (International Trade)</option>
-                                    <option value="회계세무학">회계학 / 세무학 (Accounting & Taxation)</option>
-                                    <option value="행정학">행정학 (Public Administration)</option>
-                                    <option value="정치외교학">정치외교학 (Political Science & Diplomacy)</option>
-                                    <option value="사회학">사회학 (Sociology)</option>
-                                    <option value="사회복지학">사회복지학 (Social Welfare)</option>
-                                    <option value="미디어커뮤니케이션학">미디어커뮤니케이션 / 신문방송학 (Media & Communication)</option>
-                                    <option value="광고홍보학">광고홍보학 (Advertising & Public Relations)</option>
-                                    <option value="관광경영학">관광경영학 (Tourism Management)</option>
-                                    <option value="호텔경영학">호텔경영학 (Hotel Management)</option>
-                                    <option value="항공서비스학">항공서비스 / 객실운항 (Aviation Service / Cabin Crew)</option>
-                                    <option value="외식경영학">외식경영학 (Food Service Management)</option>
-                                    <option value="비서사무행정">비서 / 사무행정 (Secretarial Studies / Office Admin)</option>
-                                    <option value="유아교육학">유아교육 / 보육 (Early Childhood Education)</option>
-                                    <option value="사학">사학 (History)</option>
-                                    <option value="철학">철학 (Philosophy)</option>
-                                    <option value="심리학">심리학 (Psychology)</option>
-                                    <option value="문헌정보학">문헌정보학 (Library & Information Science)</option>
-                                    <option value="교육학">교육학 / 사범계열 (Education)</option>
-                                    <option value="국제학부">국제학부 / 글로벌스터디 (International Studies)</option>
-                                    <option value="법학">법학 (Law)</option>
-                                    <option value="기타 인문사회">기타 인문/사회/상경계열 (Other Humanities/Social Sciences)</option>
+                                <option value="" disabled>{t('profile_form.major_placeholder')}</option>
+                                <optgroup label={t(`profile_data.인문사회계열 (Humanities & Social Sciences)`)}>
+                                    <option value="국어국문학">{t(`profile_data.국어국문학`)}</option>
+                                    <option value="한국어교육학">{t(`profile_data.한국어교육학`)}</option>
+                                    <option value="영어영문학">{t(`profile_data.영어영문학`)}</option>
+                                    <option value="중어중문학">{t(`profile_data.중어중문학`)}</option>
+                                    <option value="일어일문학">{t(`profile_data.일어일문학`)}</option>
+                                    <option value="경영학">{t(`profile_data.경영학`)}</option>
+                                    <option value="경제학">{t(`profile_data.경제학`)}</option>
+                                    <option value="국제통상학">{t(`profile_data.국제통상학`)}</option>
+                                    <option value="회계세무학">{t(`profile_data.회계세무학`)}</option>
+                                    <option value="행정학">{t(`profile_data.행정학`)}</option>
+                                    <option value="정치외교학">{t(`profile_data.정치외교학`)}</option>
+                                    <option value="사회학">{t(`profile_data.사회학`)}</option>
+                                    <option value="사회복지학">{t(`profile_data.사회복지학`)}</option>
+                                    <option value="미디어커뮤니케이션학">{t(`profile_data.미디어커뮤니케이션학`)}</option>
+                                    <option value="광고홍보학">{t(`profile_data.광고홍보학`)}</option>
+                                    <option value="관광경영학">{t(`profile_data.관광경영학`)}</option>
+                                    <option value="호텔경영학">{t(`profile_data.호텔경영학`)}</option>
+                                    <option value="항공서비스학">{t(`profile_data.항공서비스학`)}</option>
+                                    <option value="외식경영학">{t(`profile_data.외식경영학`)}</option>
+                                    <option value="비서사무행정">{t(`profile_data.비서사무행정`)}</option>
+                                    <option value="유아교육학">{t(`profile_data.유아교육학`)}</option>
+                                    <option value="사학">{t(`profile_data.사학`)}</option>
+                                    <option value="철학">{t(`profile_data.철학`)}</option>
+                                    <option value="심리학">{t(`profile_data.심리학`)}</option>
+                                    <option value="문헌정보학">{t(`profile_data.문헌정보학`)}</option>
+                                    <option value="교육학">{t(`profile_data.교육학`)}</option>
+                                    <option value="국제학부">{t(`profile_data.국제학부`)}</option>
+                                    <option value="법학">{t(`profile_data.법학`)}</option>
+                                    <option value="기타 인문사회">{t(`profile_data.기타 인문사회`)}</option>
                                 </optgroup>
-                                <optgroup label="이공계열 (STEM)">
-                                    <option value="컴퓨터공학">컴퓨터공학 (Computer Engineering)</option>
-                                    <option value="소프트웨어공학">소프트웨어공학 (Software Engineering)</option>
-                                    <option value="정보보안학">정보보안학 (Information Security)</option>
-                                    <option value="인공지능학">인공지능 / 데이터엔지니어링 (AI / Data Engineering)</option>
-                                    <option value="전자공학">전자공학 / 반도체공학 (Electronic Engineering)</option>
-                                    <option value="전기공학">전기공학 (Electrical Engineering)</option>
-                                    <option value="정보통신공학">정보통신공학 (Information & Communication Eng.)</option>
-                                    <option value="기계공학">기계공학 (Mechanical Engineering)</option>
-                                    <option value="자동차공학">자동차공학 (Automotive Engineering)</option>
-                                    <option value="항공우주공학">항공우주공학 (Aerospace Engineering)</option>
-                                    <option value="화학공학">화학공학 (Chemical Engineering)</option>
-                                    <option value="신소재공학">신소재공학 / 재료공학 (Materials Science & Eng.)</option>
-                                    <option value="생명공학">생명공학 (Bioengineering)</option>
-                                    <option value="환경공학">환경공학 (Environmental Engineering)</option>
-                                    <option value="건축공학">건축학 / 건축공학 (Architecture & Architectural Eng.)</option>
-                                    <option value="토목공학">토목공학 (Civil Engineering)</option>
-                                    <option value="도시공학">도시공학 (Urban Engineering)</option>
-                                    <option value="산업공학">산업공학 (Industrial Engineering)</option>
-                                    <option value="스마트팩토리학">스마트팩토리 / 메카트로닉스 (Smart Factory / Mechatronics)</option>
-                                    <option value="해양조선공학">해양 / 조선공학 (Maritime / Naval Architecture)</option>
-                                    <option value="게임영상공학">게임공학 / 멀티미디어 (Game Engineering / Multimedia)</option>
-                                    <option value="부사관경찰">소방 / 경찰 / 부사관 (Fire Safety / Police / NCO)</option>
-                                    <option value="기타 이공계">기타 이공/공학계열 (Other STEM / Engineering)</option>
+                                <optgroup label={t(`profile_data.이공계열 (STEM)`)}>
+                                    <option value="컴퓨터공학">{t(`profile_data.컴퓨터공학`)}</option>
+                                    <option value="소프트웨어공학">{t(`profile_data.소프트웨어공학`)}</option>
+                                    <option value="정보보안학">{t(`profile_data.정보보안학`)}</option>
+                                    <option value="인공지능학">{t(`profile_data.인공지능학`)}</option>
+                                    <option value="전자공학">{t(`profile_data.전자공학`)}</option>
+                                    <option value="전기공학">{t(`profile_data.전기공학`)}</option>
+                                    <option value="정보통신공학">{t(`profile_data.정보통신공학`)}</option>
+                                    <option value="기계공학">{t(`profile_data.기계공학`)}</option>
+                                    <option value="자동차공학">{t(`profile_data.자동차공학`)}</option>
+                                    <option value="항공우주공학">{t(`profile_data.항공우주공학`)}</option>
+                                    <option value="화학공학">{t(`profile_data.화학공학`)}</option>
+                                    <option value="신소재공학">{t(`profile_data.신소재공학`)}</option>
+                                    <option value="생명공학">{t(`profile_data.생명공학`)}</option>
+                                    <option value="환경공학">{t(`profile_data.환경공학`)}</option>
+                                    <option value="건축공학">{t(`profile_data.건축공학`)}</option>
+                                    <option value="토목공학">{t(`profile_data.토목공학`)}</option>
+                                    <option value="도시공학">{t(`profile_data.도시공학`)}</option>
+                                    <option value="산업공학">{t(`profile_data.산업공학`)}</option>
+                                    <option value="스마트팩토리학">{t(`profile_data.스마트팩토리학`)}</option>
+                                    <option value="해양조선공학">{t(`profile_data.해양조선공학`)}</option>
+                                    <option value="게임영상공학">{t(`profile_data.게임영상공학`)}</option>
+                                    <option value="부사관경찰">{t(`profile_data.부사관경찰`)}</option>
+                                    <option value="기타 이공계">{t(`profile_data.기타 이공계`)}</option>
                                 </optgroup>
-                                <optgroup label="자연과학계열 (Natural Sciences)">
-                                    <option value="수학">수학 (Mathematics)</option>
-                                    <option value="통계학">통계학 / 데이터사이언스 (Statistics / Data Science)</option>
-                                    <option value="물리학">물리학 (Physics)</option>
-                                    <option value="천문학">천문학 (Astronomy)</option>
-                                    <option value="화학">화학 (Chemistry)</option>
-                                    <option value="생명과학">생명과학 / 생물학 (Life Sciences / Biology)</option>
-                                    <option value="식품영양학">식품영양학 (Food & Nutrition)</option>
-                                    <option value="조리과학">조리과학 / 제과제빵 (Culinary Science / Baking)</option>
-                                    <option value="농생명과학">농생명과학 / 농업 (Agricultural & Life Sciences)</option>
-                                    <option value="반려동물학">반려동물 / 펫케어 (Pet Care / Animal Science)</option>
-                                    <option value="지질지구과학">지질학 / 지구과학 (Geology / Earth Science)</option>
-                                    <option value="향장화장품학">향장 / 화장품과학 (Cosmetics & Fragrance)</option>
-                                    <option value="기타 자연과학">기타 자연과학계열 (Other Natural Sciences)</option>
+                                <optgroup label={t(`profile_data.자연과학계열 (Natural Sciences)`)}>
+                                    <option value="수학">{t(`profile_data.수학`)}</option>
+                                    <option value="통계학">{t(`profile_data.통계학`)}</option>
+                                    <option value="물리학">{t(`profile_data.물리학`)}</option>
+                                    <option value="천문학">{t(`profile_data.천문학`)}</option>
+                                    <option value="화학">{t(`profile_data.화학`)}</option>
+                                    <option value="생명과학">{t(`profile_data.생명과학`)}</option>
+                                    <option value="식품영양학">{t(`profile_data.식품영양학`)}</option>
+                                    <option value="조리과학">{t(`profile_data.조리과학`)}</option>
+                                    <option value="농생명과학">{t(`profile_data.농생명과학`)}</option>
+                                    <option value="반려동물학">{t(`profile_data.반려동물학`)}</option>
+                                    <option value="지질지구과학">{t(`profile_data.지질지구과학`)}</option>
+                                    <option value="향장화장품학">{t(`profile_data.향장화장품학`)}</option>
+                                    <option value="기타 자연과학">{t(`profile_data.기타 자연과학`)}</option>
                                 </optgroup>
-                                <optgroup label="예체능 및 의약보건계열 (Arts, Physical & Health)">
-                                    <option value="시각디자인">시각디자인 (Visual Design)</option>
-                                    <option value="산업디자인">산업디자인 (Industrial Design)</option>
-                                    <option value="영상디자인">영상디자인 / 미디어디자인 (Video & Media Design)</option>
-                                    <option value="패션디자인">패션디자인 / 의류학 (Fashion Design)</option>
-                                    <option value="사진만화애니">사진 / 만화 / 애니메이션 (Photography / Animation)</option>
-                                    <option value="순수예술">순수미술 (Fine Arts)</option>
-                                    <option value="실용음악">실용음악 / 성악 / 기악 (Applied Music / Vocal / Instrumental)</option>
-                                    <option value="무용연극영화">무용 / 연극영화 (Dance / Theater & Film)</option>
-                                    <option value="방송엔터테인먼트">방송연예 / 엔터테인먼트 (Broadcasting / Entertainment)</option>
-                                    <option value="미용뷰티">미용 / 뷰티케어 (Beauty & Cosmetics)</option>
-                                    <option value="헤어메이크업">헤어디자인 / 메이크업 (Hair Design / Makeup)</option>
-                                    <option value="체육학">체육학 / 스포츠과학 (Physical Education / Sports Science)</option>
-                                    <option value="경호무도학">경호무도학 (Security & Martial Arts)</option>
-                                    <option value="보건행정학">보건행정 / 병원경영 (Health Admin / Hospital Mgmt)</option>
-                                    <option value="간호학">간호학 (Nursing)</option>
-                                    <option value="물리치료학">물리치료학 (Physical Therapy)</option>
-                                    <option value="재활작업치료">재활 / 작업치료 (Rehabilitation / Occupational Therapy)</option>
-                                    <option value="치위생학">치위생 / 응급구조 (Dental Hygiene / Paramedic)</option>
-                                    <option value="의약학">의학 / 약학 / 수의학 (Medicine / Pharmacy / Veterinary)</option>
-                                    <option value="기타 예체능보건">기타 예체능/보건계열 (Other Arts/Physical/Health)</option>
+                                <optgroup label={t(`profile_data.예체능 및 의약보건계열 (Arts, Physical & Health)`)}>
+                                    <option value="시각디자인">{t(`profile_data.시각디자인`)}</option>
+                                    <option value="산업디자인">{t(`profile_data.산업디자인`)}</option>
+                                    <option value="영상디자인">{t(`profile_data.영상디자인`)}</option>
+                                    <option value="패션디자인">{t(`profile_data.패션디자인`)}</option>
+                                    <option value="사진만화애니">{t(`profile_data.사진만화애니`)}</option>
+                                    <option value="순수예술">{t(`profile_data.순수예술`)}</option>
+                                    <option value="실용음악">{t(`profile_data.실용음악`)}</option>
+                                    <option value="무용연극영화">{t(`profile_data.무용연극영화`)}</option>
+                                    <option value="방송엔터테인먼트">{t(`profile_data.방송엔터테인먼트`)}</option>
+                                    <option value="미용뷰티">{t(`profile_data.미용뷰티`)}</option>
+                                    <option value="헤어메이크업">{t(`profile_data.헤어메이크업`)}</option>
+                                    <option value="체육학">{t(`profile_data.체육학`)}</option>
+                                    <option value="경호무도학">{t(`profile_data.경호무도학`)}</option>
+                                    <option value="보건행정학">{t(`profile_data.보건행정학`)}</option>
+                                    <option value="간호학">{t(`profile_data.간호학`)}</option>
+                                    <option value="물리치료학">{t(`profile_data.물리치료학`)}</option>
+                                    <option value="재활작업치료">{t(`profile_data.재활작업치료`)}</option>
+                                    <option value="치위생학">{t(`profile_data.치위생학`)}</option>
+                                    <option value="의약학">{t(`profile_data.의약학`)}</option>
+                                    <option value="기타 예체능보건">{t(`profile_data.기타 예체능보건`)}</option>
                                 </optgroup>
                             </select>
-                            <p className="text-xs text-rose-400/80 mt-2 ml-1">※ 본인의 세부전공과 가장 흡사/동일한 범주를 선택해 주세요.</p>
+                            <p className="text-xs text-rose-400/80 mt-2 ml-1">{t('profile_form.major_desc')}</p>
                         </div>
                         {/* Grade */}
                         <div className="md:col-span-2">
-                            <label className={labelClasses}>현재 학년 (Grade) <span className="text-rose-400">*</span></label>
+                            <label className={labelClasses}>{t('profile_form.grade')} <span className="text-rose-400">*</span></label>
                             <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                                {['1학년', '2학년', '3학년', '4학년', '석박사', '졸업'].map((g) => (
-                                    <label key={g} className={`cursor-pointer text-center py-3 rounded-xl border transition-all ${formData.grade === g ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 font-bold' : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'}`}>
-                                        <input type="radio" name="grade" value={g} checked={formData.grade === g} onChange={handleChange} className="hidden" />
-                                        {g}
+                                {[
+                                    { val: '1학년', key: 'grade_1' },
+                                    { val: '2학년', key: 'grade_2' },
+                                    { val: '3학년', key: 'grade_3' },
+                                    { val: '4학년', key: 'grade_4' },
+                                    { val: '석박사', key: 'grade_master' },
+                                    { val: '졸업', key: 'grade_grad' }
+                                ].map((g) => (
+                                    <label key={g.val} className={`cursor-pointer text-center py-3 rounded-xl border transition-all ${formData.grade === g.val ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 font-bold' : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'}`}>
+                                        <input type="radio" name="grade" value={g.val} checked={formData.grade === g.val} onChange={handleChange} className="hidden" />
+                                        {t(`profile_form.${g.key}`)}
                                     </label>
                                 ))}
                             </div>
                         </div>
                         {/* Language Specs (New for Phase 1) */}
                         <div className="md:col-span-2 pt-4 border-t border-slate-700/50 mt-2">
-                            <h3 className="text-lg font-bold text-cyan-400 mb-4">어학 능력 (Language Spec)</h3>
+                            <h3 className="text-lg font-bold text-cyan-400 mb-4">{t('profile_form.language_spec')}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
-                                    <label className={labelClasses}>한국어능력시험 (TOPIK)</label>
+                                    <label className={labelClasses}>{t('profile_form.topik')}</label>
                                     <select name="topik" value={formData.topik} onChange={handleChange} className={inputClasses}>
-                                        <option value="0">없음 / 준비 중</option>
-                                        <option value="1">1급</option>
-                                        <option value="2">2급</option>
-                                        <option value="3">3급</option>
-                                        <option value="4">4급</option>
-                                        <option value="5">5급</option>
-                                        <option value="6">6급</option>
+                                        <option value="0">{t('profile_form.topik_0')}</option>
+                                        <option value="1">{t('profile_form.topik_1')}</option>
+                                        <option value="2">{t('profile_form.topik_2')}</option>
+                                        <option value="3">{t('profile_form.topik_3')}</option>
+                                        <option value="4">{t('profile_form.topik_4')}</option>
+                                        <option value="5">{t('profile_form.topik_5')}</option>
+                                        <option value="6">{t('profile_form.topik_6')}</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label className={labelClasses}>사회통합프로그램 (KIIP)</label>
+                                    <label className={labelClasses}>{t('profile_form.kiip')}</label>
                                     <select name="kiip" value={formData.kiip} onChange={handleChange} className={inputClasses}>
-                                        <option value="0">미이수 / 모름</option>
-                                        <option value="1">1단계 수료</option>
-                                        <option value="2">2단계 수료</option>
-                                        <option value="3">3단계 수료</option>
-                                        <option value="4">4단계 수료</option>
-                                        <option value="5">5단계 수료</option>
+                                        <option value="0">{t('profile_form.kiip_0')}</option>
+                                        <option value="1">{t('profile_form.kiip_1')}</option>
+                                        <option value="2">{t('profile_form.kiip_2')}</option>
+                                        <option value="3">{t('profile_form.kiip_3')}</option>
+                                        <option value="4">{t('profile_form.kiip_4')}</option>
+                                        <option value="5">{t('profile_form.kiip_5')}</option>
                                     </select>
                                 </div>
                                 <div className="col-span-1 md:col-span-3">
                                     <div className="flex justify-between items-center mb-2">
-                                        <label className={labelClasses}>기타 제2외국어 / 모국어</label>
+                                        <label className={labelClasses}>{t('profile_form.secondary_lang')}</label>
                                         <button
                                             type="button"
                                             onClick={addSecondaryLanguage}
                                             className="text-xs bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/40 px-3 py-1 rounded-full border border-cyan-500/50 transition-colors flex items-center gap-1"
                                         >
-                                            <span>➕</span> 언어 추가
+                                            <span>➕</span> {t('profile_form.add_lang')}
                                         </button>
                                     </div>
                                     <div className="flex flex-col gap-3">
@@ -502,39 +511,39 @@ export default function BaseProfileForm({ onSubmit }) {
                                                         onChange={(e) => handleSecondaryLanguageChange(idx, 'lang', e.target.value)}
                                                         className={inputClasses}
                                                     >
-                                                        <option value="" disabled>언어 선택 (Language)</option>
-                                                        <option value="영어">영어 (English)</option>
-                                                        <option value="중국어">중국어 (Chinese)</option>
-                                                        <option value="일본어">일본어 (Japanese)</option>
-                                                        <option value="베트남어">베트남어 (Vietnamese)</option>
-                                                        <option value="프랑스어">프랑스어 (French)</option>
-                                                        <option value="스페인어">스페인어 (Spanish)</option>
-                                                        <option value="독일어">독일어 (German)</option>
-                                                        <option value="러시아어">러시아어 (Russian)</option>
-                                                        <option value="포르투갈어">포르투갈어 (Portuguese)</option>
-                                                        <option value="이탈리아어">이탈리아어 (Italian)</option>
-                                                        <option value="몽골어">몽골어 (Mongolian)</option>
-                                                        <option value="우즈베크어">우즈베크어 (Uzbek)</option>
-                                                        <option value="카자흐어">카자흐어 (Kazakh)</option>
-                                                        <option value="인도네시아어">인도네시아어/말레이어 (Indonesian/Malay)</option>
-                                                        <option value="태국어">태국어 (Thai)</option>
-                                                        <option value="미얀마어">미얀마어 (Burmese)</option>
-                                                        <option value="캄보디아어">캄보디아어 (Khmer)</option>
-                                                        <option value="네팔어">네팔어 (Nepali)</option>
-                                                        <option value="힌디어">힌디어 (Hindi)</option>
-                                                        <option value="아랍어">아랍어 (Arabic)</option>
-                                                        <option value="튀르키예어">튀르키예어(터키어) (Turkish)</option>
-                                                        <option value="기타">기타 (Others)</option>
+                                                        <option value="" disabled>{t('profile_form.lang_placeholder')}</option>
+                                                        <option value="영어">{t(`profile_data.영어`)}</option>
+                                                        <option value="중국어">{t(`profile_data.중국어`)}</option>
+                                                        <option value="일본어">{t(`profile_data.일본어`)}</option>
+                                                        <option value="베트남어">{t(`profile_data.베트남어`)}</option>
+                                                        <option value="프랑스어">{t(`profile_data.프랑스어`)}</option>
+                                                        <option value="스페인어">{t(`profile_data.스페인어`)}</option>
+                                                        <option value="독일어">{t(`profile_data.독일어`)}</option>
+                                                        <option value="러시아어">{t(`profile_data.러시아어`)}</option>
+                                                        <option value="포르투갈어">{t(`profile_data.포르투갈어`)}</option>
+                                                        <option value="이탈리아어">{t(`profile_data.이탈리아어`)}</option>
+                                                        <option value="몽골어">{t(`profile_data.몽골어`)}</option>
+                                                        <option value="우즈베크어">{t(`profile_data.우즈베크어`)}</option>
+                                                        <option value="카자흐어">{t(`profile_data.카자흐어`)}</option>
+                                                        <option value="인도네시아어">{t(`profile_data.인도네시아어`)}</option>
+                                                        <option value="태국어">{t(`profile_data.태국어`)}</option>
+                                                        <option value="미얀마어">{t(`profile_data.미얀마어`)}</option>
+                                                        <option value="캄보디아어">{t(`profile_data.캄보디아어`)}</option>
+                                                        <option value="네팔어">{t(`profile_data.네팔어`)}</option>
+                                                        <option value="힌디어">{t(`profile_data.힌디어`)}</option>
+                                                        <option value="아랍어">{t(`profile_data.아랍어`)}</option>
+                                                        <option value="튀르키예어">{t(`profile_data.튀르키예어`)}</option>
+                                                        <option value="기타">{t(`profile_data.기타`)}</option>
                                                     </select>
                                                     <select
                                                         value={item.level}
                                                         onChange={(e) => handleSecondaryLanguageChange(idx, 'level', e.target.value)}
                                                         className={inputClasses}
                                                     >
-                                                        <option value="none">수준 선택 (선택 안함/기초)</option>
-                                                        <option value="basic">일상 소통 가능 (Intermediate)</option>
-                                                        <option value="business">비즈니스 가능 (Advanced)</option>
-                                                        <option value="native">원어민 수준 (Native)</option>
+                                                        <option value="none">{t('profile_form.level_placeholder')}</option>
+                                                        <option value="basic">{t('profile_form.level_basic')}</option>
+                                                        <option value="business">{t('profile_form.level_business')}</option>
+                                                        <option value="native">{t('profile_form.level_native')}</option>
                                                     </select>
                                                 </div>
                                                 {formData.secondaryLanguages.length > 1 && (
@@ -542,7 +551,7 @@ export default function BaseProfileForm({ onSubmit }) {
                                                         type="button"
                                                         onClick={() => removeSecondaryLanguage(idx)}
                                                         className="p-2 text-rose-400 hover:text-rose-300 hover:bg-rose-400/10 rounded-lg transition-colors border border-transparent hover:border-rose-400/30"
-                                                        title="삭제"
+                                                        title={t('profile_form.delete')}
                                                     >
                                                         ✖
                                                     </button>
@@ -557,7 +566,7 @@ export default function BaseProfileForm({ onSubmit }) {
 
                     <div className="pt-6">
                         <button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-lg py-4 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all transform hover:scale-[1.02]">
-                            기본 정보 저장 및 진단 시작
+                            {t('profile_form.submit')}
                         </button>
                     </div>
                 </form>

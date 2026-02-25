@@ -1,17 +1,28 @@
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Briefcase, FileCheck, CheckCircle2, Target, ScrollText, PercentSquare } from 'lucide-react';
-import { E7_DB } from '../data/persona_data';
-import { E7_DESCRIPTIONS } from '../data/e7_official_descriptions';
-import { E7_REQUIREMENTS } from '../data/e7_requirements';
+import { E7_DB as E7_DB_KO } from '../data/persona_data';
+import { E7_DB as E7_DB_EN } from '../data/persona_data_en';
+import { E7_DESCRIPTIONS as E7_DESCRIPTIONS_KO } from '../data/e7_official_descriptions';
+import { E7_DESCRIPTIONS as E7_DESCRIPTIONS_EN } from '../data/e7_official_descriptions_en';
+import { E7_REQUIREMENTS as E7_REQUIREMENTS_KO } from '../data/e7_requirements';
+import { E7_REQUIREMENTS as E7_REQUIREMENTS_EN } from '../data/e7_requirements_en';
+import { useTranslation } from 'react-i18next';
 
 export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, matchScore = 85 }) {
+    const { i18n } = useTranslation();
+    const isEn = i18n.language === 'en';
+
     if (!isOpen) return null;
+
+    const E7_DB = isEn ? E7_DB_EN : E7_DB_KO;
+    const E7_DESCRIPTIONS = isEn ? E7_DESCRIPTIONS_EN : E7_DESCRIPTIONS_KO;
+    const E7_REQUIREMENTS = isEn ? E7_REQUIREMENTS_EN : E7_REQUIREMENTS_KO;
 
     // TODO: Replace with actual backend DB fetch in future phases.
     // For now, using dynamic mock data for demonstration based on user requirements.
     const jobData = E7_DB[jobCode];
-    const officialNameText = jobData ? `${jobCode} ${jobData.name_ko}` : `${jobCode || "2351"} 기계공학 기술자`;
+    const officialNameText = jobData ? `${jobCode} ${isEn ? jobData.name_en || jobData.name_ko : jobData.name_ko}` : `${jobCode || "2351"} ${isEn ? "Mechanical Engineer" : "기계공학 기술자"}`;
 
     // 1. Extract Official Job Code
     let extractedCode = jobCode;
@@ -22,22 +33,22 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
         if (match) extractedCode = match[0];
     }
 
-    const officialDescription = E7_DESCRIPTIONS[extractedCode] || "대한민국 법무부 특정활동(E-7) 관련 규정에 따른 전문외국인력 직무입니다.";
+    const officialDescription = E7_DESCRIPTIONS[extractedCode] || (isEn ? "Professional foreign workforce duties under the specific activities (E-7) regulations of the Ministry of Justice of the Republic of Korea." : "대한민국 법무부 특정활동(E-7) 관련 규정에 따른 전문외국인력 직무입니다.");
 
     // Find matching requirement: exact match or partial match (e.g., 'S2855' for '2855')
     let reqKey = Object.keys(E7_REQUIREMENTS).find(k => k === extractedCode || k.includes(extractedCode));
     const reqs = E7_REQUIREMENTS[reqKey] || {
-        education: "관련 분야 석사 이상, 또는 관련 전공 학사 + 1년 이상 경력",
-        salary: "전년도 국민총소득(GNI)의 80% 이상",
-        employer: "해당 전문 직무와 연관된 산업 분야의 유망 기업 및 연구기관",
-        exampleJobs: "추천 직무 관련 파생 직종군",
+        education: isEn ? "Master's degree or higher in a relevant field, or Bachelor's degree with 1+ year of experience" : "관련 분야 석사 이상, 또는 관련 전공 학사 + 1년 이상 경력",
+        salary: isEn ? "At least 80% of the previous year's GNI" : "전년도 국민총소득(GNI)의 80% 이상",
+        employer: isEn ? "Promising companies and research institutes in industrial fields related to the primary duties" : "해당 전문 직무와 연관된 산업 분야의 유망 기업 및 연구기관",
+        exampleJobs: isEn ? "Derivative occupations related to the recommended duties" : "추천 직무 관련 파생 직종군",
         special: null
     };
 
     const data = {
         officialName: officialNameText,
         code: extractedCode,
-        visaClass: "E-7-1 전문인력",
+        visaClass: isEn ? "E-7-1 Professional" : "E-7-1 전문인력",
         officialDescription: officialDescription,
         requirements: {
             eduExp: reqs.education,
@@ -49,15 +60,15 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
         fitAnalysis: {
             totalFit: matchScore,
             subFits: [
-                { icon: '🔥', label: `직무 특성 적합도`, value: matchScore > 90 ? 92 : matchScore - 2, desc: `선택하신 직무와 회원님의 특성 성향 상호작용 지수 양호` },
-                { label: `환경 유연성 일치도`, value: matchScore > 80 ? matchScore - 5 : matchScore, desc: "업무 환경 및 커뮤니케이션 방식에 대한 상호 기대치 부합" },
-                { label: `산업 도메인 관심도`, value: matchScore - 8 > 60 ? matchScore - 8 : 65, desc: "관련 산업군에 대한 이해도와 기본 스킬 매칭 확률" }
+                { icon: '🔥', label: isEn ? `Job Trait Fit` : `직무 특성 적합도`, value: matchScore > 90 ? 92 : matchScore - 2, desc: isEn ? "Good interaction index between your chosen job and natural traits" : `선택하신 직무와 회원님의 특성 성향 상호작용 지수 양호` },
+                { label: isEn ? `Environment Flexibility Score` : `환경 유연성 일치도`, value: matchScore > 80 ? matchScore - 5 : matchScore, desc: isEn ? "Mutual expectations for work environment and communication style met" : "업무 환경 및 커뮤니케이션 방식에 대한 상호 기대치 부합" },
+                { label: isEn ? `Industry Domain Interest` : `산업 도메인 관심도`, value: matchScore - 8 > 60 ? matchScore - 8 : 65, desc: isEn ? "Level of understanding and basic skill matching probability for the relevant industry" : "관련 산업군에 대한 이해도와 기본 스킬 매칭 확률" }
             ]
         },
         quests: [
-            "목표 설정: 한국어능력시험(TOPIK) 4급 취득 또는 사회통합프로그램(KIIP) 이수 시작하기",
-            "전공 탐색: 이 직무와 관련된 전공 기초 과목 수강하고 학점 관리하기",
-            "정보 수집: 교내 유학생 지원센터나 선배들을 통해 관련 인턴십/알바 경험담 들어보기"
+            isEn ? "Goal Setting: Start acquiring TOPIK Level 4 or completingKIIP" : "목표 설정: 한국어능력시험(TOPIK) 4급 취득 또는 사회통합프로그램(KIIP) 이수 시작하기",
+            isEn ? "Major Exploration: Take basic major courses related to this job and manage GPA" : "전공 탐색: 이 직무와 관련된 전공 기초 과목 수강하고 학점 관리하기",
+            isEn ? "Info Gathering: Listen to related internship/part-time experiences through senior students or international support centers" : "정보 수집: 교내 유학생 지원센터나 선배들을 통해 관련 인턴십/알바 경험담 들어보기"
         ]
     };
 
@@ -101,7 +112,7 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
                                 </div>
                                 <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-5">
                                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                        <Briefcase className="w-4 h-4" /> 법무부 직무 정의
+                                        <Briefcase className="w-4 h-4" /> {isEn ? "Official Ministry of Justice Definition" : "법무부 직무 정의"}
                                     </h3>
                                     <p className="text-slate-300 leading-relaxed text-[15px] sm:text-base">
                                         {data.officialDescription}
@@ -112,30 +123,30 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
                             {/* Section 2: Visa Requirements */}
                             <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both">
                                 <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                                    <FileCheck className="w-5 h-5 text-indigo-400" /> E-7-1 비자 주요 발급 요건
+                                    <FileCheck className="w-5 h-5 text-indigo-400" /> {isEn ? "E-7-1 Visa Key Issuance Requirements" : "E-7-1 비자 주요 발급 요건"}
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner">
-                                        <div className="text-xs text-indigo-400 font-bold mb-1 uppercase tracking-wider">학력 및 경력</div>
+                                        <div className="text-xs text-indigo-400 font-bold mb-1 uppercase tracking-wider">{isEn ? "Education & Experience" : "학력 및 경력"}</div>
                                         <div className="text-slate-200 text-sm font-medium">{data.requirements.eduExp}</div>
                                     </div>
                                     <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner">
-                                        <div className="text-xs text-emerald-400 font-bold mb-1 uppercase tracking-wider">임금 조건 (GNI)</div>
+                                        <div className="text-xs text-emerald-400 font-bold mb-1 uppercase tracking-wider">{isEn ? "Wage Condition (GNI)" : "임금 조건 (GNI)"}</div>
                                         <div className="text-slate-200 text-sm font-medium">{data.requirements.wage}</div>
                                     </div>
                                     <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner md:col-span-2">
-                                        <div className="text-xs text-orange-400 font-bold mb-1 uppercase tracking-wider">법적 내국인 고용보호 심사 기준</div>
+                                        <div className="text-xs text-orange-400 font-bold mb-1 uppercase tracking-wider">{isEn ? "Legal Criteria for Protecting Domestic Employment" : "법적 내국인 고용보호 심사 기준"}</div>
                                         <div className="text-slate-200 text-sm font-medium">{data.requirements.employer}</div>
                                     </div>
                                     {data.requirements.exampleJobs && (
                                         <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-inner md:col-span-2">
-                                            <div className="text-xs text-sky-400 font-bold mb-1 uppercase tracking-wider">예시 직종 (파생 직무군)</div>
+                                            <div className="text-xs text-sky-400 font-bold mb-1 uppercase tracking-wider">{isEn ? "Example Occupations (Derivative roles)" : "예시 직종 (파생 직무군)"}</div>
                                             <div className="text-slate-200 text-sm font-medium">{data.requirements.exampleJobs}</div>
                                         </div>
                                     )}
                                     {data.requirements.special && (
                                         <div className="bg-slate-900 border border-slate-700/80 bg-rose-900/10 rounded-xl p-4 shadow-inner md:col-span-2">
-                                            <div className="text-xs text-rose-400 font-bold mb-1 uppercase tracking-wider">특기사항 및 추천서 요건</div>
+                                            <div className="text-xs text-rose-400 font-bold mb-1 uppercase tracking-wider">{isEn ? "Special Notes & Recommendation Letter Requirements" : "특기사항 및 추천서 요건"}</div>
                                             <div className="text-slate-200 text-sm font-medium">{data.requirements.special}</div>
                                         </div>
                                     )}
@@ -145,7 +156,7 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
                             {/* Section 3: Personality Fit Analysis */}
                             <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300 fill-mode-both">
                                 <h3 className="text-xl font-bold text-white mb-5 flex items-center gap-2">
-                                    <PercentSquare className="w-5 h-5 text-pink-400" /> KVTI 성향 일치도 분석
+                                    <PercentSquare className="w-5 h-5 text-pink-400" /> {isEn ? "KVTI Personality Alignment Analysis" : "KVTI 성향 일치도 분석"}
                                 </h3>
                                 <div className="bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-500/20 rounded-2xl p-6">
                                     <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
@@ -177,10 +188,10 @@ export default function JobDetailModal({ isOpen, onClose, jobCode, kvtiCode, mat
 
                                         <div className="flex-1 text-center sm:text-left">
                                             <h4 className="text-lg font-bold text-white mb-2">
-                                                왜 이 직무가 <span className="text-pink-400">[{kvtiCode.substring(0, 3)}]</span> 성향과 찰떡일까요?
+                                                {isEn ? "Why is this job a perfect match for the " : "왜 이 직무가 "} <span className="text-pink-400">[{kvtiCode.substring(0, 3)}]</span> {isEn ? " trait?" : " 성향과 찰떡일까요?"}
                                             </h4>
                                             <p className="text-slate-400 text-sm leading-relaxed">
-                                                단순 스펙을 넘어, 회원님의 선천적인 업무 스타일 및 문제 해결 방식과 실제 현장에서 요구하는 기질이 얼마나 일치하는지 분석한 결과입니다.
+                                                {isEn ? "Beyond simple specifications, this analyzes how closely your innate work style and problem-solving methods match the temperament required in the actual field." : "단순 스펙을 넘어, 회원님의 선천적인 업무 스타일 및 문제 해결 방식과 실제 현장에서 요구하는 기질이 얼마나 일치하는지 분석한 결과입니다."}
                                             </p>
                                         </div>
                                     </div>

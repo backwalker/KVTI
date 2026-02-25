@@ -34,6 +34,25 @@ export const TEXTS = {
                     guide: "한국에 얼마나 머물고 싶은지, 미래 계획을 알려주세요."
                 }
             },
+            gateway: {
+                phase2_badge: "Phase 2 Enabled",
+                title: "KVTI 진단 모듈 선택",
+                subtitle_1: "KVTI 엔진이 완벽한 컨설팅을 제공하기 위해 귀하의 ",
+                subtitle_highlight: "현재 단계",
+                subtitle_2: "를 확인합니다. 정확한 렌즈를 선택해 주세요.",
+                junior_title: "탐색형 모의고사",
+                junior_badge: "1~2학년 / 진로 탐색 중",
+                junior_desc_1: "개인의 타고난 ",
+                junior_desc_highlight: "내재적 성향(Soft-spec)",
+                junior_desc_2: "을 중심으로 잠재력을 발굴합니다. 어떤 산업군과 조직 문화가 어울리는지 큰 그림을 그려줍니다.",
+                junior_start: "진단 시작하기",
+                senior_coming_badge: "Coming Phase 4",
+                senior_dev_badge: "개발 중",
+                senior_title: "실전형 모의고사",
+                senior_badge: "3~4학년 / 취업 준비생 (하드스펙 전용)",
+                senior_desc: "GNI 80% 이상의 목표 연봉 달성률, 실무 포트폴리오 유무 등 증빙 가능한 스펙(Hard-spec)을 법무부 E-7 기준에 직대입하여 냉혹하게 판별합니다.",
+                senior_lock: "하드스펙 전용 모듈 준비 중입니다 🔒"
+            },
             buttons: {
                 next: "다음 질문",
                 prev: "이전",
@@ -47,11 +66,7 @@ export const TEXTS = {
                     3: "보통",
                     5: "매우 관심"
                 },
-                competency: {
-                    1: "매우 부족함",
-                    3: "보통",
-                    5: "매우 우수함"
-                },
+                competency: { 1: "전혀 그렇지 않다", 3: "보통", 5: "매우 그렇다" },
                 agreement: {
                     1: "전혀 아니다",
                     3: "보통이다",
@@ -95,6 +110,25 @@ export const TEXTS = {
                     guide: "Tell us about your plans for staying in Korea."
                 }
             },
+            gateway: {
+                phase2_badge: "Phase 2 Enabled",
+                title: "KVTI Module Selection",
+                subtitle_1: "To provide accurate consulting, the KVTI engine checks your ",
+                subtitle_highlight: "current stage",
+                subtitle_2: ". Please choose the appropriate lens.",
+                junior_title: "Exploratory Mock Exam",
+                junior_badge: "Freshman & Sophomore / Career Exploration",
+                junior_desc_1: "Discover your potential based on your innate ",
+                junior_desc_highlight: "Soft-skills",
+                junior_desc_2: ". We will draw a big picture of which industries and organizational cultures fit you best.",
+                junior_start: "Start Diagnosis",
+                senior_coming_badge: "Coming Phase 4",
+                senior_dev_badge: "In Development",
+                senior_title: "Practical Mock Exam",
+                senior_badge: "Junior & Senior / Job Seekers (Hard-skills only)",
+                senior_desc: "It rigorously evaluates provable hard-skills against the Ministry of Justice E-7 standards, such as achieving a target salary of GNI 80% or more, and the presence of practical portfolios.",
+                senior_lock: "Hard-skill exclusive module is in preparation 🔒"
+            },
             buttons: {
                 next: "Next",
                 prev: "Previous",
@@ -108,11 +142,7 @@ export const TEXTS = {
                     3: "Neutral",
                     5: "Very Interested"
                 },
-                competency: {
-                    1: "Low",
-                    3: "Average",
-                    5: "High"
-                },
+                competency: { 1: "Strongly Disagree", 3: "Neutral", 5: "Strongly Agree" },
                 agreement: {
                     1: "Strongly Disagree",
                     3: "Neutral",
