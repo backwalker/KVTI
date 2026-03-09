@@ -15,7 +15,7 @@
   },
   "landing_details": {
     "step1_badge": "WHY",
-    "step1_title": "한국 유학생 <span class=\"text-transparent bg-clip-text bg-gradient-to-br from-yellow-200 to-amber-500\">20만</span> 시대,\n그러나 취업률은 단 <span class=\"text-transparent bg-clip-text bg-gradient-to-br from-rose-400 to-pink-600\">33.4%</span>.",
+    "step1_title": "한국 내 외국인 유학생 <span class=\"text-transparent bg-clip-text bg-gradient-to-br from-yellow-200 to-amber-500\">20만</span> 시대,\n그러나 취업률은 단 <span class=\"text-transparent bg-clip-text bg-gradient-to-br from-rose-400 to-pink-600\">33.4%</span>.",
     "step1_desc_intro": "꿈을 안고 시작한 한국 유학 생활,",
     "step1_desc_bullets": [
       "내 직업 성향을 명확히 알지 못하고,",
@@ -29,6 +29,7 @@
     "step2_badge": "WHAT",
     "step2_title": "안정적인 한국 취업의 정답,\nKVTI가 길을 찾습니다",
     "step2_desc": "유학생 취업의 핵심은 단순합니다.\nKVTI는 당신이 가장 궁금해하는 이 '3가지 핵심 질문'에 대한\n완벽한 해답을 AI를 통해 즉시 제시합니다.",
+    "step2_output_title": "KVTI 로드맵",
     "step2_p1_title": "1. 나의 직업 성향은?",
     "step2_p1_desc": "내 전공과 가장 잘 맞는\n잠재력 분석",
     "step2_p2_title": "2. 내가 합법적으로 할 수 있는 일은?",
@@ -46,6 +47,29 @@
     "step5_badge": "WHEN",
     "cta_title": "불확실한 현실을 넘어,\n당신의 완벽한 한국 커리어를 설계하세요.",
     "cta_button": "무료 심층 진단 시작하기"
+  },
+  "landing_app_integration": {
+    "badge": "HOW 2",
+    "title": "로드맵 결과를 현실로 만드는\n모바일 밀착 지원",
+    "desc": "KVTI 진단이 모바일 어플리케이션(CUTY)과 완벽하게 연동됩니다.<br className=\"hidden md:block\" />맞춤형 채용 공고, 비자 일정 알림, 전용 커뮤니티를 통해 당신의 취업 여정을 24시간 빈틈없이 가이드합니다.",
+    "feature1": "맞춤형 공고 탐색",
+    "feature2": "비자 타임라인 관리",
+    "feature3": "유학생 커뮤니티"
+  },
+  "landing_module_selector": {
+    "badge": "HOW 3",
+    "title": "진로 탐색부터 진로 실현까지",
+    "desc": "초기에는 <span class=\"font-black text-white mx-1\">내재적 성향(Soft-spec)</span> 중심으로 진로를 탐색하고,<br className=\"hidden md:block\" />나중에는 비자 및 취업 합격에 직결되는 <span class=\"font-black text-white mx-1\">객관적 스펙(Hard-spec)</span> 진단까지 연계하여 완벽한 한국 정착을 지원합니다.",
+    "module1_title": "탐색형 모의고사",
+    "module1_target": "1~2학년 / 진로 탐색 중",
+    "module1_desc": "개인의 타고난 <span class=\"font-black text-white\">내재적 성향(Soft-spec)</span>을 중심으로 잠재력을 발굴합니다. 어떤 산업군과 조직 문화가 어울리는지 큰 그림을 그려줍니다.",
+    "module1_btn": "진단 시작하기",
+    "module2_badge": "Coming Phase 4",
+    "module2_status": "",
+    "module2_title": "실전형 모의고사",
+    "module2_target": "3~4학년, 취업준비생 / 진로실현 단계",
+    "module2_desc": "축적된 실무 경험과 <span class=\"font-black text-white\">객관적 스펙(Hard-spec)</span>을 바탕으로,<br/>실제 취업 시장과 E-7 비자 발급 기준에 부합하는지 실질적이고 냉정한 합격 가능성을 판별합니다.",
+    "module2_lock_msg": "하드스펙 전용 모듈 준비 중입니다"
   },
   "profile_form": {
     "phase": "Phase 0",

@@ -29,6 +29,7 @@
     "step2_badge": "WHAT",
     "step2_title": "The smartest start to a stable\ncareer in Korea—KVTI.",
     "step2_desc": "The core of international employment is simple.\nKVTI uses AI to instantly provide perfect answers\nto the 3 absolute core questions you face:",
+    "step2_output_title": "The KVTI Roadmap",
     "step2_p1_title": "1. What is my career propensity?",
     "step2_p1_desc": "Analyzing your major and hidden potential.",
     "step2_p2_title": "2. What jobs can I legally do?",
@@ -46,6 +47,29 @@
     "step5_badge": "WHEN",
     "cta_title": "Transcend the uncertainty.\nArchitect your flawless career in Korea.",
     "cta_button": "Start Free In-depth Diagnosis"
+  },
+  "landing_app_integration": {
+    "badge": "HOW 2",
+    "title": "Turning Roadmap Results into Reality\nwith Seamless Mobile Support",
+    "desc": "KVTI diagnosis integrates perfectly with our mobile app (CUTY).<br className=\"hidden md:block\" />Through custom job matches, visa timeline alerts, and an exclusive community, we guide your career journey 24/7 without gaps.",
+    "feature1": "Custom Job Matches",
+    "feature2": "Visa Timeline Alerts",
+    "feature3": "Student Community"
+  },
+  "landing_module_selector": {
+    "badge": "HOW 3",
+    "title": "From Career Exploration to Realization",
+    "desc": "Initially, we guide your exploration based on <span class=\"font-black text-white mx-1\">intrinsic traits (Soft-spec)</span>.<br className=\"hidden md:block\" />Later, we provide <span class=\"font-black text-white mx-1\">objective spec (Hard-spec)</span> analysis for perfect employment support.",
+    "module1_title": "Exploratory Mock Exam",
+    "module1_target": "Freshman/Sophomore / Exploring Career",
+    "module1_desc": "Excavates potential focusing on an individual's innate <span class=\"font-black text-white\">intrinsic propensity (Soft-spec)</span>. Draws the big picture of which industry and organizational culture fits you.",
+    "module1_btn": "Start Diagnosis",
+    "module2_badge": "Coming Phase 4",
+    "module2_status": "",
+    "module2_title": "Practical Mock Exam",
+    "module2_target": "Junior/Senior, Job Seeker / Career Realization",
+    "module2_desc": "Based on accumulated practical experience and <span class=\"font-black text-white\">objective specs (Hard-spec)</span>,<br/>it determines your probability of passing the actual job market and MOJ E-7 visa issuance standards.",
+    "module2_lock_msg": "Preparing Hard-spec Only Module"
   },
   "profile_form": {
     "phase": "Phase 0",

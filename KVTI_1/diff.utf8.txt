@@ -1,0 +1,426 @@
+commit 7096c6d4272301f675820ecedca6a9d06339a77f
+Author: backwalker <cutywalker@gmail.com>
+Date:   Mon Mar 9 12:34:56 2026 +0900
+
+    3월9일수정본
+
+diff --git a/KVTI_1/src/components/LandingDetails.jsx b/KVTI_1/src/components/LandingDetails.jsx
+new file mode 100644
+index 0000000..6b15775
+--- /dev/null
++++ b/KVTI_1/src/components/LandingDetails.jsx
+@@ -0,0 +1,414 @@
++import React from 'react';
++// eslint-disable-next-line no-unused-vars
++import { motion } from 'framer-motion';
++import { useTranslation } from 'react-i18next';
++import { useNavigate } from 'react-router-dom';
++
++const LandingDetails = () => {
++    const { t } = useTranslation();
++    const navigate = useNavigate();
++
++    const handleStart = () => {
++        localStorage.removeItem('kvti_base_profile');
++        localStorage.removeItem('kvti_answers');
++        navigate('/diagnosis');
++    };
++
++    const fadeInUp = {
++        hidden: { opacity: 0, y: 50 },
++        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
++    };
++
++    return (
++        <div className="w-full relative z-20 bg-gradient-to-b from-kvti-bg via-[#0B1120] to-[#0A0F1A] pb-32 overflow-hidden font-sans">
++            {/* Ambient precise background grids */}
++            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_10%,#000_20%,transparent_100%)] pointer-events-none opacity-50"></div>
++
++            {/* Vibrant Ambient Glows to remove the 'just black' feel */}
++            <div className="absolute top-[5%] left-[-15%] w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none"></div>
++            <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none"></div>
++            <div className="absolute top-[40%] right-[-20%] w-[700px] h-[700px] bg-fuchsia-600/5 rounded-full blur-[150px] pointer-events-none"></div>
++
++            <div className="max-w-7xl mx-auto px-6 pt-24 space-y-40 relative z-10">
++
++                {/* Step 1: Problem Recognition */}
++                <motion.section
++                    initial="hidden"
++                    whileInView="visible"
++                    viewport={{ once: true, margin: "-100px" }}
++                    variants={fadeInUp}
++                    className="relative w-full max-w-4xl mx-auto text-center"
++                >
++                    <span className="inline-block px-4 py-1.5 rounded-sm border border-white/15 text-zinc-300 bg-white/5 backdrop-blur-sm shadow-[0_4px_10px_rgba(0,0,0,0.5)] text-xs font-bold tracking-widest uppercase mb-8">
++                        {t('landing_details.step1_badge')}
++                    </span>
++                    <h2
++                        className="text-4xl md:text-5xl font-black mb-8 leading-tight whitespace-pre-line text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-500 tracking-tight"
++                        dangerouslySetInnerHTML={{ __html: t('landing_details.step1_title') }}
++                    />
++                    <div className="px-4 max-w-3xl mx-auto mb-16 text-center text-balance font-light">
++                        <p className="text-zinc-400 text-lg md:text-xl leading-relaxed mb-6 font-light">
++                            {t('landing_details.step1_desc_intro')}
++                        </p>
++                        <div className="flex flex-col gap-2 mb-8 text-center text-lg md:text-xl font-semibold text-white">
++                            {t('landing_details.step1_desc_bullets', { returnObjects: true }).map((bullet, idx) => (
++                                <p key={idx} className="leading-snug tracking-wide">
++                                    {bullet}
++                                </p>
++                            ))}
++                        </div>
++                        <p className="text-zinc-400 text-lg md:text-xl leading-relaxed mb-6 font-light whitespace-pre-line">
++                            {t('landing_details.step1_desc_outro')}
++                        </p>
++                    </div>
++
++                    {/* Viusalizing the Problem */}
++                    <div className="w-full h-56 md:h-48 relative bg-zinc-900/30 rounded-3xl border border-white/5 overflow-hidden flex flex-col md:flex-row items-center justify-center backdrop-blur-sm mt-12 mx-auto max-w-4xl shadow-2xl group">
++                        {/* Maze / Lost Path Graphics (Background) */}
++                        <svg className="absolute inset-0 w-full h-full opacity-30 pointer-events-none" viewBox="0 0 1000 200" preserveAspectRatio="none">
++                            {/* Winding, broken lines */}
++                            <path d="M -50 100 Q 150 20 300 100 T 600 50 T 1050 150" fill="none" stroke="#fff" strokeWidth="1" strokeDasharray="4,8" />
++                            <path d="M -50 120 Q 200 180 400 100 T 700 180 T 1050 80" fill="none" stroke="#fff" strokeWidth="1" strokeDasharray="4,8" />
++
++                            {/* The dead end / barrier node representing 66.6% */}
++                            <circle cx="500" cy="100" r="45" fill="rgba(244,63,94,0.05)" stroke="rgba(244,63,94,0.4)" strokeWidth="1.5" strokeDasharray="4,4" className="animate-[pulse_3s_ease-in-out_infinite]" />
++                            {/* Background Text inside SVG */}
++                            <text x="500" y="106" dominantBaseline="middle" textAnchor="middle" fill="rgba(244,63,94,0.6)" fontSize="20" fontWeight="bold">66.6%</text>
++
++                            {/* Crossed out paths (Dead ends) */}
++                            <line x1="420" y1="40" x2="440" y2="60" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
++                            <line x1="440" y1="40" x2="420" y2="60" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
++
++                            <line x1="560" y1="140" x2="580" y2="160" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
++                            <line x1="580" y1="140" x2="560" y2="160" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
++                        </svg>
++
++                        {/* Foreground overlaid cards */}
++                        <div className="z-10 flex flex-nowrap gap-4 md:gap-8 px-4 w-full justify-center">
++                            {/* Stat 1 */}
++                            <div className="bg-zinc-950/80 border border-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-md shadow-2xl flex flex-col items-center flex-1 max-w-[200px] border-t-white/20 transition-transform group-hover:-translate-y-1 duration-500">
++                                <span className="text-zinc-500 mb-3">
++                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
++                                </span>
++                                <span className="text-zinc-300 font-bold text-sm md:text-sm text-center tracking-tight leading-tight">{t('landing_details.step1_stat1')}</span>
++                            </div>
++
++                            {/* Stat 2 */}
++                            <div className="bg-zinc-950/80 border border-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-md shadow-2xl flex flex-col items-center flex-1 max-w-[200px] border-t-white/20 transition-transform group-hover:-translate-y-2 duration-500 delay-75">
++                                <span className="text-zinc-500 mb-3">
++                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
++                                </span>
++                                <span className="text-zinc-300 font-bold text-sm md:text-sm text-center tracking-tight leading-tight">{t('landing_details.step1_stat2')}</span>
++                            </div>
++
++                            {/* Stat 3 (The 66.6%) */}
++                            <div className="bg-rose-950/40 border border-rose-500/30 rounded-2xl p-4 md:p-6 backdrop-blur-md shadow-[0_0_30px_rgba(244,63,94,0.1)] flex flex-col items-center flex-1 max-w-[200px] border-t-rose-400/50 transition-transform group-hover:-translate-y-3 duration-500 delay-150 relative overflow-hidden">
++                                <div className="absolute inset-0 bg-gradient-to-t from-rose-500/10 to-transparent"></div>
++                                <span className="text-rose-400 font-black text-2xl md:text-3xl mb-1 mt-1 drop-shadow-[0_0_8px_rgba(244,63,94,0.6)] tracking-tighter relative z-10">66.6%</span>
++                                <span className="text-rose-200/80 font-bold text-[10px] md:text-xs uppercase tracking-widest text-center leading-tight relative z-10">{t('landing_details.step1_stat3')}</span>
++                            </div>
++                        </div>
++                    </div>
++                </motion.section>
++
++                {/* Step 2: Solution Intro */}
++                <motion.section
++                    initial="hidden"
++                    whileInView="visible"
++                    viewport={{ once: true, margin: "-100px" }}
++                    variants={fadeInUp}
++                    className="relative bg-slate-900/40 backdrop-blur-md rounded-2xl p-8 md:p-14 shadow-[0_8px_32px_0_rgba(0,0,0,0.6)] border border-white/10 flex flex-col items-center group transition-colors duration-500 hover:border-white/20 overflow-hidden"
++                >
++                    {/* Background Compass Decoration */}
++                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full min-w-[600px] min-h-[600px] pointer-events-none z-0 flex items-center justify-center opacity-[0.04] select-none mix-blend-screen overflow-hidden rounded-2xl">
++                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="w-[150%] h-[150%] md:w-[120%] md:h-[120%] text-cyan-300 animate-[spin_160s_linear_infinite]" fill="none" stroke="currentColor">
++                            {/* Outer Clean Ring */}
++                            <circle cx="100" cy="100" r="90" strokeWidth="1" strokeOpacity="0.4" />
++                            <circle cx="100" cy="100" r="85" strokeWidth="0.5" strokeOpacity="0.2" strokeDasharray="4 4" />
++
++                            {/* Minimalist Degree Marks */}
++                            <g strokeWidth="1" strokeOpacity="0.5">
++                                {[...Array(12)].map((_, i) => (
++                                    <line key={`tick-modern-${i}`} x1="100" y1="10" x2="100" y2="15" transform={`rotate(${i * 30} 100 100)`} />
++                                ))}
++                            </g>
++                            <g strokeWidth="2" strokeOpacity="0.8">
++                                {[...Array(4)].map((_, i) => (
++                                    <line key={`tick-major-modern-${i}`} x1="100" y1="5" x2="100" y2="20" transform={`rotate(${i * 90} 100 100)`} />
++                                ))}
++                            </g>
++
++                            {/* Inner Clean Rings */}
++                            <circle cx="100" cy="100" r="60" strokeWidth="0.5" strokeOpacity="0.3" />
++                            <circle cx="100" cy="100" r="20" strokeWidth="1" strokeOpacity="0.5" />
++
++                            {/* Tech-oriented Crosshairs */}
++                            <path d="M 10 100 L 80 100 M 120 100 L 190 100 M 100 10 L 100 80 M 100 120 L 100 190" strokeWidth="0.5" strokeOpacity="0.4" />
++
++                            {/* Modern Sharp Needle (Digital/Vector style) */}
++                            {/* North Pointer (Filled/Highlighted) */}
++                            <polygon points="100,25 108,100 100,115 92,100" fill="currentColor" fillOpacity="0.8" stroke="none" />
++                            {/* South Pointer (Outline/Hollow) */}
++                            <polygon points="100,175 108,100 100,85 92,100" fill="none" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.4" />
++
++                            {/* Center Node */}
++                            <circle cx="100" cy="100" r="5" fill="#0f172a" stroke="currentColor" strokeWidth="2" />
++                            <circle cx="100" cy="100" r="1.5" fill="currentColor" stroke="none" />
++                        </svg>
++                    </div>
++
++                    {/* Header */}
++                    <div className="text-center max-w-2xl mb-12 relative z-10 space-y-4">
++                        <span className="text-cyan-400 font-bold tracking-widest text-sm uppercase block drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
++                            {t('landing_details.step2_badge')}
++                        </span>
++                        <h3 className="text-3xl md:text-4xl font-black text-white leading-tight whitespace-pre-line">
++                            {t('landing_details.step2_title')}
++                        </h3>
++                        <p className="text-slate-300 text-lg leading-relaxed font-light mt-4 whitespace-pre-line">
++                            {t('landing_details.step2_desc')}
++                        </p>
++                    </div>
++
++                    {/* The 3 Core Questions Grid */}
++                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl relative z-10 mb-8">
++                        {[1, 2, 3].map((num) => (
++                            <div key={num} className="bg-slate-800/40 border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center shadow-lg group-hover:bg-slate-800/60 transition-colors hover:-translate-y-1 duration-300">
++                                <div className="w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-black text-lg mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
++                                    {num}
++                                </div>
++                                <h4 className="text-white font-bold mb-2 md:text-lg">
++                                    {t(`landing_details.step2_p${num}_title`).replace(/^\d+\.\s*/, '')}
++                                </h4>
++                                <p className="text-slate-400 font-light text-sm md:text-base leading-snug whitespace-pre-line">
++                                    {t(`landing_details.step2_p${num}_desc`)}
++                                </p>
++                            </div>
++                        ))}
++                    </div>
++
++                    {/* Funnel SVG Flowing Down */}
++                    <div className="w-full flex justify-center py-6 relative z-10 h-32 mt-4 md:mt-0">
++                        <svg className="w-full max-w-sm h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="xMidYMid slice">
++                            {/* Lines from the 3 cards converging */}
++                            <path d="M 60 0 C 60 50, 180 60, 200 80" fill="none" stroke="rgba(34,211,238,0.3)" strokeWidth="2" strokeDasharray="4,4" className="animate-[pulse_3s_ease-in-out_infinite]" />
++                            <path d="M 200 0 L 200 80" fill="none" stroke="rgba(34,211,238,0.5)" strokeWidth="2" strokeDasharray="4,4" className="animate-[pulse_3s_ease-in-out_infinite_0.5s]" />
++                            <path d="M 340 0 C 340 50, 220 60, 200 80" fill="none" stroke="rgba(34,211,238,0.3)" strokeWidth="2" strokeDasharray="4,4" className="animate-[pulse_3s_ease-in-out_infinite_1s]" />
++
++                            {/* Particles traveling down */}
++                            <circle cx="60" cy="0" r="3" fill="#22d3ee" className="animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]">
++                                <animateMotion path="M 60 0 C 60 50, 180 60, 200 80" dur="2s" repeatCount="indefinite" />
++                            </circle>
++                            <circle cx="200" cy="0" r="3" fill="#22d3ee" className="animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]">
++                                <animateMotion path="M 200 0 L 200 80" dur="2.5s" repeatCount="indefinite" />
++                            </circle>
++                            <circle cx="340" cy="0" r="3" fill="#22d3ee" className="animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite_0.5s]">
++                                <animateMotion path="M 340 0 C 340 50, 220 60, 200 80" dur="2s" repeatCount="indefinite" />
++                            </circle>
++
++                            {/* Downward Arrow pointing to AI Core */}
++                            <path d="M 194 74 L 200 82 L 206 74" fill="none" stroke="#22d3ee" strokeWidth="2" />
++                        </svg>
++                    </div>
++
++                    {/* KVTI AI Core Output */}
++                    <div className="relative z-10 w-full flex justify-center mt-2">
++                        <div className="bg-gradient-to-br from-cyan-500/10 to-blue-600/20 border border-cyan-400/30 rounded-full px-6 py-4 md:px-8 flex items-center gap-4 shadow-[0_0_30px_rgba(34,211,238,0.15)] backdrop-blur-md hover:scale-105 transition-transform duration-300">
++                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-cyan-500 text-slate-900 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.6)] shrink-0">
++                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 md:w-7 md:h-7">
++                                    <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clipRule="evenodd" />
++                                </svg>
++                            </div>
++                            <div className="text-left">
++                                <h4 className="text-white font-bold text-base md:text-lg tracking-tight">The KVTI Roadmap</h4>
++                                <p className="text-cyan-400 text-xs md:text-sm font-medium uppercase tracking-wider">Your Definitve Next Step</p>
++                            </div>
++                        </div>
++                    </div>
++                </motion.section>
++
++                {/* Step 3: Multi-dimensional Vector Analysis */}
++                <motion.section
++                    initial="hidden"
++                    whileInView="visible"
++                    viewport={{ once: true, margin: "-100px" }}
++                    variants={fadeInUp}
++                    className="relative w-full flex flex-col items-center"
++                >
++                    <div className="text-center mb-16 max-w-3xl">
++                        <span className="inline-block px-4 py-1.5 rounded-sm border border-indigo-500/40 text-indigo-400 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.2)] text-xs font-bold tracking-widest uppercase mb-8">
++                            {t('landing_details.step3_badge')}
++                        </span>
++                        <h2
++                            className="text-4xl md:text-5xl font-black mb-6 text-white tracking-tight whitespace-pre-line"
++                            dangerouslySetInnerHTML={{ __html: t('landing_details.step3_title') }}
++                        />
++                        <p className="text-zinc-400 text-lg md:text-xl leading-relaxed text-balance font-light whitespace-pre-line">
++                            {t('landing_details.step3_desc')}
++                        </p>
++                    </div>
++
++                    {/* The 3D Vector Visualization - MDJM Algorithm */}
++                    <div className="w-full max-w-5xl h-[450px] bg-[#0d1629]/80 border border-indigo-500/20 rounded-2xl shadow-[0_16px_40px_0_rgba(0,0,0,0.7)] backdrop-blur-md flex items-center justify-center relative overflow-hidden group">
++
++                        {/* Ambient Glows */}
++                        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-600/20 rounded-full blur-[80px] pointer-events-none"></div>
++                        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyan-600/20 rounded-full blur-[80px] pointer-events-none"></div>
++
++                        {/* Precise dot matrix bg */}
++                        <div className="absolute inset-0 bg-[radial-gradient(rgba(129,140,248,0.15)_1.5px,transparent_1.5px)] bg-[size:30px_30px] opacity-70"></div>
++
++                        <div className="relative w-full max-w-2xl h-full z-10 transition-transform duration-1000 group-hover:scale-[1.05] flex items-center justify-center">
++                            <svg viewBox="0 0 800 500" className="w-full h-full drop-shadow-2xl">
++                                {/* Isometric Origin: (400, 350) */}
++
++                                {/* X-axis (Right-Down) */}
++                                <line x1="400" y1="350" x2="650" y2="420" stroke="rgba(165,180,252,0.3)" strokeWidth="2" strokeDasharray="4 4" />
++                                <text x="660" y="430" fill="rgba(165,180,252,0.6)" fontSize="14" className="font-light">Data/Idea (X)</text>
++
++                                {/* Y-axis (Left-Down) */}
++                                <line x1="400" y1="350" x2="150" y2="420" stroke="rgba(165,180,252,0.3)" strokeWidth="2" strokeDasharray="4 4" />
++                                <text x="80" y="430" fill="rgba(165,180,252,0.6)" fontSize="14" className="font-light">Things/People (Y)</text>
++
++                                {/* Z-axis (Up) */}
++                                <line x1="400" y1="350" x2="400" y2="50" stroke="rgba(34,211,238,0.5)" strokeWidth="2" />
++                                <text x="390" y="35" fill="rgba(34,211,238,0.8)" fontSize="16" fontWeight="bold" textAnchor="end">Industry/Visa Axis (10D)</text>
++
++                                {/* Base 2D Polygon (representing constraints of old RIASEC model) */}
++                                <g transform="translate(400,350)">
++                                    {/* A hexagon warped into isometric perspective */}
++                                    <polygon points="0,-60 90,-20 90,40 0,80 -90,40 -90,-20" fill="rgba(15,23,42,0.6)" stroke="rgba(100,116,139,0.5)" strokeWidth="1" />
++                                    {/* Sub-nodes of 2D model */}
++                                    <circle cx="0" cy="-60" r="4" fill="#64748b" />
++                                    <circle cx="90" cy="-20" r="4" fill="#64748b" />
++                                    <circle cx="90" cy="40" r="4" fill="#64748b" />
++                                    <circle cx="0" cy="80" r="4" fill="#64748b" />
++                                    <circle cx="-90" cy="40" r="4" fill="#64748b" />
++                                    <circle cx="-90" cy="-20" r="4" fill="#64748b" />
++                                    <text x="100" y="45" fill="rgba(100,116,139,0.8)" fontSize="12">Conventional 2D Bounds</text>
++                                </g>
++
++                                {/* Connecting grid lines on the plane */}
++                                <path d="M 400 290 L 490 330 M 400 290 L 310 330 M 310 330 L 400 430 M 490 330 L 400 430" stroke="rgba(100,116,139,0.2)" strokeWidth="1" strokeDasharray="2 2" />
++
++                                {/* Additional secondary 3D vectors to show multi-dimensionality */}
++                                {/* Vector 2 */}
++                                <line x1="400" y1="350" x2="250" y2="220" stroke="rgba(129,140,248,0.6)" strokeWidth="3" strokeLinecap="round" />
++                                <circle cx="250" cy="220" r="6" fill="#818cf8" />
++                                <line x1="400" y1="350" x2="250" y2="300" stroke="rgba(129,140,248,0.2)" strokeWidth="1" strokeDasharray="4 4" />
++                                <line x1="250" y1="300" x2="250" y2="220" stroke="rgba(129,140,248,0.2)" strokeWidth="1" strokeDasharray="4 4" />
++
++                                {/* Vector 3 */}
++                                <line x1="400" y1="350" x2="350" y2="100" stroke="rgba(192,132,252,0.6)" strokeWidth="3" strokeLinecap="round" />
++                                <circle cx="350" cy="100" r="6" fill="#c084fc" />
++                                <line x1="400" y1="350" x2="350" y2="330" stroke="rgba(192,132,252,0.2)" strokeWidth="1" strokeDasharray="4 4" />
++                                <line x1="350" y1="330" x2="350" y2="100" stroke="rgba(192,132,252,0.2)" strokeWidth="1" strokeDasharray="4 4" />
++
++                                {/* 3D Projection Lines for the MAIN Vector */}
++                                {/* Target Node in 3D: (550, 120) */}
++                                {/* Origin is 400, 350. Shadow/Projection on the 2D plane: (550, 390) */}
++                                <line x1="400" y1="350" x2="550" y2="390" stroke="rgba(34,211,238,0.4)" strokeWidth="2" strokeDasharray="4 4" className="animate-[pulse_2s_ease-in-out_infinite]" />
++                                <line x1="550" y1="390" x2="550" y2="120" stroke="rgba(34,211,238,0.5)" strokeWidth="2" strokeDasharray="4 4" className="animate-[pulse_2s_ease-in-out_infinite]" />
++
++                                {/* The Main MDJM Vector Line */}
++                                <line x1="400" y1="350" x2="550" y2="120" stroke="url(#vectorGradient)" strokeWidth="6" strokeLinecap="round" className="filter drop-shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
++
++                                {/* Origin Node */}
++                                <circle cx="400" cy="350" r="6" fill="#0f172a" stroke="#818cf8" strokeWidth="3" />
++
++                                {/* Target 3D Node */}
++                                <circle cx="550" cy="120" r="14" fill="#22d3ee" className="animate-[pulse_2s_ease-in-out_infinite] filter drop-shadow-[0_0_20px_rgba(34,211,238,1)]" />
++                                <circle cx="550" cy="120" r="5" fill="#ffffff" />
++
++                                {/* Target Node Label */}
++                                <g transform="translate(565, 105)">
++                                    <rect x="0" y="0" width="160" height="30" rx="4" fill="rgba(15,23,42,0.8)" stroke="rgba(34,211,238,0.4)" strokeWidth="1" />
++                                    <text x="80" y="20" fill="#fff" fontSize="13" fontWeight="bold" textAnchor="middle">700th Optimum Path</text>
++                                </g>
++
++                                <defs>
++                                    <linearGradient id="vectorGradient" x1="0%" y1="100%" x2="100%" y2="0%">
++                                        <stop offset="0%" stopColor="#818cf8" />
++                                        <stop offset="100%" stopColor="#22d3ee" />
++                                    </linearGradient>
++                                </defs>
++                            </svg>
++                        </div>
++                    </div>
++                </motion.section>
++
++                {/* Step 4: Target Audience */}
++                <motion.section
++                    initial="hidden"
++                    whileInView="visible"
++                    viewport={{ once: true, margin: "-100px" }}
++                    variants={fadeInUp}
++                    className="w-full max-w-6xl mx-auto"
++                >
++                    <div className="text-center mb-16">
++                        <span className="inline-block px-4 py-1.5 rounded-sm border border-teal-500/40 text-teal-400 bg-teal-500/10 shadow-[0_0_15px_rgba(45,212,191,0.15)] text-xs font-bold tracking-widest uppercase mb-6">
++                            {t('landing_details.step4_badge')}
++                        </span>
++                        <h2 className="text-4xl font-black text-white tracking-tight whitespace-pre-line">
++                            {t('landing_details.step4_title')}
++                        </h2>
++                    </div>
++
++                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
++                        {['t1', 't2', 't3'].map((item, idx) => (
++                            <motion.div
++                                key={idx}
++                                variants={fadeInUp}
++                                className="bg-slate-900/50 rounded-2xl p-8 border border-white/5 hover:border-teal-500/40 hover:bg-slate-800/80 transition-all duration-300 group backdrop-blur-sm relative overflow-hidden"
++                            >
++                                <div className="absolute top-0 left-0 w-1 h-0 bg-teal-500 group-hover:h-full transition-all duration-300"></div>
++
++                                <div className="w-12 h-12 rounded-lg bg-teal-900/30 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-6 group-hover:scale-110 group-hover:bg-teal-500/20 transition-all shadow-[0_0_10px_rgba(20,184,166,0.1)]">
++                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
++                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
++                                    </svg>
++                                </div>
++                                <p className="text-slate-300 leading-relaxed font-light text-[16px] whitespace-pre-line">
++                                    {t(`landing_details.step4_${item}`)}
++                                </p>
++                            </motion.div>
++                        ))}
++                    </div>
++                </motion.section>
++
++                {/* Section 5: Call to Action (Final) */}
++                <motion.section
++                    initial="hidden"
++                    whileInView="visible"
++                    viewport={{ once: true, margin: "-100px" }}
++                    variants={fadeInUp}
++                    className="text-center py-20 relative bg-gradient-to-br from-[#0d1629]/80 to-[#0f172a] border border-blue-500/20 rounded-2xl shadow-[0_0_40px_rgba(59,130,246,0.15)] backdrop-blur-xl flex flex-col items-center mt-12"
++                >
++                    <div className="flex items-center justify-center mb-8 relative z-10 text-center">
++                        <span className="inline-block px-5 py-2 rounded-full border border-blue-400/40 text-blue-300 bg-blue-500/10 shadow-[0_0_20px_rgba(59,130,246,0.25)] text-sm font-black tracking-[0.2em] uppercase backdrop-blur-md">
++                            {t('landing_details.step5_badge')}
++                        </span>
++                    </div>
++                    <h2 className="text-4xl md:text-5xl font-black mb-10 leading-tight whitespace-pre-line text-white tracking-tight relative z-10">
++                        {t('landing_details.cta_title')}
++                    </h2>
++                    <button
++                        onClick={handleStart}
++                        className="group relative inline-flex items-center justify-center px-12 py-5 text-lg font-bold text-slate-900 transition-all duration-300 bg-kvti-primary rounded-none clip-path-slant focus:outline-none hover:bg-white hover:shadow-[0_0_30px_rgba(56,189,248,0.4)]"
++                        style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
++                    >
++                        <span className="relative flex items-center gap-3">
++                            {t('landing.start_assessment')}
++                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transition-transform group-hover:translate-x-1">
++                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
++                            </svg>
++                        </span>
++                    </button>
++                </motion.section>
++
++            </div>
++        </div>
++    );
++};
++
++export default LandingDetails;
