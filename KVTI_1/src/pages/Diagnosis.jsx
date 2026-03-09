@@ -147,14 +147,8 @@ function Diagnosis() {
         setPhase0Data(data);
         localStorage.setItem('kvti_base_profile', JSON.stringify(data));
 
-        // Auto-route diagnostic grade based on selected grade
-        if (data.grade === '1학년' || data.grade === '2학년') {
-            setDiagnosticGrade('junior');
-        } else {
-            // Even if they are senior, the senior module is currently disabled.
-            // For now, let them see the gateway so they know what's coming, or default to junior.
-            // We'll just leave diagnosticGrade as null so they see the Gateway screen (and the lock).
-        }
+        // Removed auto-routing so the user always sees the Gateway screen (1/2학년 vs 3/4학년)
+        // Leave diagnosticGrade as null to show the Gateway Gateway screen.
     };
 
     if (!phase0Data) {

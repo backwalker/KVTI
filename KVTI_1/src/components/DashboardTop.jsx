@@ -409,7 +409,6 @@ export default function DashboardTop({
                     <FileText className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-emerald-100">{t('result.premium_feature')}</span>
                     <span className="font-bold tracking-wide text-sm">{t('result.view_report')}</span>
                 </div>
             </button>

@@ -526,11 +526,13 @@ export const calculateKvtiResult = (answers, diagnosticGrade = 'senior', phase0D
 
     const isMasterOrAbove = uGrade === '석박사';
 
-    // Sort array so that high-readiness extra tracks can naturally float up
-    // Tie-breaker: Always prioritize Extra Tracks over standard E-7 tracks if scores tie
+    // Sort array: Extra tracks are ALWAYS pushed to the bottom.
+    // Standard jobs are sorted by readiness in descending order.
+    // Extra tracks are also sorted by readiness among themselves at the bottom.
     recommendedJobsArray.sort((a, b) => {
-        if (b.readiness !== a.readiness) return b.readiness - a.readiness;
-        return (b.isExtraTrack ? 1 : 0) - (a.isExtraTrack ? 1 : 0);
+        if (a.isExtraTrack && !b.isExtraTrack) return 1;
+        if (!a.isExtraTrack && b.isExtraTrack) return -1;
+        return b.readiness - a.readiness;
     });
 
     // Pad to 3 if the persona has fewer than 3 defined jobs (and we didn't inject enough)

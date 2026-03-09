@@ -116,10 +116,11 @@ export function generateReportData(resultCode, passedState = null) {
 
     // 3. Assemble Job & Visa Requirement Master Data using dynamic passed state if available
     let topJobs = [];
+    let extraJobs = [];
 
     if (dashboardData && dashboardData.recommended_jobs && dashboardData.recommended_jobs.length > 0) {
-        // Use the strictly calculated dynamic data from MDJM Engine
-        topJobs = dashboardData.recommended_jobs.filter(job => !job.isExtraTrack).slice(0, 3).map(jobStr => {
+        // Shared mapping function for jobs
+        const mapJobData = (jobStr) => {
             const job = typeof jobStr === 'string' ? { code: jobStr, title: E7_DB[jobStr]?.name_ko || jobStr, readiness: 85 } : jobStr;
             const codeString = String(job.code);
             let name_ko = job.title;
@@ -127,6 +128,7 @@ export function generateReportData(resultCode, passedState = null) {
 
             let extractedCode = codeString;
             if (name_ko && name_ko.includes("숙련기능")) extractedCode = "E-7-4";
+            else if (job.isExtraTrack && codeString === "D84_STARTUP") extractedCode = "D-8-4";
 
             const lawDefinition = E7_DESCRIPTIONS[extractedCode] || "국가 경쟁력 제고를 위하여 전문적인 지식, 기술, 기능을 가진 외국인 인력 도입이 필요한 분야로서 법무부 장관이 지정하는 특정활동 직무입니다.";
             const visaRequirements = E7_REQUIREMENTS[extractedCode] || {
@@ -137,7 +139,7 @@ export function generateReportData(resultCode, passedState = null) {
 
             // Extract newly designed advanced fields
             const advanceData = E7_REQUIREMENTS[extractedCode] || {};
-            const specialNote = advanceData.special || `해당 ${extractedCode} 직종은 법무부의 일반 특정활동 비자 발급 지침을 따르며, 전공 분야 요건 및 한국인 고용 보호 비율(20%) 심사가 필수적으로 진행됩니다.`;
+            const specialNote = advanceData.special || `해당 ${extractedCode} 직종은 법무부의 일반 비자 발급 지침을 따르며, 전공 분야 요건 및 한국인 고용 보호 비율 심사가 필수적으로 진행됩니다.`;
             const roadmapData = advanceData.roadmap || {
                 certifications: ["해당 직무 관련 국가 기술/기사 자격증"],
                 tools: ["해당 분야 실무 표쥰 소프트웨어/장비"],
@@ -148,8 +150,9 @@ export function generateReportData(resultCode, passedState = null) {
             const exactScore = job.readiness || 80;
 
             return {
+                ...job,
                 code: codeString,
-                visaType: extractedCode === "E-7-4" ? "E-7-4 숙련기능" : "E-7-1 전문인력",
+                visaType: extractedCode === "E-7-4" ? "E-7-4 숙련기능" : (extractedCode === "D-8-4" ? "D-8-4 기술창업" : "E-7-1 전문인력"),
                 title_ko: name_ko,
                 title_en: name_en,
                 readiness: exactScore,
@@ -161,10 +164,14 @@ export function generateReportData(resultCode, passedState = null) {
                 portfolio: roadmapData.portfolio?.length > 0 ? roadmapData.portfolio : ["출입국 심사관 및 기업 인사담당자를 동시에 설득할 수 있는 구체적이고 실증적인 프로젝트 성과물"],
                 requiredCompetencies: [
                     "심사관 및 사내 내국인 팀원과의 원활한 소통을 위한 고도화된 비즈니스 한국어 구사 능력 (TOPIK 4급 이상 권장)",
-                    "재학 중 특정활동(E-7) 분야와 일치하는 인턴십(D-2-4) 또는 현장실습 경험을 증빙하는 이력 및 포트폴리오 구축"
+                    "재학 중 해당 직무 분야와 일치하는 실전 경험을 증빙하는 이력 및 포트폴리오 구축"
                 ]
             };
-        });
+        };
+
+        // Use the strictly calculated dynamic data from MDJM Engine
+        topJobs = dashboardData.recommended_jobs.filter(job => !job.isExtraTrack).slice(0, 3).map(mapJobData);
+        extraJobs = dashboardData.recommended_jobs.filter(job => job.isExtraTrack).map(mapJobData);
     } else {
         // Absolute fallback ONLY if data is totally missing (should be prevented by UI guards)
         const coreCode = kvtiUpper.substring(0, 3);
@@ -359,6 +366,7 @@ export function generateReportData(resultCode, passedState = null) {
         summaryText: summaryText,
         comprehensiveOpinion: comprehensiveOpinion,
         factorDetails: factorDetails,
-        topJobs: topJobs
+        topJobs: topJobs,
+        extraJobs: extraJobs
     };
 }

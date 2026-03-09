@@ -9,6 +9,7 @@ import ComprehensiveReport from './pages/ComprehensiveReport';
 import Survey from './pages/Survey';
 import kvtiQuestions from './data/kvti_questions.json';
 import { calculateKvtiResult } from './utils/kvtiLogic';
+import LandingDetails from './components/LandingDetails';
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -116,95 +117,121 @@ function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-kvti-bg text-white flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-blue-900/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-kvti-primary/5 rounded-full blur-[120px]"></div>
-      </div>
+    <div className="bg-kvti-bg text-white font-sans w-full">
+      {/* Hero Section */}
+      <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Background Ambience */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+          <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-blue-900/10 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-kvti-primary/5 rounded-full blur-[120px]"></div>
+        </div>
 
-      <div className="fixed top-6 right-6 md:top-8 md:right-8 z-50">
-        <LanguageSwitcher />
-      </div>
+        <div className="fixed top-6 right-6 md:top-8 md:right-8 z-50">
+          <LanguageSwitcher />
+        </div>
 
-      <div className="z-10 text-center px-6 max-w-5xl w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <div className="mb-4">
-            <span className="text-white text-lg md:text-xl font-light tracking-[0.3em] uppercase opacity-80 block mb-2">
-              {t('landing.subtitle')}
-            </span>
-            <div className="relative inline-block">
-              <h1 className="text-8xl md:text-9xl font-black mb-2 leading-none tracking-tighter gold-gradient-text">
-                KVTI
-              </h1>
-              <div className="h-1 w-full bg-kvti-primary rounded-full mt-2 opacity-50"></div>
+        <div className="z-10 text-center px-6 max-w-5xl w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <div className="mb-4">
+              <span className="text-white text-lg md:text-xl font-light tracking-[0.3em] uppercase opacity-80 block mb-2">
+                {t('landing.subtitle')}
+              </span>
+              <div className="relative inline-block">
+                <h1 className="text-8xl md:text-9xl font-black mb-2 leading-none tracking-tighter gold-gradient-text">
+                  KVTI
+                </h1>
+                <div className="h-1 w-full bg-kvti-primary rounded-full mt-2 opacity-50"></div>
+              </div>
+              <p className="text-kvti-primary text-sm md:text-base font-bold tracking-[0.2em] mt-4 uppercase">
+                {t('landing.title_sub')}
+              </p>
             </div>
-            <p className="text-kvti-primary text-sm md:text-base font-bold tracking-[0.2em] mt-4 uppercase">
-              {t('landing.title_sub')}
+
+            <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-light mt-8">
+              {t('landing.description')}
             </p>
-          </div>
+          </motion.div>
 
-          <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-light mt-8">
-            {t('landing.description')}
-          </p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="flex flex-col md:flex-row items-center justify-center gap-4"
+          >
+            <button
+              onClick={() => {
+                localStorage.removeItem('kvti_base_profile');
+                localStorage.removeItem('kvti_answers');
+                navigate('/diagnosis');
+              }}
+              className="group relative inline-flex items-center justify-center px-12 py-5 text-lg font-bold text-slate-900 transition-all duration-300 bg-kvti-primary rounded-none clip-path-slant focus:outline-none hover:bg-white hover:shadow-[0_0_30px_rgba(56,189,248,0.4)]"
+              style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
+            >
+              <span className="relative flex items-center gap-3">
+                {t('landing.start_assessment')}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transition-transform group-hover:translate-x-1">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                </svg>
+              </span>
+            </button>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-4"
-        >
-          <button
-            onClick={() => {
-              localStorage.removeItem('kvti_base_profile');
-              localStorage.removeItem('kvti_answers');
-              navigate('/diagnosis');
+            {/* Dev Test Button (Next to Start) */}
+            <button
+              onClick={handleDevTest}
+              className="px-6 py-4 text-xs font-bold text-white/40 hover:text-white hover:bg-white/10 border border-white/10 transition-all uppercase tracking-widest rounded"
+            >
+              {t('landing.dev_test')}
+            </button>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="mt-20 grid grid-cols-3 gap-8 text-center border-t border-white/5 pt-10"
+          >
+            {[
+              { label: t('landing.stat_time_label'), value: t('landing.stat_time_val') },
+              { label: t('landing.stat_area_label'), value: t('landing.stat_area_val') },
+              { label: t('landing.stat_visa_label'), value: t('landing.stat_visa_val') }
+            ].map((item, idx) => (
+              <div key={idx}>
+                <div className="text-kvti-primary text-2xl md:text-3xl font-bold mb-1 font-display">{item.value}</div>
+                <div className="text-slate-500 text-xs md:text-sm uppercase tracking-wider">{item.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Hero Footer */}
+        <footer className="absolute bottom-6 w-full text-center z-50">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              repeat: Infinity,
+              repeatType: "reverse",
+              duration: 1.5
             }}
-            className="group relative inline-flex items-center justify-center px-12 py-5 text-lg font-bold text-slate-900 transition-all duration-300 bg-kvti-primary rounded-none clip-path-slant focus:outline-none hover:bg-white hover:shadow-[0_0_30px_rgba(56,189,248,0.4)]"
-            style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
+            className="mb-2 text-slate-500 flex flex-col items-center"
           >
-            <span className="relative flex items-center gap-3">
-              {t('landing.start_assessment')}
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transition-transform group-hover:translate-x-1">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-              </svg>
-            </span>
-          </button>
-
-          {/* Dev Test Button (Next to Start) */}
-          <button
-            onClick={handleDevTest}
-            className="px-6 py-4 text-xs font-bold text-white/40 hover:text-white hover:bg-white/10 border border-white/10 transition-all uppercase tracking-widest rounded"
-          >
-            {t('landing.dev_test')}
-          </button>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="mt-20 grid grid-cols-3 gap-8 text-center border-t border-white/5 pt-10"
-        >
-          {[
-            { label: t('landing.stat_time_label'), value: t('landing.stat_time_val') },
-            { label: t('landing.stat_area_label'), value: t('landing.stat_area_val') },
-            { label: t('landing.stat_visa_label'), value: t('landing.stat_visa_val') }
-          ].map((item, idx) => (
-            <div key={idx}>
-              <div className="text-kvti-primary text-2xl md:text-3xl font-bold mb-1 font-display">{item.value}</div>
-              <div className="text-slate-500 text-xs md:text-sm uppercase tracking-wider">{item.label}</div>
-            </div>
-          ))}
-        </motion.div>
+            <span className="text-xs tracking-widest uppercase mb-1">Scroll to explore</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </motion.div>
+        </footer>
       </div>
 
-      <footer className="absolute bottom-6 w-full text-center z-50">
+      {/* Landing Content Details */}
+      <LandingDetails />
+
+      {/* Real Footer */}
+      <footer className="w-full text-center py-8 bg-slate-950 border-t border-white/5 relative z-20">
         <p className="text-slate-600 text-xs tracking-widest uppercase">
           {t('landing.footer')}
         </p>

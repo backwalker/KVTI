@@ -65,6 +65,201 @@ export default function ComprehensiveReport() {
 
     const userName = passedState?.baseProfile?.name || "지원자";
 
+    const renderJobSection = (jobs, startIndex = 0, isExtraTrack = false) => {
+        if (!jobs || jobs.length === 0) return null;
+        return jobs.map((job, localIdx) => {
+            const idx = startIndex + localIdx;
+            return (
+                <div key={`job-${idx}`} className="relative">
+
+                    {/* Subheader Title */}
+                    <div className="mb-10 font-sans">
+                        <div className="flex items-center gap-4 mb-4">
+                            {localIdx === 0 && !isExtraTrack && (
+                                <span className="bg-indigo-600 text-white font-bold px-4 py-1 text-sm tracking-wider uppercase">
+                                    {t('report_ui.top_priority', { defaultValue: '1순위 최우선 타겟 직무' })}
+                                </span>
+                            )}
+                            {isExtraTrack && (
+                                <span className="bg-yellow-500 text-white font-bold px-4 py-1 text-sm tracking-wider uppercase">
+                                    {t('report_ui.extra_priority', { defaultValue: '히든 트랙' })}
+                                </span>
+                            )}
+                            <span className={`text-${isExtraTrack ? 'yellow' : 'indigo'}-700 font-bold border border-${isExtraTrack ? 'yellow' : 'indigo'}-300 px-3 py-1 text-sm bg-${isExtraTrack ? 'yellow' : 'indigo'}-50`}>
+                                {job.visaType} (Code {job.code})
+                            </span>
+                            <span className="text-slate-500 font-bold px-3 py-1 text-sm bg-slate-100 hidden sm:inline-block">
+                                {t('report_ui.job_readiness', { defaultValue: '성향 직무 적합도' })} {job.readiness}%
+                            </span>
+                        </div>
+                        <h3 className="text-3xl font-black text-slate-900 leading-tight">
+                            {!isExtraTrack ? `${localIdx + 1}. ` : ''}{job.title_ko}
+                            {job.title_en && (
+                                <span className="block text-xl font-normal text-slate-500 mt-2 font-serif">{job.title_en}</span>
+                            )}
+                        </h3>
+                    </div>
+
+                    {/* NEW: Special Visa Strategy Callout */}
+                    {job.specialNote && (
+                        <div className="mb-10 bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm flex items-start gap-4">
+                            <div className="bg-amber-100 text-amber-600 p-3 rounded-full shrink-0">
+                                <span className="text-xl">💡</span>
+                            </div>
+                            <div>
+                                <h4 className="text-lg font-bold text-amber-900 mb-2 font-sans">{t('report_ui.special_guide', { defaultValue: '유학생 특별 진입 전략 가이드' })}</h4>
+                                <p className="text-amber-800 font-medium text-justify leading-relaxed">
+                                    {job.specialNote}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Text Body */}
+                    <div className="space-y-8">
+                        <div>
+                            <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans">
+                                <Briefcase className={`w-5 h-5 text-${isExtraTrack ? 'yellow' : 'indigo'}-600`} /> {t('report_ui.job_def', { visaType: job.visaType.split(' ')[0], defaultValue: `[1] 특정활동(${job.visaType.split(' ')[0]}) 분야 직무 정의` })}
+                            </h4>
+                            <p className="indent-4 text-justify bg-slate-50 p-6 border-l-2 border-slate-300 font-medium">
+                                {job.lawDefinition}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans mt-10">
+                                <FileCheck className={`w-5 h-5 text-${isExtraTrack ? 'yellow' : 'indigo'}-600`} /> {t('report_ui.visa_reqs', { defaultValue: '[2] 출입국관리법 심사 및 발급 요건 제한' })}
+                            </h4>
+                            <ul className={`list-disc pl-8 space-y-4 text-justify marker:text-${isExtraTrack ? 'yellow' : 'indigo'}-600`}>
+                                <li>
+                                    <strong>{t('report_ui.req_edu', { defaultValue: '학위 및 전공 특례 요구사항:' })}</strong> {job.visaRequirements.education}
+                                </li>
+                                <li>
+                                    <strong>{t('report_ui.req_salary', { defaultValue: '안심 임금 수준 제약(GNI 연동):' })}</strong> {job.visaRequirements.salary}
+                                </li>
+                                <li>
+                                    <strong>{t('report_ui.req_employer', { defaultValue: '고용 기업의 국민고용보호 심사 장벽:' })}</strong> {job.visaRequirements.employer}
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Existing Competencies List with Integrated DB Fields */}
+                        <div>
+                            <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans mt-10">
+                                <Target className={`w-5 h-5 text-${isExtraTrack ? 'yellow' : 'indigo'}-600`} /> {t('report_ui.core_comp', { defaultValue: '[3] 비자취득 및 관련 산업 취업을 위한 전략적 핵심 역량 (Core Competency)' })}
+                            </h4>
+                            <ul className="mb-8 space-y-6">
+                                {/* 1. Base hardcoded competencies from generator */}
+                                {job.requiredCompetencies.map((reqTxt, i) => (
+                                    <li key={i} className="flex items-start gap-4">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
+                                        <div className="text-justify font-sans text-slate-700">
+                                            {reqTxt}
+                                        </div>
+                                    </li>
+                                ))}
+
+                                {/* 2. Formal Text Integration of Database Fields */}
+                                {job.certifications && job.certifications.length > 0 && (
+                                    <li className="flex items-start gap-4">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
+                                        <div className="text-justify font-sans text-slate-700">
+                                            <strong>{t('report_ui.rec_cert', { defaultValue: '권장 자격 및 면허 요건:' })}</strong> {job.certifications.join(', ')} {t('report_ui.rec_cert_desc', { defaultValue: '등의 직무 관련 전문 자격 취득을 통해 역량을 공식화하는 것이 강력히 권장됩니다.' })}
+                                        </div>
+                                    </li>
+                                )}
+                                {job.tools && job.tools.length > 0 && (
+                                    <li className="flex items-start gap-4">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
+                                        <div className="text-justify font-sans text-slate-700">
+                                            <strong>{t('report_ui.rec_tools', { defaultValue: '실무 기술 스택 및 활용 툴:' })}</strong> {job.tools.join(', ')} {t('report_ui.rec_tools_desc', { defaultValue: '등의 핵심 소프트웨어 및 장비 운용 능력을 필수적으로 갖추어야 합니다.' })}
+                                        </div>
+                                    </li>
+                                )}
+                                {job.portfolio && job.portfolio.length > 0 && (
+                                    <li className="flex items-start gap-4">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
+                                        <div className="text-justify font-sans text-slate-700">
+                                            <strong>{t('report_ui.rec_port', { defaultValue: '실전 포트폴리오 구축 방향성:' })}</strong> {job.portfolio.join(', ')} {t('report_ui.rec_port_desc', { defaultValue: '등과 같은 구체적이고 실증적인 실무 프로젝트 결과물을 선제적으로 구축하여 객관적 증빙 자료로 활용해야 합니다.' })}
+                                        </div>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+
+                        {/* NEW: [4] Actionable Timeline Integrated into Job Guide */}
+                        {(() => {
+                            // Safely extract roadmap steps for the current job index
+                            const rawRoadmapData = reportDataFull?.roadmap || [];
+                            const parsedRoadmaps = Array.isArray(rawRoadmapData) && rawRoadmapData.length > 0 && rawRoadmapData[0].steps
+                                ? rawRoadmapData
+                                : [{ title: t('report_ui.recommended_job', { defaultValue: '추천 직무' }), steps: rawRoadmapData }];
+
+                            // If we don't have enough roadmaps, default to the first one safely
+                            const currentRoadmap = parsedRoadmaps[idx] || parsedRoadmaps[0];
+
+                            if (!currentRoadmap || !currentRoadmap.steps || currentRoadmap.steps.length === 0) return null;
+
+                            return (
+                                <div>
+                                    <h4 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2 font-sans mt-12 border-t border-slate-200 pt-8">
+                                        <Target className={`w-5 h-5 text-${isExtraTrack ? 'yellow' : 'indigo'}-600`} /> {t('report_ui.action_timeline', { defaultValue: '[4] 단계별 비자 서바이벌 통합 로드맵 (Actionable Timeline)' })}
+                                    </h4>
+                                    <div className="space-y-6">
+                                        {currentRoadmap.steps.map((step, sIdx) => {
+                                            const cleanTitle = step.stage.replace(/Step \d+\.\s*/, '').trim();
+                                            return (
+                                                <div key={`step-${sIdx}`} className="bg-slate-50 border border-slate-200 p-5 rounded-lg flex flex-col gap-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={`bg-${isExtraTrack ? 'yellow' : 'indigo'}-600 text-white font-bold px-3 py-1 rounded text-xs tracking-widest uppercase`}>
+                                                            {t('common.phase_prefix', { defaultValue: 'Phase' })} {sIdx + 1}
+                                                        </span>
+                                                        <h5 className="font-bold text-slate-800 text-md">{cleanTitle}</h5>
+                                                    </div>
+
+                                                    {/* Formatted Text List of Tasks */}
+                                                    {step.action_items && step.action_items.length > 0 && (
+                                                        <ul className={`list-disc pl-10 space-y-2 marker:text-${isExtraTrack ? 'yellow' : 'indigo'}-400`}>
+                                                            {step.action_items.map((item, iIdx) => {
+                                                                const isUrgent = item.priority === 'High';
+                                                                return (
+                                                                    <li key={`item-${iIdx}`} className="text-slate-700 font-sans text-sm leading-relaxed">
+                                                                        {isUrgent && <strong className="text-rose-600 mr-1">[핵심/필수]</strong>}
+                                                                        <span dangerouslySetInnerHTML={{ __html: item.task }} />
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+
+                                        {/* Red Flag Warning Box */}
+                                        <blockquote className="mt-6 border-l-4 border-rose-500 bg-rose-50 p-4 text-rose-900 rounded-r-lg font-sans">
+                                            <strong className="block mb-1 flex items-center gap-2">
+                                                <span className="text-lg">🚨</span> {t('report_ui.red_flag', { defaultValue: '법무부 체류 자격 박탈 (Red Flag) 사전 경고' })}
+                                            </strong>
+                                            <span className="text-sm leading-relaxed">
+                                                {t('report_ui.red_flag_desc', { defaultValue: '진로 준비 중 단 100만 원 미만의 가벼운 범칙금(무단횡단, 전동킥보드 불법운행, 불법 아르바이트 등) 납부 기록이 발생하더라도, 향후 F-2-7 거주 비자 전환 시 치명적인 감점 요소로 작용하여 한국 내 장기 정주가 원천적으로 차단될 수 있습니다. 엄격한 법규 준수는 커리어 설계의 최우선 기본 스펙입니다.' })}
+                                            </span>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+                    </div>
+
+                    {localIdx !== jobs.length - 1 && (
+                        <div className="w-full text-center my-16 opacity-30">
+                            * * * * *
+                        </div>
+                    )}
+                </div>
+            );
+        });
+    };
+
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 pb-32 font-serif selection:bg-indigo-200">
 
@@ -443,191 +638,27 @@ export default function ComprehensiveReport() {
                     </p>
 
                     <div className="space-y-24">
-                        {reportData.topJobs.map((job, idx) => (
-                            <div key={idx} className="relative">
-
-                                {/* Subheader Title */}
-                                <div className="mb-10 font-sans">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        {idx === 0 && (
-                                            <span className="bg-indigo-600 text-white font-bold px-4 py-1 text-sm tracking-wider uppercase">
-                                                {t('report_ui.top_priority', { defaultValue: '1순위 최우선 타겟 직무' })}
-                                            </span>
-                                        )}
-                                        <span className="text-indigo-700 font-bold border border-indigo-300 px-3 py-1 text-sm bg-indigo-50">
-                                            {job.visaType} (Code {job.code})
-                                        </span>
-                                        <span className="text-slate-500 font-bold px-3 py-1 text-sm bg-slate-100 hidden sm:inline-block">
-                                            {t('report_ui.job_readiness', { defaultValue: '성향 직무 적합도' })} {job.readiness}%
-                                        </span>
-                                    </div>
-                                    <h3 className="text-3xl font-black text-slate-900 leading-tight">
-                                        {idx + 1}. {job.title_ko}
-                                        {job.title_en && (
-                                            <span className="block text-xl font-normal text-slate-500 mt-2 font-serif">{job.title_en}</span>
-                                        )}
-                                    </h3>
-                                </div>
-
-                                {/* NEW: Special Visa Strategy Callout */}
-                                {job.specialNote && (
-                                    <div className="mb-10 bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm flex items-start gap-4">
-                                        <div className="bg-amber-100 text-amber-600 p-3 rounded-full shrink-0">
-                                            <span className="text-xl">💡</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-bold text-amber-900 mb-2 font-sans">{t('report_ui.special_guide', { defaultValue: '유학생 특별 진입 전략 가이드' })}</h4>
-                                            <p className="text-amber-800 font-medium text-justify leading-relaxed">
-                                                {job.specialNote}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Text Body */}
-                                <div className="space-y-8">
-                                    <div>
-                                        <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans">
-                                            <Briefcase className="w-5 h-5 text-indigo-600" /> {t('report_ui.job_def', { visaType: job.visaType.split(' ')[0], defaultValue: `[1] 특정활동(${job.visaType.split(' ')[0]}) 분야 직무 정의` })}
-                                        </h4>
-                                        <p className="indent-4 text-justify bg-slate-50 p-6 border-l-2 border-slate-300 font-medium">
-                                            {job.lawDefinition}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans mt-10">
-                                            <FileCheck className="w-5 h-5 text-indigo-600" /> {t('report_ui.visa_reqs', { defaultValue: '[2] 출입국관리법 심사 및 발급 요건 제한' })}
-                                        </h4>
-                                        <ul className="list-disc pl-8 space-y-4 text-justify marker:text-indigo-600">
-                                            <li>
-                                                <strong>{t('report_ui.req_edu', { defaultValue: '학위 및 전공 특례 요구사항:' })}</strong> {job.visaRequirements.education}
-                                            </li>
-                                            <li>
-                                                <strong>{t('report_ui.req_salary', { defaultValue: '안심 임금 수준 제약(GNI 연동):' })}</strong> {job.visaRequirements.salary}
-                                            </li>
-                                            <li>
-                                                <strong>{t('report_ui.req_employer', { defaultValue: '고용 기업의 국민고용보호 심사 장벽:' })}</strong> {job.visaRequirements.employer}
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    {/* Existing Competencies List with Integrated DB Fields */}
-                                    <div>
-                                        <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans mt-10">
-                                            <Target className="w-5 h-5 text-indigo-600" /> {t('report_ui.core_comp', { defaultValue: '[3] 비자취득 및 관련 산업 취업을 위한 전략적 핵심 역량 (Core Competency)' })}
-                                        </h4>
-                                        <ul className="mb-8 space-y-6">
-                                            {/* 1. Base hardcoded competencies from generator */}
-                                            {job.requiredCompetencies.map((reqTxt, i) => (
-                                                <li key={i} className="flex items-start gap-4">
-                                                    <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
-                                                    <div className="text-justify font-sans text-slate-700">
-                                                        {reqTxt}
-                                                    </div>
-                                                </li>
-                                            ))}
-
-                                            {/* 2. Formal Text Integration of Database Fields */}
-                                            {job.certifications && job.certifications.length > 0 && (
-                                                <li className="flex items-start gap-4">
-                                                    <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
-                                                    <div className="text-justify font-sans text-slate-700">
-                                                        <strong>{t('report_ui.rec_cert', { defaultValue: '권장 자격 및 면허 요건:' })}</strong> {job.certifications.join(', ')} {t('report_ui.rec_cert_desc', { defaultValue: '등의 직무 관련 전문 자격 취득을 통해 역량을 공식화하는 것이 강력히 권장됩니다.' })}
-                                                    </div>
-                                                </li>
-                                            )}
-                                            {job.tools && job.tools.length > 0 && (
-                                                <li className="flex items-start gap-4">
-                                                    <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
-                                                    <div className="text-justify font-sans text-slate-700">
-                                                        <strong>{t('report_ui.rec_tools', { defaultValue: '실무 기술 스택 및 활용 툴:' })}</strong> {job.tools.join(', ')} {t('report_ui.rec_tools_desc', { defaultValue: '등의 핵심 소프트웨어 및 장비 운용 능력을 필수적으로 갖추어야 합니다.' })}
-                                                    </div>
-                                                </li>
-                                            )}
-                                            {job.portfolio && job.portfolio.length > 0 && (
-                                                <li className="flex items-start gap-4">
-                                                    <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-1" />
-                                                    <div className="text-justify font-sans text-slate-700">
-                                                        <strong>{t('report_ui.rec_port', { defaultValue: '실전 포트폴리오 구축 방향성:' })}</strong> {job.portfolio.join(', ')} {t('report_ui.rec_port_desc', { defaultValue: '등과 같은 구체적이고 실증적인 실무 프로젝트 결과물을 선제적으로 구축하여 객관적 증빙 자료로 활용해야 합니다.' })}
-                                                    </div>
-                                                </li>
-                                            )}
-                                        </ul>
-                                    </div>
-
-                                    {/* NEW: [4] Actionable Timeline Integrated into Job Guide */}
-                                    {(() => {
-                                        // Safely extract roadmap steps for the current job index
-                                        const rawRoadmapData = reportDataFull?.roadmap || [];
-                                        const parsedRoadmaps = Array.isArray(rawRoadmapData) && rawRoadmapData.length > 0 && rawRoadmapData[0].steps
-                                            ? rawRoadmapData
-                                            : [{ title: '추천 직무', steps: rawRoadmapData }];
-
-                                        // If we don't have enough roadmaps, default to the first one safely
-                                        const currentRoadmap = parsedRoadmaps[idx] || parsedRoadmaps[0];
-
-                                        if (!currentRoadmap || !currentRoadmap.steps || currentRoadmap.steps.length === 0) return null;
-
-                                        return (
-                                            <div>
-                                                <h4 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2 font-sans mt-12 border-t border-slate-200 pt-8">
-                                                    <Target className="w-5 h-5 text-indigo-600" /> {t('report_ui.action_timeline', { defaultValue: '[4] 단계별 비자 서바이벌 통합 로드맵 (Actionable Timeline)' })}
-                                                </h4>
-                                                <div className="space-y-6">
-                                                    {currentRoadmap.steps.map((step, sIdx) => {
-                                                        const cleanTitle = step.stage.replace(/Step \d+\.\s*/, '').trim();
-                                                        return (
-                                                            <div key={sIdx} className="bg-slate-50 border border-slate-200 p-5 rounded-lg flex flex-col gap-3">
-                                                                <div className="flex items-center gap-3">
-                                                                    <span className="bg-indigo-600 text-white font-bold px-3 py-1 rounded text-xs tracking-widest uppercase">
-                                                                        {t('common.phase_prefix', { defaultValue: 'Phase' })} {sIdx + 1}
-                                                                    </span>
-                                                                    <h5 className="font-bold text-slate-800 text-md">{cleanTitle}</h5>
-                                                                </div>
-
-                                                                {/* Formatted Text List of Tasks */}
-                                                                {step.action_items && step.action_items.length > 0 && (
-                                                                    <ul className="list-disc pl-10 space-y-2 marker:text-indigo-400">
-                                                                        {step.action_items.map((item, iIdx) => {
-                                                                            const isUrgent = item.priority === 'High';
-                                                                            return (
-                                                                                <li key={iIdx} className="text-slate-700 font-sans text-sm leading-relaxed">
-                                                                                    {isUrgent && <strong className="text-rose-600 mr-1">[핵심/필수]</strong>}
-                                                                                    <span dangerouslySetInnerHTML={{ __html: item.task }} />
-                                                                                </li>
-                                                                            );
-                                                                        })}
-                                                                    </ul>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-
-                                                    {/* Red Flag Warning Box */}
-                                                    <blockquote className="mt-6 border-l-4 border-rose-500 bg-rose-50 p-4 text-rose-900 rounded-r-lg font-sans">
-                                                        <strong className="block mb-1 flex items-center gap-2">
-                                                            <span className="text-lg">🚨</span> {t('report_ui.red_flag', { defaultValue: '법무부 체류 자격 박탈 (Red Flag) 사전 경고' })}
-                                                        </strong>
-                                                        <span className="text-sm leading-relaxed">
-                                                            {t('report_ui.red_flag_desc', { defaultValue: '진로 준비 중 단 100만 원 미만의 가벼운 범칙금(무단횡단, 전동킥보드 불법운행, 불법 아르바이트 등) 납부 기록이 발생하더라도, 향후 F-2-7 거주 비자 전환 시 치명적인 감점 요소로 작용하여 한국 내 장기 정주가 원천적으로 차단될 수 있습니다. 엄격한 법규 준수는 커리어 설계의 최우선 기본 스펙입니다.' })}
-                                                        </span>
-                                                    </blockquote>
-                                                </div>
-                                            </div>
-                                        );
-                                    })()}
-                                </div>
-
-                                {idx !== reportData.topJobs.length - 1 && (
-                                    <div className="w-full text-center my-16 opacity-30">
-                                        * * * * *
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                        {renderJobSection(reportData.topJobs, 0, false)}
                     </div>
                 </section>
+
+                {/* ==========================================
+                    Section 4: Extra Tracks (Optional)
+                ========================================== */}
+                {reportData.extraJobs && reportData.extraJobs.length > 0 && (
+                    <section className="space-y-16 leading-loose text-lg text-slate-800 page-break-before">
+                        <h2 className="text-2xl font-black text-slate-900 border-l-4 border-yellow-500 pl-4 mb-16 font-sans">
+                            {t('report_ui.section_extra_title', { defaultValue: 'IV. 특별 추천: 인공지능이 발견한 히든 프리미엄 트랙' })}
+                        </h2>
+
+                        <p className="text-justify mb-16" dangerouslySetInnerHTML={{ __html: t('report_ui.section_extra_p1', { defaultValue: '응답자의 데이터를 다차원적으로 분석한 결과, 표준 E-7 취업 경로 외에도 특수한 강점을 폭발적으로 발휘할 수 있는 <strong>성공 잠재력이 높은 특별 트랙(스타트업, 프리랜서 등)</strong>이 발견되었습니다. 이는 가장 빠르고 진취적으로 한국 내 독립적 정주를 이뤄낼 수 있는 파격적인 선택지입니다.' }).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}>
+                        </p>
+
+                        <div className="space-y-24">
+                            {renderJobSection(reportData.extraJobs, reportData.topJobs?.length || 0, true)}
+                        </div>
+                    </section>
+                )}
 
                 {/* ==========================================
                     Section 5: Conclusion

@@ -116,10 +116,11 @@ export function generateReportData(resultCode, passedState = null) {
 
     // 3. Assemble Job & Visa Requirement Master Data using dynamic passed state if available
     let topJobs = [];
+    let extraJobs = [];
 
     if (dashboardData && dashboardData.recommended_jobs && dashboardData.recommended_jobs.length > 0) {
-        // Use the strictly calculated dynamic data from MDJM Engine
-        topJobs = dashboardData.recommended_jobs.filter(job => !job.isExtraTrack).slice(0, 3).map(jobStr => {
+        // Shared mapping function for jobs
+        const mapJobData = (jobStr) => {
             const job = typeof jobStr === 'string' ? { code: jobStr, title: E7_DB[jobStr]?.name_ko || jobStr, readiness: 85 } : jobStr;
             const codeString = String(job.code);
             let name_ko = job.title;
@@ -127,6 +128,7 @@ export function generateReportData(resultCode, passedState = null) {
 
             let extractedCode = codeString;
             if (name_ko && name_ko.includes("숙련기능")) extractedCode = "E-7-4";
+            else if (job.isExtraTrack && codeString === "D84_STARTUP") extractedCode = "D-8-4";
 
             const lawDefinition = E7_DESCRIPTIONS[extractedCode] || "A Specific Activity profession designated by the Minister of Justice, requiring specialized knowledge, technology, or skills to enhance national competitiveness through foreign talent introduction.";
             const visaRequirements = E7_REQUIREMENTS[extractedCode] || {
@@ -137,7 +139,7 @@ export function generateReportData(resultCode, passedState = null) {
 
             // Extract newly designed advanced fields
             const advanceData = E7_REQUIREMENTS[extractedCode] || {};
-            const specialNote = advanceData.special || `This ${extractedCode} occupation follows the Ministry of Justice's general guidelines for Specific Activity visas. Thus, verification of the major field requirement and the Korean employee protection ratio (20%) will strictly take place.`;
+            const specialNote = advanceData.special || `This ${extractedCode} occupation follows the Ministry of Justice's general guidelines for visas. Thus, verification of the major field requirement and the Korean employee protection ratio will strictly take place.`;
             const roadmapData = advanceData.roadmap || {
                 certifications: ["National technical/professional certifications relevant to the target role"],
                 tools: ["Standard software/equipment capabilities required for the field"],
@@ -148,8 +150,9 @@ export function generateReportData(resultCode, passedState = null) {
             const exactScore = job.readiness || 80;
 
             return {
+                ...job,
                 code: codeString,
-                visaType: extractedCode === "E-7-4" ? "E-7-4 Skilled Worker" : "E-7-1 Professional",
+                visaType: extractedCode === "E-7-4" ? "E-7-4 Skilled Worker" : (extractedCode === "D-8-4" ? "D-8-4 Tech Startup" : "E-7-1 Professional"),
                 title_ko: name_ko,
                 title_en: name_en,
                 readiness: exactScore,
@@ -161,10 +164,14 @@ export function generateReportData(resultCode, passedState = null) {
                 portfolio: roadmapData.portfolio?.length > 0 ? roadmapData.portfolio : ["Concrete and empirical project deliverables capable of simultaneously persuading immigration officers and corporate HR managers"],
                 requiredCompetencies: [
                     "Advanced business Korean proficiency for smooth communication with immigration officers and domestic team members (TOPIK Level 4 or higher recommended)",
-                    "Building a resume and portfolio demonstrating internship (D-2-4) or field practicum/experience that exactly matches the Special Activity (E-7) target field during undergraduate years"
+                    "Building a resume and portfolio demonstrating field practicum/experience that exactly matches the target field during undergraduate years"
                 ]
             };
-        });
+        };
+
+        // Use the strictly calculated dynamic data from MDJM Engine
+        topJobs = dashboardData.recommended_jobs.filter(job => !job.isExtraTrack).slice(0, 3).map(mapJobData);
+        extraJobs = dashboardData.recommended_jobs.filter(job => job.isExtraTrack).map(mapJobData);
     } else {
         // Absolute fallback ONLY if data is totally missing (should be prevented by UI guards)
         const coreCode = kvtiUpper.substring(0, 3);
@@ -346,6 +353,7 @@ export function generateReportData(resultCode, passedState = null) {
         summaryText: summaryText,
         comprehensiveOpinion: comprehensiveOpinion,
         factorDetails: factorDetails,
-        topJobs: topJobs
+        topJobs: topJobs,
+        extraJobs: extraJobs
     };
 }

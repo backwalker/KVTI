@@ -59,7 +59,7 @@ const extractAndPatch = (filename, isKo) => {
         "tech_startup": "스타트업",
         "view_strategy": "전략 보기",
         "summary_title": "AI 종합 컨설팅 리포트",
-        "view_report": "전체 리포트 열기 (준비중)",
+        "view_report": "전체 리포트 열기",
         "style_map": {
             "A": "분석/관리",
             "C": "기획/창조",
@@ -156,7 +156,7 @@ const extractAndPatch = (filename, isKo) => {
         "tech_startup": "Startup",
         "view_strategy": "View Strategy",
         "summary_title": "AI General Consulting Report",
-        "view_report": "Open Full Report (TBD)",
+        "view_report": "Open Full Report",
         "style_map": {
             "A": "Analysis/Mgmt",
             "C": "Planning/Creative",
